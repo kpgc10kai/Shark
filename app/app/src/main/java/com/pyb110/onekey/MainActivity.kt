@@ -1245,7 +1245,9 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(start = 16.dp, top = 14.dp, end = 16.dp, bottom = 14.dp),
+                        // reserve the bottom-right icon's width so long English
+                        // lines never run underneath it
+                        .padding(start = 16.dp, top = 14.dp, end = 104.dp, bottom = 14.dp),
                     contentAlignment = Alignment.TopStart
                 ) {
                     Column {
@@ -1266,13 +1268,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(end = 20.dp, bottom = 12.dp),
+                    modifier = Modifier.fillMaxSize().padding(end = 16.dp, bottom = 10.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     AppIcon(
                         Icons.Rounded.CheckCircleOutline,
                         null,
-                        Modifier.size(100.dp),
+                        Modifier.size(88.dp),
                         tint = if (granted) greenTint else Color(0xFF9AA0A6)
                     )
                 }
