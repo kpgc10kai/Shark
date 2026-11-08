@@ -560,9 +560,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun CouiBackButton(onBack: () -> Unit) {
+        val backLabel = stringResource(R.string.back)
         if (Build.VERSION.SDK_INT >= 34) {
             TopAppBarButton(onClick = onBack) {
-                AppIcon(CouiIcons.Back, stringResource(R.string.back), Modifier.size(24.dp))
+                AppIcon(CouiIcons.Back, backLabel, Modifier.size(24.dp))
             }
         } else {
             val dark = CouiTheme.isDark
@@ -573,7 +574,7 @@ class MainActivity : ComponentActivity() {
                     .clip(CouiShape(24.dp, 2f))
                     .couiButtonFeedback(dark, source, true)
                     .clickable(source, indication = null, role = Role.Button, onClick = onBack)
-                    .semantics { contentDescription = stringResource(R.string.back) },
+                    .semantics { contentDescription = backLabel },
                 contentAlignment = Alignment.Center
             ) {
                 AppIcon(CouiIcons.Back, null, Modifier.size(24.dp))
