@@ -2368,7 +2368,7 @@ class MainActivity : ComponentActivity() {
     private fun refreshStaticStateAsync() {
         lifecycleScope.launch(Dispatchers.IO) {
             val raw = getSELinuxStatusRaw()
-            withContext(Dispatchers.Main) { selinuxText = mapSelinux(this, raw) }
+            withContext(Dispatchers.Main) { selinuxText = mapSelinux(this@MainActivity, raw) }
         }
     }
 
