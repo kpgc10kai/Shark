@@ -61,3 +61,11 @@ jobs:
           done
           echo "all Gradle distributions failed"
           exit 1
+
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shark-debug-apk
+          path: app/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
