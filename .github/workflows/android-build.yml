@@ -26,13 +26,8 @@ jobs:
           SDKMANAGER="$(command -v sdkmanager || echo "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager")"
           "$SDKMANAGER" --version
           yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
-          # android-37 is only published on the preview channel at the moment
-          "$SDKMANAGER" --channel=3 "platforms;android-37" "build-tools;37.0.0" "platform-tools" \
-            || {
-              echo "--- channel 3 failed, listing candidates ---"
-              "$SDKMANAGER" --list 2>/dev/null | grep -E "platforms;android-3[5-9]|build-tools;3[5-9]" || true
-              exit 1
-            }
+          # compileSdk 37.0 is published as "platforms;android-37.0"
+          "$SDKMANAGER" "platforms;android-37.0" "build-tools;37.0.0" "platform-tools"
 
       - name: Assemble debug APK
         working-directory: app
