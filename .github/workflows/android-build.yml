@@ -41,17 +41,23 @@ jobs:
           URLS=(
             "https://mirrors.cloud.tencent.com/gradle/gradle-9.7.0-bin.zip"
             "https://mirrors.huaweicloud.com/gradle/gradle-9.7.0-bin.zip"
+            "https://mirrors.aliyun.com/macports/distfiles/gradle/gradle-9.7.0-bin.zip"
             "https://services.gradle.org/distributions/gradle-9.7.0-bin.zip"
+            "https://services.gradle.org/distributions/gradle-9.7.1-bin.zip"
           )
           for url in "${URLS[@]}"; do
-            echo "::group::try $url"
-            sed -i -E "s|^distributionUrl=.*|distributionUrl=${url}|" gradle/wrapper/gradle-wrapper.properties
-            if ./gradlew :app:assembleDebug --no-daemon --stacktrace; then
+            for attempt in 1 2; do
+              echo "::group::try $url (attempt $attempt)"
+              sed -i -E "s|^distributionUrl=.*|distributionUrl=${url}|" gradle/wrapper/gradle-wrapper.properties
+              if ./gradlew :app:assembleDebug --no-daemon --stacktrace \
+                   -Dorg.gradle.internal.http.socketTimeout=180000 \
+                   -Dorg.gradle.internal.http.connectionTimeout=180000; then
+                echo "::endgroup::"
+                exit 0
+              fi
               echo "::endgroup::"
-              exit 0
-            fi
-            echo "::endgroup::"
-            sleep 10
+              sleep 15
+            done
           done
           echo "all Gradle distributions failed"
           exit 1
