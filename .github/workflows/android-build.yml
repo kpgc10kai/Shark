@@ -35,6 +35,10 @@ jobs:
         working-directory: app
         run: |
           chmod +x gradlew
+          # gradle-9.7.1-bin.zip is currently unavailable on the CDN (HTTP 504);
+          # 9.7.0 is the closest downloadable build. CI only - the repo keeps 9.7.1.
+          sed -i 's/gradle-9\.7\.1-bin\.zip/gradle-9.7.0-bin.zip/' gradle/wrapper/gradle-wrapper.properties
+          cat gradle/wrapper/gradle-wrapper.properties | grep distributionUrl
           for attempt in 1 2 3; do
             echo "::group::attempt $attempt"
             if ./gradlew :app:assembleDebug --no-daemon --stacktrace; then
