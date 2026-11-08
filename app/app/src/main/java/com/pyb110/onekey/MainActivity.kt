@@ -1579,6 +1579,8 @@ class MainActivity : ComponentActivity() {
         val logStyle = rememberCouiTextStyle(CouiTextKind.Description).copy(
             fontFamily = FontFamily.Monospace,
             fontSize = 11.sp,
+            lineHeight = 13.sp,
+            letterSpacing = 0.sp,
             color = scheme.onSurface
         )
         LazyColumn(
@@ -1590,7 +1592,7 @@ class MainActivity : ComponentActivity() {
                 start = 16.dp,
                 end = 16.dp
             ),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             items(state) { line -> BasicText(text = line, style = logStyle) }
         }
