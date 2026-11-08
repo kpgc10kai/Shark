@@ -1297,7 +1297,7 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp)
                 .clip(CouiShape(28.dp, 2f))
                 .background(if (busy) colors.disabled else scheme.accent)
                 .clickable(enabled = !busy, role = Role.Button) {
