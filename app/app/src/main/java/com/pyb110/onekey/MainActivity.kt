@@ -552,9 +552,11 @@ class MainActivity : ComponentActivity() {
             title = {
                 if (large) {
                     // 1.5x the PageTitle size: the home header is the app title.
+                    // BasicText does not inherit the COUI content colour, so set it.
                     val style = rememberCouiTextStyle(CouiTextKind.PageTitle).copy(
                         fontSize = 48.sp,
-                        lineHeight = 52.sp
+                        lineHeight = 52.sp,
+                        color = CouiTheme.colorScheme.onSurface
                     )
                     BasicText(
                         text = title,
