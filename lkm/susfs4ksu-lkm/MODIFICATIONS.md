@@ -1,50 +1,50 @@
-# 修改说明
+# Modification notes
 
-上游：[`inforcqb/susfs4ksu-lkm`](https://github.com/inforcqb/susfs4ksu-lkm)（GPL-2.0，见 `LICENSE`）。基线 `b69dee4`，2026-10-27 已 rebase 到 `28b2e85`（`sus_map: expose rules through /proc/susfs_map`）。
+Upstream: [`inforcqb/susfs4ksu-lkm`](https://github.com/inforcqb/susfs4ksu-lkm) (GPL-2.0, see `LICENSE`). Baseline `b69dee4`, rebased to `28b2e85` on 2026-10-27 (`sus_map: expose rules through /proc/susfs_map`).
 
-PYB110 内核开启 `CONFIG_ARM64_BTI_KERNEL=y`。kprobe 会把函数入口的 `bti c` 替换成断点，而 `invoke_syscall` / `seq_read` / `show_map` 通过函数指针间接跳转时会先做 BTI 检查，结果就是 `Oops - BTI`。本目录改了三个文件：
+The PYB110 kernel enables `CONFIG_ARM64_BTI_KERNEL=y`. kprobe replaces the `bti c` at a function entry with a breakpoint, and `invoke_syscall` / `seq_read` / `show_map` perform a BTI check before jumping indirectly through the function pointer, so the result is `Oops - BTI`. Three files are changed in this directory:
 
 ## kernel/susfs_supercall.c
 
-- 去掉 `__arm64_sys_reboot` 上的 kprobe。
-- 改用 `sys_call_table[__NR_reboot]` 的模块 wrapper：直接读 `regs->regs[0..3]`（syscall 表 wrapper 拿到的就是 `struct pt_regs *`，不需要 kprobe 的 `real_regs` 间接层），匹配 magic 后把命令交给 task_work 并返回 0；其余情况调用保存的原 syscall 函数。
-- 卸载时通过 `susfs_fp_remove()` + `susfs_fp_drain()` 恢复表项。
+- Removed the kprobe on `__arm64_sys_reboot`.
+- Switched to a module wrapper around `sys_call_table[__NR_reboot]`: it reads `regs->regs[0..3]` directly (a syscall-table wrapper receives a `struct pt_regs *`, so the kprobe's `real_regs` indirection is not needed), and on a magic match hands the command to task_work and returns 0; otherwise it calls the saved original syscall function.
+- On unload, restores the table entry via `susfs_fp_remove()` + `susfs_fp_drain()`.
 
 ## kernel/susfs_hide_syms.c
 
-- 去掉 `s_show` / `m_show` 上的 kprobe。
-- 解析 `kallsyms_op.show` / `modules_op.show` 后，用 `ksu_patch_text()` 换成模块 wrapper；wrapper 先调用原 show，命中隐藏规则时把 `seq_file->count` 回滚到调用前，达到“这一行不输出”的效果。
-- 旧的 kprobe 结构体保留为 `__maybe_unused`，仅作为参考，不再注册。
+- Removed the kprobes on `s_show` / `m_show`.
+- After resolving `kallsyms_op.show` / `modules_op.show`, replaces them with a module wrapper via `ksu_patch_text()`; the wrapper calls the original show first and, when a hide rule matches, rolls `seq_file->count` back to its pre-call value, achieving the effect of "this line is not emitted".
+- The old kprobe structs are kept as `__maybe_unused` for reference only and are no longer registered.
 
 ## kernel/sus_map.c
 
-- 去掉 `show_map` / `show_smap` 上的 kprobe（它们是 `/proc/<pid>/maps` / `smaps` 的 `seq_operations.show`，被 `seq_read` 间接调用）。
-- 解析 `proc_pid_maps_op` / `proc_pid_smaps_op`，用 `ksu_patch_text()` 换成模块 wrapper；wrapper 先调用原 show，命中规则时回滚 `seq_file->count`。
-- `show_map_vma` 是 `show_map`/`show_smap` 直接调用的内层函数，保留 kprobe，BTI 检查不经过它。
-- 与上游 `28b2e85` 的 `/proc/susfs_map` 合并：两处外层 kprobe 仍跳过，wrapper 改在 `sus_map_register_probes()` 里与新的 `/proc` 节点一起 arm；`map_registered` 与 smaps 告警改看 wrapper 的 arm 状态。
+- Removed the kprobes on `show_map` / `show_smap` (they are the `seq_operations.show` of `/proc/<pid>/maps` / `smaps`, called indirectly by `seq_read`).
+- Resolves `proc_pid_maps_op` / `proc_pid_smaps_op` and replaces them with a module wrapper via `ksu_patch_text()`; the wrapper calls the original show first and rolls `seq_file->count` back when a rule matches.
+- `show_map_vma` is the inner function called directly by `show_map`/`show_smap`; its kprobe is kept, since the BTI check does not go through it.
+- Merged with the upstream `28b2e85` `/proc/susfs_map`: the two outer kprobes are still skipped, and the wrappers are now armed in `sus_map_register_probes()` together with the new `/proc` node; `map_registered` and the smaps warning now track the wrappers' armed state.
 
-## 验证
+## Verification
 
-- 6.18.21 编译：vermagic `6.18.21-4k SMP preempt mod_unload modversions aarch64`；合并版 3,373,024 B，sha256 `c28d54130041a255d56e68fa2c02d2750ed25feb390b3b95fabe3334f1eada9f`。
-- 真机：SUSFS 版本 `v2.3.0`，`susfs supercall: armed via sys_call_table`；`/proc/kallsyms` / `/proc/modules` 的 susfs/ksu 行被隐藏；`/proc/susfs_*` 规则节点正常；普通 `reboot(2)` 走原函数返回 `EINVAL`，无 BTI。
-- sus_map：app 进程映射测试文件后读 `/proc/self/maps` 与 `/proc/self/smaps`，两处映射行都被隐藏（dmesg `hid show_map` / `hid show_smap`），无 BTI。
-- 规则矩阵：sus_path / kstat / open_redirect / hide_modules / sus_map / uname / opath / enable_log / avc_spoof 通过；详见 `../susfs-tools/README.md`。
-- 合并版真机复核（2026-10-27）：热替换加载正常、版本握手 v2.3.0；`/proc/susfs_map` 规则对 uid 10000 隐藏 maps/smaps；打开 BakaSU 管理器无 BTI/Oops。
-- **wrapper 的 CFI**：所有间接调用内核原函数的 wrapper 加 `__nocfi`，通过维护者的 `cfi_sites.py` 门禁。
-- **init 函数 BTI**：`susfs_self_hide_nodes` 原是 static，编译器不给 landing pad；模块装载位置变化触发 linker veneer 时会 `Oops - BTI`。改为全局符号后入口生成 `bti c`。
-- show wrapper 加固（review 后）：saved original 先于 wrapper 指针发布并 `smp_wmb()`；卸载恢复后 `susfs_fp_drain()` 再清指针；隐藏判定前移，去掉 `seq_file->count` 回滚。真机复核：加载/规则/`rmmod` 正常。
+- 6.18.21 build: vermagic `6.18.21-4k SMP preempt mod_unload modversions aarch64`; merged build 3,373,024 B, sha256 `c28d54130041a255d56e68fa2c02d2750ed25feb390b3b95fabe3334f1eada9f`.
+- On-device: SUSFS version `v2.3.0`, `susfs supercall: armed via sys_call_table`; the susfs/ksu lines in `/proc/kallsyms` / `/proc/modules` are hidden; the `/proc/susfs_*` rule nodes work normally; a plain `reboot(2)` goes through the original function and returns `EINVAL`, with no BTI.
+- sus_map: after an app process maps a test file, reading `/proc/self/maps` and `/proc/self/smaps` hides the mapping line in both places (dmesg `hid show_map` / `hid show_smap`), with no BTI.
+- Rule matrix: sus_path / kstat / open_redirect / hide_modules / sus_map / uname / opath / enable_log / avc_spoof pass; see `../susfs-tools/README.md` for details.
+- Merged build re-checked on-device (2026-10-27): hot-replace loading works, version handshake v2.3.0; the `/proc/susfs_map` rule hides maps/smaps from uid 10000; opening the BakaSU manager produces no BTI/Oops.
+- **Wrapper CFI**: every wrapper that indirectly calls an original kernel function is marked `__nocfi`, passing the maintainer's `cfi_sites.py` gate.
+- **init function BTI**: `susfs_self_hide_nodes` was static, so the compiler emitted no landing pad; when a change in module load address triggered a linker veneer it produced `Oops - BTI`. Made a global symbol, its entry now generates `bti c`.
+- show wrapper hardening (after review): the saved original is published before the wrapper pointer, with `smp_wmb()`; on unload the pointers are cleared after restoring, via `susfs_fp_drain()`; the hide decision was moved earlier and the `seq_file->count` rollback removed. Re-checked on-device: loading/rules/`rmmod` all work.
 
-## openat2 wrapper 加固（2026-10-28）
+## openat2 wrapper hardening (2026-10-28)
 
-一次真机 Oops（`lr : susfs_opath_openat2+0x48/0xac`，`pc` 为用户态指针）定位到 `susfs_or_entry_hook` 被写成了野指针。根因是表项残留时新加载会把旧 wrapper 当作 original 继续链接，之后执行到已释放模块的 `.bss`。
+An on-device Oops (`lr : susfs_opath_openat2+0x48/0xac`, `pc` a userspace pointer) traced to `susfs_or_entry_hook` being written as a wild pointer. The root cause was that, with a stale table entry, a new load chained the old wrapper as the original and later executed into the `.bss` of the already-freed module.
 
-- `susfs_fp_hook.c`：install 前校验表项——必须是该 syscall 的 plain / `.cfi_jt`、其他存活模块的 wrapper、或 `kernel_text_address()` 认可的内核 text；本模块自身、已释放地址、野指针一律 `-EBUSY`。remove 分别还原 native / compat 两表并回读确认，不再因 native 不是我们的而跳过 compat。
-- `susfs_opath.c` / `susfs_or_entry.c`：五个 wrapper 调用前比较 `susfs_or_entry_hook` 与 `or_entry_redirect`，不一致就当作无 hook 继续走 original。
-- `__nocfi noinline` 保持 `cfi_sites.py` 门禁通过；UNDEF 仍为 114，`syms.txt` 全覆盖。
-- 真机：3 轮 `rmmod` / `susfs_insmod` 循环通过，`opath 5/5`、`kstat 14/14`，无 `refusing to chain` / panic。ko 3,456,440 B，sha256 `4c944d3f84b386bb03c0aadb4527c4ec74c12fe511c5511884073160c3a88304`。
+- `susfs_fp_hook.c`: validates the table entry before install — it must be the syscall's plain / `.cfi_jt` entry, a wrapper from another live module, or kernel text accepted by `kernel_text_address()`; this module itself, freed addresses and wild pointers are all rejected with `-EBUSY`. remove restores the native / compat tables separately and reads them back to confirm, no longer skipping compat just because native is not ours.
+- `susfs_opath.c` / `susfs_or_entry.c`: before calling, the five wrappers compare `susfs_or_entry_hook` with `or_entry_redirect`; on mismatch they treat it as no hook and continue to the original.
+- `__nocfi noinline` keeps the `cfi_sites.py` gate passing; UNDEF is still 114, with full coverage in `syms.txt`.
+- On-device: 3 rounds of `rmmod` / `susfs_insmod` cycles pass, `opath 5/5`, `kstat 14/14`, no `refusing to chain` / panic. ko 3,456,440 B, sha256 `4c944d3f84b386bb03c0aadb4527c4ec74c12fe511c5511884073160c3a88304`.
 
-## 已知问题
+## Known issues
 
-- `hide_mounts` 的任意 bind mount 不会被标记（`recorded=0`）；实际挂载隐藏未验证。
-- `hide_modules` 的 `/sys/module/<name>` 对 root 也会隐藏：当前 SukiSU 的 `u:r:ksu:s0` 未被识别为 `su_ctx`。
-- `sus_map` 只对 `susfs_is_current_proc_umounted_app()` 为真的 app 生效；`su` 授予 root 的进程不隐藏（测试时用 uid 10000 的 `su 10000` 可命中）。
+- Arbitrary bind mounts are not marked by `hide_mounts` (`recorded=0`); actual mount hiding is unverified.
+- `hide_modules` also hides `/sys/module/<name>` from root: the current SukiSU `u:r:ksu:s0` is not recognised as `su_ctx`.
+- `sus_map` only takes effect for apps for which `susfs_is_current_proc_umounted_app()` is true; processes granted root via `su` are not hidden (in testing, `su 10000` with uid 10000 hits it).

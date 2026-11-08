@@ -1,56 +1,54 @@
-[English](README.en.md)
-
-[x64设备兼容](https://github.com/ymuuuu/susfs4ksu-lkm-x64)
+[x64 device compatibility](https://github.com/ymuuuu/susfs4ksu-lkm-x64)
 
 # susfs4ksu-lkm
 
-SUSFS 的**可加载内核模块（LKM）移植版**：让 susfs 可以在不用重编译内核的情况下运行 。
+A **loadable kernel module (LKM) port** of SUSFS: it lets susfs run without recompiling the kernel.
 
-## 加载
+## Loading
 
-`.ko` 要选与设备内核对应的那一份，例如 5.15 设备用 `susfs_guard_lkm-android13-5.15.ko`。
+Pick the `.ko` that matches the device kernel, e.g. a 5.15 device uses `susfs_guard_lkm-android13-5.15.ko`.
 
-**KernelSU 设备**：
+**KernelSU devices**:
 
 ```sh
 ksud insmod /data/adb/loader/susfs_guard_lkm.ko
 ```
 
-**非 KernelSU 设备**：用 release 附带的加载器 `susfs_insmod`：
+**Non-KernelSU devices**: use the loader shipped with the release, `susfs_insmod`:
 
 ```sh
 susfs_insmod /data/adb/loader/susfs_guard_lkm.ko
 ```
 
-卸载：
+Unload:
 
 ```sh
 rmmod susfs_guard_lkm
 ```
 
-## 作为 KernelSU 模块刷入
+## Flashing as a KernelSU module
 
-想免去手动选 `.ko`，每个 release 还附带打包好的模块 `susfs_guard_lkm-module-<tag>-arm64.zip`：在 KernelSU 管理器里刷入、重启即可。模块会按设备内核（`/proc/sys/kernel/osrelease`）自动选择并加载对应的 `.ko`（带 `expose_proc=1`），只负责加载、不设任何 susfs 规则；若系统已存在 susfs 则跳过。仅 arm64、仅 KernelSU 系管理器。`expose_proc=1` 会建立 `/proc/susfs_*` 控制节点，sus 规则通过这些节点下发。要移除：在管理器里停用或删除本模块（重启后生效），或 `rmmod susfs_guard_lkm` 当场卸载。
+To skip picking the `.ko` by hand, each release also ships a pre-packaged module, `susfs_guard_lkm-module-<tag>-arm64.zip`: flash it in the KernelSU manager and reboot. The module automatically selects and loads the matching `.ko` for the device kernel (`/proc/sys/kernel/osrelease`) (with `expose_proc=1`); it only loads the module and sets no susfs rules, and skips if susfs is already present. arm64 only, KernelSU-family managers only. `expose_proc=1` creates the `/proc/susfs_*` control nodes, through which sus rules are issued. To remove: disable or delete this module in the manager (takes effect after a reboot), or `rmmod susfs_guard_lkm` to unload it immediately.
 
-默认在模块的 `post-fs-data` 阶段加载。若需提前到公共 `post-fs-data.d` 阶段，以 root 执行：
+By default it loads during the module's `post-fs-data` stage. To load earlier instead, in the shared `post-fs-data.d` stage, run as root:
 
 ```sh
 touch /data/adb/modules/susfs_guard_lkm/early_load
 ```
 
-重启后生效。删除该文件并重启可恢复默认加载；升级会保留此设置。两个阶段共用加载器，已有 SUSFS 时跳过，并遵守安全模式和模块停用/删除标记。卸载只移除本模块拥有的公共脚本，不会当场卸载正在运行的 LKM。
+Takes effect after a reboot. Deleting the file and rebooting restores the default loading; upgrades preserve this setting. Both stages share the loader, skip when SUSFS is already present, and honour safe mode and the module disabled/deleted markers. Uninstalling only removes the shared scripts owned by this module; it does not unload a running LKM on the spot.
 
-当 SUSFS 规则或原始 kstat 快照必须在模块 post-fs-data 脚本和挂载之前配置时，请启用提前加载。这样可以及时提供 SUSFS 接口，让这些操作在所需的启动阶段执行。如果管理器在公共脚本之前应用 SUSFS 设置，仍需更早的加载阶段。模块只负责加载 LKM，设置由管理器应用。
+Enable early loading when SUSFS rules or raw kstat snapshots must be configured before the module's post-fs-data script and mounts. This makes the SUSFS interfaces available in time, so those operations can run in the boot stage they require. If the manager applies SUSFS settings before the shared scripts, an even earlier loading stage is still needed. The module only loads the LKM; settings are applied by the manager.
 
-## 接口文档
+## Interface documentation
 
-全部 `/proc` 控制节点，见 **[PROC_INTERFACES.md](PROC_INTERFACES.md)**。
+All `/proc` control nodes: see **[PROC_INTERFACES.md](PROC_INTERFACES.md)**.
 
 ## License
 
-GPL-2.0，见 [LICENSE](LICENSE)。移植来源：[susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu)（功能逻辑与 hook 点）、
-[SukiSU-Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)（`patch_memory` / `lsm_hook` / `symbol_resolver`）。
+GPL-2.0, see [LICENSE](LICENSE). Ported from: [susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu) (feature logic and hook points),
+[SukiSU-Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra) (`patch_memory` / `lsm_hook` / `symbol_resolver`).
 
-## 免责声明
+## Disclaimer
 
-仅用于技术研究与学习。在自担风险的前提下使用。
+For technical research and study only. Use at your own risk.
