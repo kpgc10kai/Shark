@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About / credits -->
+    <string name="about_credit_self">Shark（本项目）</string>
+    <string name="about_code_self">项目自研代码</string>
+    <string name="about_third_party">第三方来源、署名与声明</string>
+    <string name="about_kernel_modules">随 App 分发的内核模块</string>
+    <string name="about_mit_reference">MIT 许可的参考实现</string>
+    <string name="about_credit_note">App 图标由本项目绘制；第三方组件版权归各自作者所有，完整许可见「开放源代码许可」。</string>
+
+    <!-- Common -->
+    <string name="unknown">未知</string>
+    <string name="back">返回</string>
+    <string name="close">关闭</string>
+    <string name="retry">重试</string>
+    <string name="download">下载</string>
+    <string name="ok">确定</string>
+    <string name="delete">删除</string>
+    <string name="export">导出</string>
+    <string name="export_log">导出日志</string>
+    <string name="later">稍后</string>
+    <string name="install">安装</string>
+
+    <!-- Tabs -->
+    <string name="tab_home">首页</string>
+    <string name="tab_logs">日志</string>
+    <string name="tab_history">历史</string>
+    <string name="tab_about">关于</string>
+
+    <!-- Update check -->
+    <string name="checking_updates">正在检查更新…</string>
+    <string name="up_to_date">已是最新版本</string>
+    <string name="update_check_failed">检查更新失败，请稍后重试</string>
+    <string name="check_updates">检查更新</string>
+    <string name="update_found">发现新版本 %1$s</string>
+    <string name="latest_version">最新版本 %1$s</string>
+    <string name="no_changelog">无更新说明</string>
+    <string name="update_downloading">下载中 %1$d%%</string>
+    <string name="update_now">立即更新</string>
+    <string name="version_source">当前 %1$s  ·  来源 %2$s</string>
+    <string name="signature_mismatch">安装包签名与当前应用不一致</string>
+    <string name="installer_failed">无法启动安装器：%1$s</string>
+    <string name="allow_unknown_sources">请允许安装未知应用后再次点击安装</string>
+    <string name="open_browser_download">打开浏览器下载</string>
+    <string name="download_failed">下载失败</string>
+    <string name="unknown_size">未知大小</string>
+    <string name="current_version">当前 v%1$s</string>
+
+    <!-- Droidspaces -->
+    <string name="droidspaces_support">Droidspaces 支持</string>
+    <string name="droidspaces_summary">下载最新的 droidspaces_lkm 模块，保存到 Download/Shark，之后到 KernelSU 管理器刷入。</string>
+    <string name="droidspaces_module">Droidspaces 模块</string>
+    <string name="download_module">下载模块</string>
+    <string name="fetching_release">正在获取最新 release…</string>
+    <string name="release_fetch_failed">获取最新 release 失败</string>
+    <string name="droidspaces_downloading">下载中 %1$d%%</string>
+    <string name="saved_to">已保存到：</string>
+    <string name="droidspaces_flash_hint">请到 KernelSU 管理器 → 模块 → 安装，选择该文件刷入。</string>
+    <string name="open_kernelsu">打开 KernelSU</string>
+
+    <!-- Root status -->
+    <string name="backend_authorized">%1$s 已授权</string>
+    <string name="backend_not_authorized">%1$s 未授权</string>
+    <string name="connected_ready">已连接到 %1$s，可尝试越狱</string>
+    <string name="not_connected">未连接到 %1$s，请授予权限</string>
+    <string name="running">运行中…</string>
+    <string name="stellar_not_running">Stellar 未运行（点击打开）</string>
+    <string name="grant_shizuku">授权 Shizuku</string>
+    <string name="verify_or_reroot">校验 / 再次越狱</string>
+    <string name="one_click_root">一键越狱</string>
+
+    <!-- Home / settings -->
+    <string name="root_manager">ROOT管理器</string>
+    <string name="extras">拓展功能</string>
+    <string name="manual">使用手册</string>
+    <string name="manual_summary">首次使用、功能说明与异常处理</string>
+    <string name="kernel_version">内核版本</string>
+    <string name="exploit_method">漏洞利用方式</string>
+    <string name="device_model">设备型号</string>
+    <string name="system_fingerprint">系统指纹</string>
+    <string name="selinux_status">SELinux 状态</string>
+    <string name="after_root_disable_popup">越狱后禁用安全弹窗</string>
+    <string name="after_root_soft_reboot">越狱后软重启</string>
+    <string name="after_root_unload_guard">越狱后卸载内核安全防护</string>
+    <string name="susfs_support">SUSFS 支持</string>
+    <string name="vfs_support">VFS 支持</string>
+    <string name="manager_hot_switch">管理器热切换</string>
+
+    <!-- Logs / history -->
+    <string name="no_logs">暂无日志</string>
+    <string name="no_history">暂无记录</string>
+    <string name="success_duration">成功 %1$s</string>
+    <string name="success">成功</string>
+    <string name="failure_duration">失败 %1$s</string>
+    <string name="failure">失败</string>
+    <string name="in_progress">进行中</string>
+    <string name="switch_failed">切换失败：rc=%1$d %2$s</string>
+    <string name="manual_load_failed"># 使用手册\n\n手册内容读取失败。</string>
+
+    <!-- SELinux -->
+    <string name="selinux_enforcing">强制执行 (Enforcing)</string>
+    <string name="selinux_permissive">宽容模式 (Permissive)</string>
+    <string name="selinux_disabled">已禁用</string>
+
+    <!-- About -->
+    <string name="view_source">查看源代码</string>
+    <string name="view_source_summary">在 GitHub 上查看源代码</string>
+    <string name="join_community">加入社区</string>
+    <string name="join_qq">加入 QQ 群</string>
+    <string name="feedback">问题反馈</string>
+    <string name="feedback_summary">在 GitHub Issues 提交问题</string>
+    <string name="support_dev">支持开发者</string>
+    <string name="support_summary">微信 / 支付宝赞赏二维码</string>
+    <string name="wechat_tip">微信赞赏</string>
+    <string name="alipay">支付宝</string>
+    <string name="licenses">开放源代码许可</string>
+    <string name="licenses_summary">查看本应用所使用的第三方开源库及其许可证信息</string>
+    <string name="license_text_missing">未声明许可证文本</string>
+    <string name="license_text_not_bundled">未内置许可证文本</string>
+    <string name="visit_homepage">访问主页</string>
+    <string name="section_this_app">本项目与附加组件</string>
+    <string name="third_party_deps">第三方依赖</string>
+    <string name="third_party_deps_count">第三方依赖（%1$d）</string>
+</resources>
