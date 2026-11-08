@@ -551,11 +551,12 @@ class MainActivity : ComponentActivity() {
         TopAppBar(
             title = {
                 if (large) {
-                    // 1.5x the PageTitle size: the home header is the app title.
-                    // BasicText does not inherit the COUI content colour, so set it.
+                    // 1.5x the PageTitle size, then trimmed to 90%: the home
+                    // header is the app title. BasicText does not inherit the
+                    // COUI content colour, so set it explicitly.
                     val style = rememberCouiTextStyle(CouiTextKind.PageTitle).copy(
-                        fontSize = 48.sp,
-                        lineHeight = 52.sp,
+                        fontSize = 43.sp,
+                        lineHeight = 47.sp,
                         color = CouiTheme.colorScheme.onSurface
                     )
                     BasicText(
@@ -1299,7 +1300,7 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 0.dp)
                 .clip(CouiShape(28.dp, 2f))
                 .background(if (busy) colors.disabled else scheme.accent)
                 .clickable(enabled = !busy, role = Role.Button) {
