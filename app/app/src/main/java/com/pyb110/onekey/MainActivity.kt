@@ -550,13 +550,27 @@ class MainActivity : ComponentActivity() {
     private fun AppTopBar(title: String, onBack: (() -> Unit)? = null, large: Boolean = false) {
         TopAppBar(
             title = {
-                Text(
-                    text = title,
-                    kind = if (large) CouiTextKind.PageTitle else CouiTextKind.Toolbar,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Start
-                )
+                if (large) {
+                    // 1.5x the PageTitle size: the home header is the app title.
+                    val style = rememberCouiTextStyle(CouiTextKind.PageTitle).copy(
+                        fontSize = 48.sp,
+                        lineHeight = 52.sp
+                    )
+                    BasicText(
+                        text = title,
+                        style = style,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                } else {
+                    Text(
+                        text = title,
+                        kind = CouiTextKind.Toolbar,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Start
+                    )
+                }
             },
             navigationIcon = { if (onBack != null) CouiBackButton(onBack) }
         )
@@ -1283,7 +1297,7 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
                 .clip(CouiShape(28.dp, 2f))
                 .background(if (busy) colors.disabled else scheme.accent)
                 .clickable(enabled = !busy, role = Role.Button) {
@@ -1296,7 +1310,7 @@ class MainActivity : ComponentActivity() {
                         else -> runFlow()
                     }
                 }
-                .padding(vertical = 16.dp),
+                .padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
