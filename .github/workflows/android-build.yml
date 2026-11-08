@@ -29,8 +29,19 @@ jobs:
           # compileSdk 37.0 is published as "platforms;android-37.0"
           "$SDKMANAGER" "platforms;android-37.0" "build-tools;37.0.0" "platform-tools"
 
+      - uses: gradle/actions/setup-gradle@v4
+
       - name: Assemble debug APK
         working-directory: app
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleDebug --no-daemon --stacktrace
+          for attempt in 1 2 3; do
+            echo "::group::attempt $attempt"
+            if ./gradlew :app:assembleDebug --no-daemon --stacktrace; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            sleep 15
+          done
+          exit 1
