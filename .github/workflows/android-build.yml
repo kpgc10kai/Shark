@@ -35,17 +35,23 @@ jobs:
         working-directory: app
         run: |
           chmod +x gradlew
-          # gradle-9.7.1-bin.zip is currently unavailable on the CDN (HTTP 504);
-          # 9.7.0 is the closest downloadable build. CI only - the repo keeps 9.7.1.
-          sed -i 's/gradle-9\.7\.1-bin\.zip/gradle-9.7.0-bin.zip/' gradle/wrapper/gradle-wrapper.properties
-          cat gradle/wrapper/gradle-wrapper.properties | grep distributionUrl
-          for attempt in 1 2 3; do
-            echo "::group::attempt $attempt"
+          # services.gradle.org currently answers 504 for these distributions,
+          # and the wrapper pins gradle-9.7.1 whose CDN object is missing.
+          # CI-only: swap in a mirror of 9.7.0, trying several hosts.
+          URLS=(
+            "https://mirrors.cloud.tencent.com/gradle/gradle-9.7.0-bin.zip"
+            "https://mirrors.huaweicloud.com/gradle/gradle-9.7.0-bin.zip"
+            "https://services.gradle.org/distributions/gradle-9.7.0-bin.zip"
+          )
+          for url in "${URLS[@]}"; do
+            echo "::group::try $url"
+            sed -i -E "s|^distributionUrl=.*|distributionUrl=${url}|" gradle/wrapper/gradle-wrapper.properties
             if ./gradlew :app:assembleDebug --no-daemon --stacktrace; then
               echo "::endgroup::"
               exit 0
             fi
             echo "::endgroup::"
-            sleep 15
+            sleep 10
           done
+          echo "all Gradle distributions failed"
           exit 1
