@@ -169,6 +169,7 @@ import com.itos.coui.theme.CouiTheme
 import com.itos.coui.theme.LocalCouiContentColor
 import com.itos.coui.topappbar.TopAppBar
 import com.itos.coui.topappbar.TopAppBarButton
+import android.content.Context
 
 private const val PROJECT_URL = "https://github.com/Yunnijian/Shark"
 
@@ -197,29 +198,29 @@ private data class LocalLicense(
 
 private val localLicenses = listOf(
     LocalLicense(
-        "Shark（本项目）",
-        "项目自研代码",
+        "Shark (this project)",
+        "Project's own code",
         "GPL-3.0",
         "licenses/GPL-3.0.txt",
         "https://www.gnu.org/licenses/gpl-3.0.html"
     ),
     LocalLicense(
         "NOTICE",
-        "第三方来源、署名与声明",
+        "Third-party sources, attribution and notices",
         "NOTICE",
         "licenses/NOTICE.txt",
         null
     ),
     LocalLicense(
         "SUSFS guard / Hybrid Mount",
-        "随 App 分发的内核模块",
+        "Kernel modules shipped with the app",
         "GPL-2.0",
         "licenses/GPL-2.0.txt",
         "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
     ),
     LocalLicense(
         "AzirX1337 CVE-2026-98260",
-        "MIT 许可的参考实现",
+        "MIT-licensed reference implementation",
         "MIT",
         "licenses/MIT.txt",
         "https://github.com/AzirX1337/CVE-2026-98260-OnePlus16-PYB110-Jailbreak"
@@ -246,9 +247,9 @@ class MainActivity : ComponentActivity() {
     private var ksuActive by mutableStateOf(false)
     private var exploit by mutableStateOf(ExploitKind.CVE98260)
     private var manager by mutableStateOf(ManagerKind.KERNELSU)
-    private var kernelVersion by mutableStateOf("未知")
-    private var deviceModel by mutableStateOf("未知")
-    private var selinuxText by mutableStateOf("未知")
+    private var kernelVersion by mutableStateOf("")
+    private var deviceModel by mutableStateOf("")
+    private var selinuxText by mutableStateOf("")
     private var antiRootGuard by mutableStateOf(true)
     private var softRebootAfter by mutableStateOf(false)
     private var unloadGuard by mutableStateOf(true)
@@ -332,7 +333,7 @@ class MainActivity : ComponentActivity() {
 
     private fun checkForUpdatesManually() {
         if (updateDownloading) return
-        Toast.makeText(this, "正在检查更新…", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.checking_updates), Toast.LENGTH_SHORT).show()
         lifecycleScope.launch {
             when (val result = runCatching {
                 UpdateChecker.check(applicationContext)
@@ -344,10 +345,10 @@ class MainActivity : ComponentActivity() {
                     updateDialogVisible = true
                 }
                 UpdateCheckResult.UpToDate -> {
-                    Toast.makeText(this@MainActivity, "已是最新版本", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.up_to_date), Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    Toast.makeText(this@MainActivity, "检查更新失败，请稍后重试", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.update_check_failed), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -369,7 +370,7 @@ class MainActivity : ComponentActivity() {
             runCatching { DroidspacesModule.latest() }
                 .onSuccess { droidspacesRelease = it }
                 .onFailure {
-                    droidspacesError = it.message ?: "获取最新 release 失败"
+                    droidspacesError = it.message ?: getString(R.string.release_fetch_failed)
                 }
             droidspacesLoading = false
         }
@@ -389,14 +390,14 @@ class MainActivity : ComponentActivity() {
             }.onSuccess {
                 droidspacesSavedPath = it
             }.onFailure {
-                droidspacesError = it.message ?: "下载失败"
+                droidspacesError = it.message ?: getString(R.string.download_failed)
             }
             droidspacesDownloading = false
         }
     }
 
     private fun formatSize(bytes: Long): String = when {
-        bytes <= 0 -> "未知大小"
+        bytes <= 0 -> getString(R.string.unknown_size)
         bytes >= 1024 * 1024 -> "%.2f MB".format(bytes / 1024.0 / 1024.0)
         else -> "%.0f KB".format(bytes / 1024.0)
     }
@@ -432,7 +433,7 @@ class MainActivity : ComponentActivity() {
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)
         val savedManager = getSharedPreferences("pyb110", MODE_PRIVATE).getString("manager", null)
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
-        kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault("未知")
+        kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault("")
         exploit = when {
             kernelVersion == V2505A_KERNEL_RELEASE &&
                 Build.MANUFACTURER.equals("vivo", ignoreCase = true) -> ExploitKind.CVE2505A
@@ -479,7 +480,7 @@ class MainActivity : ComponentActivity() {
                     showManual -> AppTopBar(stringResource(R.string.manual), onBack = { showManual = false })
                     tab == AppTab.ABOUT && aboutPage == AboutPage.LICENSES ->
                         AppTopBar(stringResource(R.string.licenses), onBack = { aboutPage = AboutPage.HOME })
-                    else -> AppTopBar(if (tab == AppTab.HOME) "Shark" else tab.label)
+                    else -> AppTopBar(if (tab == AppTab.HOME) "Shark" else stringResource(tab.labelRes))
                 }
             },
             bottomBar = {
@@ -595,7 +596,7 @@ class MainActivity : ComponentActivity() {
             NavigationBar(
                 modifier = Modifier.fillMaxWidth(),
                 renderer = renderer,
-                items = AppTab.entries.map { CouiNavigationItem(it.label, it.icon, it.icon) },
+                items = AppTab.entries.map { CouiNavigationItem(stringResource(it.labelRes), it.icon, it.icon) },
                 selectedIndex = selected.ordinal,
                 dark = CouiTheme.isDark,
                 onSelection = { onSelect(AppTab.entries[it]) }
@@ -605,7 +606,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /* API 33 上底栏浮动材质不可用，使用同一套 COUI 配色的平铺栏位。 */
+    /* Floating bottom-bar material is unavailable on API 33, so use flat slots with the same COUI palette. */
     @Composable
     private fun PlainBottomBar(selected: AppTab, onSelect: (AppTab) -> Unit) {
         val dark = CouiTheme.isDark
@@ -638,7 +639,7 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppIcon(entry.icon, null, Modifier.size(24.dp), tint = tint)
-                    Text(text = entry.label, kind = CouiTextKind.Category, color = tint)
+                    Text(text = stringResource(entry.labelRes), kind = CouiTextKind.Category, color = tint)
                 }
             }
         }
@@ -674,8 +675,8 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * 统一设置行：图标 + 标题 + 可选摘要 + 尾部内容。
-     * onClick 为空的行走只读装配，交互由尾部控件负责。
+     * Shared settings row: icon + title + optional summary + trailing content.
+     * Rows with a null onClick are read-only assemblies; the trailing control handles interaction.
      */
     @Composable
     private fun SettingItem(
@@ -803,7 +804,7 @@ class MainActivity : ComponentActivity() {
         val accent = scheme.accent
         val confirm = when {
             droidspacesDownloading -> CouiDialogAction(
-                text = "下载中 ${(droidspacesProgress * 100).toInt()}%",
+                text = stringResource(R.string.droidspaces_downloading, (droidspacesProgress * 100).toInt()),
                 onClick = {},
                 enabled = false
             )
@@ -856,14 +857,14 @@ class MainActivity : ComponentActivity() {
                         textAlign = TextAlign.Start
                     )
                     release == null -> Text(
-                        text = droidspacesError ?: "获取最新 release 失败",
+                        text = droidspacesError ?: stringResource(R.string.release_fetch_failed),
                         kind = CouiTextKind.Body,
                         color = scheme.onSurfaceVariant,
                         textAlign = TextAlign.Start
                     )
                     else -> {
                         Text(
-                            text = "最新版本 ${release.version}",
+                            text = stringResource(R.string.latest_version, release.version),
                             kind = CouiTextKind.PreferenceTitle,
                             color = scheme.onSurface,
                             textAlign = TextAlign.Start
@@ -877,7 +878,7 @@ class MainActivity : ComponentActivity() {
                         )
                         Spacer(Modifier.height(12.dp))
                         if (savedPath == null) {
-                            DialogBody(release.changelog.ifBlank { "无更新说明" })
+                            DialogBody(if (release.changelog.isBlank()) stringResource(R.string.no_changelog) else release.changelog)
                         } else {
                             Text(
                                 text = stringResource(R.string.saved_to),
@@ -916,7 +917,7 @@ class MainActivity : ComponentActivity() {
                         if (droidspacesDownloading) {
                             Spacer(Modifier.height(12.dp))
                             Text(
-                                text = "正在下载 ${(droidspacesProgress * 100).toInt()}%",
+                                text = stringResource(R.string.droidspaces_downloading, (droidspacesProgress * 100).toInt()),
                                 kind = CouiTextKind.Body,
                                 color = scheme.onSurface,
                                 textAlign = TextAlign.Start
@@ -932,7 +933,7 @@ class MainActivity : ComponentActivity() {
 
     private fun installApk(file: File): Boolean {
         if (!packageManager.canRequestPackageInstalls()) {
-            Toast.makeText(this, "请允许安装未知应用后再次点击安装", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.allow_unknown_sources), Toast.LENGTH_LONG).show()
             runCatching {
                 startActivity(
                     Intent(
@@ -952,7 +953,7 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
             true
         }.getOrElse {
-            updateError = "无法启动安装器：${it.message}"
+            updateError = getString(R.string.installer_failed, it.message)
             false
         }
     }
@@ -967,12 +968,12 @@ class MainActivity : ComponentActivity() {
         val accent = scheme.accent
         Dialog(
             onDismissRequest = { if (!updateDownloading) updateDialogVisible = false },
-            title = "发现新版本 ${info.version}",
+            title = stringResource(R.string.update_found, info.version),
             confirmAction = CouiDialogAction(
                 text = when {
-                    updateDownloading -> "下载中 ${(updateProgress * 100).toInt()}%"
-                    pendingApk != null -> "安装"
-                    else -> "立即更新"
+                    updateDownloading -> stringResource(R.string.update_downloading, (updateProgress * 100).toInt())
+                    pendingApk != null -> stringResource(R.string.install)
+                    else -> stringResource(R.string.update_now)
                 },
                 onClick = {
                     val ready = pendingApk
@@ -990,13 +991,13 @@ class MainActivity : ComponentActivity() {
                             result.onSuccess { file ->
                                 if (!UpdateChecker.verifySignature(context, file)) {
                                     file.delete()
-                                    updateError = "安装包签名与当前应用不一致"
+                                    updateError = getString(R.string.signature_mismatch)
                                 } else {
                                     pendingApk = file
                                     if (installApk(file)) updateDialogVisible = false
                                 }
                             }.onFailure {
-                                updateError = it.message ?: "下载失败"
+                                updateError = it.message ?: getString(R.string.download_failed)
                             }
                         }
                     }
@@ -1006,7 +1007,7 @@ class MainActivity : ComponentActivity() {
                 colors = CouiDialogDefaults.primaryActionColors(accent)
             ),
             dismissAction = CouiDialogAction(
-                text = "稍后",
+                text = stringResource(R.string.later),
                 onClick = { updateDialogVisible = false },
                 enabled = !updateDownloading
             ),
@@ -1018,7 +1019,7 @@ class MainActivity : ComponentActivity() {
                     .padding(horizontal = CouiDialogDefaults.contentPadding)
             ) {
                 Text(
-                    text = "当前 ${BuildConfig.VERSION_NAME}  ·  来源 ${info.source}",
+                    text = stringResource(R.string.version_source, BuildConfig.VERSION_NAME, info.source),
                     kind = CouiTextKind.PreferenceSummary,
                     color = scheme.onSurfaceVariant,
                     textAlign = TextAlign.Start
@@ -1026,7 +1027,7 @@ class MainActivity : ComponentActivity() {
                 if (updateDownloading) {
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text = "正在下载 ${(updateProgress * 100).toInt()}%",
+                        text = stringResource(R.string.update_downloading, (updateProgress * 100).toInt()),
                         kind = CouiTextKind.Body,
                         color = scheme.onSurface,
                         textAlign = TextAlign.Start
@@ -1035,7 +1036,7 @@ class MainActivity : ComponentActivity() {
                     CouiProgressBar(updateProgress)
                 } else {
                     Spacer(Modifier.height(12.dp))
-                    DialogBody(info.changelog.ifBlank { "无更新说明" })
+                    DialogBody(if (info.changelog.isBlank()) stringResource(R.string.no_changelog) else info.changelog)
                     updateError?.let {
                         Spacer(Modifier.height(8.dp))
                         Text(
@@ -1044,7 +1045,7 @@ class MainActivity : ComponentActivity() {
                             color = Color(0xFFD32F2F),
                             textAlign = TextAlign.Start
                         )
-                        DialogLink("打开浏览器下载") { uriHandler.openUri(info.pageUrl) }
+                        DialogLink(stringResource(R.string.open_browser_download)) { uriHandler.openUri(info.pageUrl) }
                     }
                 }
             }
@@ -1181,7 +1182,7 @@ class MainActivity : ComponentActivity() {
                                         textAlign = TextAlign.Start
                                     )
                                     BasicText(
-                                        text = body ?: "未内置许可证文本",
+                                        text = body ?: stringResource(R.string.license_text_not_bundled),
                                         style = rememberCouiTextStyle(CouiTextKind.Body).copy(
                                             fontFamily = FontFamily.Monospace,
                                             fontSize = 12.sp,
@@ -1194,7 +1195,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 item.website?.let { url ->
-                    DialogLink("访问主页") { uriHandler.openUri(url) }
+                    DialogLink(stringResource(R.string.visit_homepage)) { uriHandler.openUri(url) }
                 }
             }
         }
@@ -1249,15 +1250,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column {
                         Text(
-                            text = if (granted) "$backendName 已授权" else "$backendName 未授权",
+                            text = if (granted) stringResource(R.string.backend_authorized, backendName) else stringResource(R.string.backend_not_authorized, backendName),
                             kind = CouiTextKind.PageTitle,
                             color = colors.title,
                             textAlign = TextAlign.Start
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = if (granted) "已连接到 $backendName，可尝试越狱"
-                            else "未连接到 $backendName，请授予权限",
+                            text = if (granted) stringResource(R.string.connected_ready, backendName)
+                            else stringResource(R.string.not_connected, backendName),
                             kind = CouiTextKind.Body,
                             color = colors.title,
                             textAlign = TextAlign.Start
@@ -1283,11 +1284,11 @@ class MainActivity : ComponentActivity() {
     private fun PrimaryActionCard() {
         val colors = CouiPageDefaults.themeColors()
         val label = when {
-            busy -> "运行中…"
-            !binderReady -> "Stellar 未运行（点击打开）"
-            !authorized -> "授权 Shizuku"
-            ksuActive -> "校验 / 再次越狱"
-            else -> "一键越狱"
+            busy -> stringResource(R.string.running)
+            !binderReady -> stringResource(R.string.stellar_not_running)
+            !authorized -> stringResource(R.string.grant_shizuku)
+            ksuActive -> stringResource(R.string.verify_or_reroot)
+            else -> stringResource(R.string.one_click_root)
         }
         Group {
             Item(
@@ -1530,7 +1531,7 @@ class MainActivity : ComponentActivity() {
         val markdown = remember {
             runCatching {
                 context.assets.open("manual.md").bufferedReader().use { it.readText() }
-            }.getOrElse { "# 使用手册\n\n手册内容读取失败。" }
+            }.getOrElse { "# Manual\n\nThe manual could not be loaded." }
         }
         val blocks = remember(markdown) { parseManualMarkdown(markdown) }
         val codeBackground = CouiTheme.colorScheme.onSurface.copy(alpha = 0.08f)
@@ -1562,7 +1563,7 @@ class MainActivity : ComponentActivity() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "暂无日志",
+                    text = stringResource(R.string.no_logs),
                     kind = CouiTextKind.Body,
                     color = scheme.onSurfaceVariant
                 )
@@ -1606,7 +1607,7 @@ class MainActivity : ComponentActivity() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "暂无记录",
+                    text = stringResource(R.string.no_history),
                     kind = CouiTextKind.Body,
                     color = scheme.onSurfaceVariant
                 )
@@ -1656,7 +1657,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    /* 条目右侧滑出导出操作；卡片本体使用 COUI 卡片配色与列表按压反馈。 */
+    /* The export action slides out on the right; the card itself uses COUI card colors and list press feedback. */
     @Composable
     private fun HistoryEntryCard(entry: HistoryEntry, onClick: () -> Unit, onExport: () -> Unit) {
         val scheme = CouiTheme.colorScheme
@@ -1777,7 +1778,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     Text(
-                        text = historyValue(entry),
+                        text = historyValue(LocalContext.current, entry),
                         kind = CouiTextKind.PreferenceSummary,
                         color = colors.summary,
                         maxLines = 1,
@@ -1845,7 +1846,7 @@ class MainActivity : ComponentActivity() {
                 SelectionContainer {
                     Box(modifier = Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState())) {
                         BasicText(
-                            text = text.ifEmpty { "暂无日志" },
+                            text = if (text.isEmpty()) stringResource(R.string.no_logs) else text,
                             style = rememberCouiTextStyle(CouiTextKind.Body).copy(
                                 fontFamily = FontFamily.Monospace,
                                 fontSize = 13.sp,
@@ -1890,20 +1891,20 @@ class MainActivity : ComponentActivity() {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 runCatching {
-                    startActivity(Intent.createChooser(send, "导出日志"))
+                    startActivity(Intent.createChooser(send, getString(R.string.export_log)))
                 }.onFailure { addLog("Failed to open share sheet: $it") }
             }
         }
     }
 
-    private fun historyValue(e: HistoryEntry): String {
+    private fun historyValue(ctx: Context, e: HistoryEntry): String {
         val dur = e.durationMs?.let { String.format(java.util.Locale.US, "%.1fs", it / 1000.0) }
         return when {
-            e.result == "SUCCESS" && dur != null -> "成功 $dur"
-            e.result == "SUCCESS" -> "成功"
-            e.result == "FAIL" && dur != null -> "失败 $dur"
-            e.result == "FAIL" -> "失败"
-            else -> "进行中"
+            e.result == "SUCCESS" && dur != null -> ctx.getString(R.string.success_duration, dur)
+            e.result == "SUCCESS" -> ctx.getString(R.string.success)
+            e.result == "FAIL" && dur != null -> ctx.getString(R.string.failure_duration, dur)
+            e.result == "FAIL" -> ctx.getString(R.string.failure)
+            else -> ctx.getString(R.string.in_progress)
         }
     }
 
@@ -2204,7 +2205,7 @@ class MainActivity : ComponentActivity() {
                     selinuxText = se
                 }
             } catch (t: Throwable) {
-                // binder 未就绪时静默
+                // stay silent while the binder is not ready
             }
         }
     }
@@ -2218,7 +2219,7 @@ class MainActivity : ComponentActivity() {
             .bufferedReader().readLines()
         p.waitFor()
         val active = lines.getOrNull(0)?.trim() == "YES"
-        val se = mapSelinux(lines.getOrNull(1)?.trim().orEmpty())
+        val se = mapSelinux(this, lines.getOrNull(1)?.trim().orEmpty())
         return active to se
     }
 
@@ -2331,7 +2332,7 @@ class MainActivity : ComponentActivity() {
                         addLog("Manager launch entry not found: $pkg")
                     }
                 } else {
-                    hotSwitchError = "切换失败：rc=$rc ${out.take(120)}"
+                    hotSwitchError = getString(R.string.switch_failed, rc, out.take(120))
                     addLog("Hot switch -> ${kind.fullLabel} failed rc=$rc ${out.take(120)}")
                 }
             }
@@ -2367,7 +2368,7 @@ class MainActivity : ComponentActivity() {
     private fun refreshStaticStateAsync() {
         lifecycleScope.launch(Dispatchers.IO) {
             val raw = getSELinuxStatusRaw()
-            withContext(Dispatchers.Main) { selinuxText = mapSelinux(raw) }
+            withContext(Dispatchers.Main) { selinuxText = mapSelinux(this, raw) }
         }
     }
 
@@ -2390,11 +2391,11 @@ class MainActivity : ComponentActivity() {
         "Unknown"
     }
 
-    private fun mapSelinux(raw: String): String = when (raw) {
-        "Enforcing" -> "强制执行 (Enforcing)"
-        "Permissive" -> "宽容模式 (Permissive)"
-        "Disabled" -> "已禁用"
-        else -> "未知"
+    private fun mapSelinux(ctx: Context, raw: String): String = when (raw) {
+        "Enforcing" -> ctx.getString(R.string.selinux_enforcing)
+        "Permissive" -> ctx.getString(R.string.selinux_permissive)
+        "Disabled" -> ctx.getString(R.string.selinux_disabled)
+        else -> ctx.getString(R.string.unknown)
     }
 
     private fun shizukuEnv(): Array<String> = arrayOf(
@@ -2538,11 +2539,11 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    private enum class AppTab(val label: String, val icon: ImageVector) {
-        HOME("首页", Icons.Filled.Home),
-        LOGS("日志", Icons.Filled.Notes),
-        HISTORY("历史", Icons.Filled.History),
-        ABOUT("关于", Icons.Filled.Info)
+    private enum class AppTab(val labelRes: Int, val icon: ImageVector) {
+        HOME(R.string.tab_home, Icons.Filled.Home),
+        LOGS(R.string.tab_logs, Icons.Filled.Notes),
+        HISTORY(R.string.tab_history, Icons.Filled.History),
+        ABOUT(R.string.tab_about, Icons.Filled.Info)
     }
 
     private enum class ExploitKind(val fullLabel: String) {
