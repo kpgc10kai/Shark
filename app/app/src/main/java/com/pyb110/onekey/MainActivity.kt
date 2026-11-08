@@ -480,7 +480,10 @@ class MainActivity : ComponentActivity() {
                     showManual -> AppTopBar(stringResource(R.string.manual), onBack = { showManual = false })
                     tab == AppTab.ABOUT && aboutPage == AboutPage.LICENSES ->
                         AppTopBar(stringResource(R.string.licenses), onBack = { aboutPage = AboutPage.HOME })
-                    else -> AppTopBar(if (tab == AppTab.HOME) "Shark" else stringResource(tab.labelRes))
+                    else -> AppTopBar(
+                        title = if (tab == AppTab.HOME) "Shark" else stringResource(tab.labelRes),
+                        large = tab == AppTab.HOME
+                    )
                 }
             },
             bottomBar = {
@@ -544,12 +547,12 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AppTopBar(title: String, onBack: (() -> Unit)? = null) {
+    private fun AppTopBar(title: String, onBack: (() -> Unit)? = null, large: Boolean = false) {
         TopAppBar(
             title = {
                 Text(
                     text = title,
-                    kind = CouiTextKind.Toolbar,
+                    kind = if (large) CouiTextKind.PageTitle else CouiTextKind.Toolbar,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start
@@ -585,25 +588,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AppBottomBar(selected: AppTab, onSelect: (AppTab) -> Unit) {
-        val renderer = remember {
-            if (Build.VERSION.SDK_INT >= 34) {
-                runCatching { CouiFloatingRenderer() }.getOrNull()
-            } else {
-                null
-            }
-        }
-        if (Build.VERSION.SDK_INT >= 34 && renderer != null) {
-            NavigationBar(
-                modifier = Modifier.fillMaxWidth(),
-                renderer = renderer,
-                items = AppTab.entries.map { CouiNavigationItem(stringResource(it.labelRes), it.icon, it.icon) },
-                selectedIndex = selected.ordinal,
-                dark = CouiTheme.isDark,
-                onSelection = { onSelect(AppTab.entries[it]) }
-            )
-        } else {
-            PlainBottomBar(selected = selected, onSelect = onSelect)
-        }
+        // Fixed bar, matching the original layout: the floating COUI material
+        // looked different from the app's own screenshots.
+        PlainBottomBar(selected = selected, onSelect = onSelect)
     }
 
     /* Floating bottom-bar material is unavailable on API 33, so use flat slots with the same COUI palette. */
@@ -1285,6 +1272,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun PrimaryActionCard() {
         val colors = CouiPageDefaults.themeColors()
+        val scheme = CouiTheme.colorScheme
         val label = when {
             busy -> stringResource(R.string.running)
             !binderReady -> stringResource(R.string.stellar_not_running)
@@ -1292,30 +1280,31 @@ class MainActivity : ComponentActivity() {
             ksuActive -> stringResource(R.string.verify_or_reroot)
             else -> stringResource(R.string.one_click_root)
         }
-        Group {
-            Item(
-                onClick = {
-                    if (!busy) {
-                        when {
-                            !binderReady -> {
-                                addLog("Start Stellar or Shizuku first")
-                                PrivService.openManager(applicationContext)
-                            }
-                            !authorized -> PrivService.request(REQ_SHIZUKU)
-                            else -> runFlow()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(CouiShape(28.dp, 2f))
+                .background(if (busy) colors.disabled else scheme.accent)
+                .clickable(enabled = !busy, role = Role.Button) {
+                    when {
+                        !binderReady -> {
+                            addLog("Start Stellar or Shizuku first")
+                            PrivService.openManager(applicationContext)
                         }
+                        !authorized -> PrivService.request(REQ_SHIZUKU)
+                        else -> runFlow()
                     }
-                },
-                enabled = !busy,
-                trailing = { Chevron() }
-            ) {
-                Text(
-                    text = label,
-                    kind = CouiTextKind.SectionTitle,
-                    color = if (busy) colors.disabled else colors.accent,
-                    textAlign = TextAlign.Start
-                )
-            }
+                }
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = label,
+                kind = CouiTextKind.SectionTitle,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
         }
     }
 
@@ -1579,7 +1568,7 @@ class MainActivity : ComponentActivity() {
         val logStyle = rememberCouiTextStyle(CouiTextKind.Description).copy(
             fontFamily = FontFamily.Monospace,
             fontSize = 11.sp,
-            lineHeight = 13.sp,
+            lineHeight = 12.sp,
             letterSpacing = 0.sp,
             color = scheme.onSurface
         )
@@ -1853,7 +1842,9 @@ class MainActivity : ComponentActivity() {
                             text = if (text.isEmpty()) stringResource(R.string.no_logs) else text,
                             style = rememberCouiTextStyle(CouiTextKind.Body).copy(
                                 fontFamily = FontFamily.Monospace,
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
+                                lineHeight = 14.sp,
+                                letterSpacing = 0.sp,
                                 color = scheme.onSurface
                             )
                         )
