@@ -1240,7 +1240,14 @@ class MainActivity : ComponentActivity() {
         val green = if (dark) Color(0xFF1A3825) else Color(0xFFDFFAE4)
         val greenTint = Color(0xFF36D167)
         Group(colors = colors.copy(card = if (granted) green else colors.card)) {
-            Box(modifier = Modifier.fillMaxWidth().height(140.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+                    // KernelSU-style badge: the icon overhangs the card edge and
+                    // gets clipped by the rounded corner.
+                    .clip(CouiShape(28.dp, 2f))
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -1267,13 +1274,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(end = 16.dp, bottom = 10.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(x = 22.dp, y = 22.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     AppIcon(
                         Icons.Rounded.CheckCircleOutline,
                         null,
-                        Modifier.size(88.dp),
+                        Modifier.size(96.dp),
                         tint = if (granted) greenTint else Color(0xFF9AA0A6)
                     )
                 }
