@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About / credits -->
+    <string name="about_credit_self">Shark (this project)</string>
+    <string name="about_code_self">Project\'s own code</string>
+    <string name="about_third_party">Third-party sources, attribution and notices</string>
+    <string name="about_kernel_modules">Kernel modules shipped with the app</string>
+    <string name="about_mit_reference">MIT-licensed reference implementation</string>
+    <string name="about_credit_note">The app icon is drawn by this project; third-party components remain the property of their respective authors - see open-source licenses for the full texts.</string>
+
+    <!-- Common -->
+    <string name="unknown">Unknown</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="retry">Retry</string>
+    <string name="download">Download</string>
+    <string name="ok">OK</string>
+    <string name="delete">Delete</string>
+    <string name="export">Export</string>
+    <string name="export_log">Export log</string>
+    <string name="later">Later</string>
+    <string name="install">Install</string>
+
+    <!-- Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_logs">Logs</string>
+    <string name="tab_history">History</string>
+    <string name="tab_about">About</string>
+
+    <!-- Update check -->
+    <string name="checking_updates">Checking for updates…</string>
+    <string name="up_to_date">Already up to date</string>
+    <string name="update_check_failed">Update check failed, try again later</string>
+    <string name="check_updates">Check for updates</string>
+    <string name="update_found">New version %1$s available</string>
+    <string name="latest_version">Latest version %1$s</string>
+    <string name="no_changelog">No changelog provided</string>
+    <string name="update_downloading">Downloading %1$d%%</string>
+    <string name="update_now">Update now</string>
+    <string name="version_source">Current %1$s  ·  source %2$s</string>
+    <string name="signature_mismatch">The APK signature does not match this app</string>
+    <string name="installer_failed">Cannot start the installer: %1$s</string>
+    <string name="allow_unknown_sources">Allow installing unknown apps, then tap install again</string>
+    <string name="open_browser_download">Open in browser</string>
+    <string name="download_failed">Download failed</string>
+    <string name="unknown_size">Unknown size</string>
+    <string name="current_version">Current v%1$s</string>
+
+    <!-- Droidspaces -->
+    <string name="droidspaces_support">Droidspaces support</string>
+    <string name="droidspaces_summary">Downloads the latest droidspaces_lkm module to Download/Shark, then flash it from the KernelSU manager.</string>
+    <string name="droidspaces_module">Droidspaces module</string>
+    <string name="download_module">Download module</string>
+    <string name="fetching_release">Fetching the latest release…</string>
+    <string name="release_fetch_failed">Failed to fetch the latest release</string>
+    <string name="droidspaces_downloading">Downloading %1$d%%</string>
+    <string name="saved_to">Saved to: </string>
+    <string name="droidspaces_flash_hint">Open the KernelSU manager → Modules → Install and pick this file.</string>
+    <string name="open_kernelsu">Open KernelSU</string>
+
+    <!-- Root status -->
+    <string name="backend_authorized">%1$s authorized</string>
+    <string name="backend_not_authorized">%1$s not authorized</string>
+    <string name="connected_ready">Connected to %1$s - ready to root</string>
+    <string name="not_connected">Not connected to %1$s - grant access</string>
+    <string name="running">Running…</string>
+    <string name="stellar_not_running">Stellar is not running (tap to open)</string>
+    <string name="grant_shizuku">Grant Shizuku</string>
+    <string name="verify_or_reroot">Verify / root again</string>
+    <string name="one_click_root">One-click root</string>
+
+    <!-- Home / settings -->
+    <string name="root_manager">Root manager</string>
+    <string name="extras">Extras</string>
+    <string name="manual">Manual</string>
+    <string name="manual_summary">First steps, features and troubleshooting</string>
+    <string name="kernel_version">Kernel version</string>
+    <string name="exploit_method">Exploit</string>
+    <string name="device_model">Device model</string>
+    <string name="system_fingerprint">System fingerprint</string>
+    <string name="selinux_status">SELinux status</string>
+    <string name="after_root_disable_popup">Disable security popups after rooting</string>
+    <string name="after_root_soft_reboot">Soft reboot after rooting</string>
+    <string name="after_root_unload_guard">Unload the kernel security guard after rooting</string>
+    <string name="susfs_support">SUSFS support</string>
+    <string name="vfs_support">VFS support</string>
+    <string name="manager_hot_switch">Manager hot-switch</string>
+
+    <!-- Logs / history -->
+    <string name="no_logs">No logs yet</string>
+    <string name="no_history">No records yet</string>
+    <string name="success_duration">Success %1$s</string>
+    <string name="success">Success</string>
+    <string name="failure_duration">Failed %1$s</string>
+    <string name="failure">Failed</string>
+    <string name="in_progress">In progress</string>
+    <string name="switch_failed">Switch failed: rc=%1$d %2$s</string>
+    <string name="manual_load_failed"># Manual\n\nThe manual could not be loaded.</string>
+
+    <!-- SELinux -->
+    <string name="selinux_enforcing">Enforcing</string>
+    <string name="selinux_permissive">Permissive</string>
+    <string name="selinux_disabled">Disabled</string>
+
+    <!-- About -->
+    <string name="view_source">View source</string>
+    <string name="view_source_summary">View the source on GitHub</string>
+    <string name="join_community">Join the community</string>
+    <string name="join_qq">Join the QQ group</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_summary">Open an issue on GitHub</string>
+    <string name="support_dev">Support the developer</string>
+    <string name="support_summary">WeChat / Alipay donation QR codes</string>
+    <string name="wechat_tip">WeChat</string>
+    <string name="alipay">Alipay</string>
+    <string name="licenses">Open-source licenses</string>
+    <string name="licenses_summary">Third-party open-source libraries used by this app and their licenses</string>
+    <string name="license_text_missing">No license text declared</string>
+    <string name="license_text_not_bundled">License text not bundled</string>
+    <string name="visit_homepage">Visit homepage</string>
+    <string name="section_this_app">This project and add-ons</string>
+    <string name="third_party_deps">Third-party dependencies</string>
+    <string name="third_party_deps_count">Third-party dependencies (%1$d)</string>
+    <string name="unsupported_kernel">Unsupported device/kernel: %1$s</string>
+</resources>
