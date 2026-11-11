@@ -6,6 +6,10 @@ val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) FileInputStream(keystorePropsFile).use { load(it) }
 }
 
+// CI supplies the release key through the environment so the keystore never
+// enters the repository.
+val envKeystore = System.getenv("SHARK_KEYSTORE")?.takeIf { it.isNotBlank() }
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -41,6 +45,11 @@ android {
                 storePassword = keystoreProps["storePassword"] as String
                 keyAlias = keystoreProps["keyAlias"] as String
                 keyPassword = keystoreProps["keyPassword"] as String
+            } else if (envKeystore != null) {
+                storeFile = file(envKeystore)
+                storePassword = System.getenv("SHARK_STORE_PASSWORD")
+                keyAlias = System.getenv("SHARK_KEY_ALIAS") ?: "shark"
+                keyPassword = System.getenv("SHARK_KEY_PASSWORD")
             }
         }
     }
