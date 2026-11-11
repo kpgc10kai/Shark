@@ -2,9 +2,7 @@ name: android-build
 
 on:
   push:
-    branches:
-      - english-ui-strings
-      - main
+    branches:\n      - english-ui-strings\n      - main\n      - v2.1-en
   pull_request:
   workflow_dispatch:
 
