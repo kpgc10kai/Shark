@@ -1241,7 +1241,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun StatusBadge(tint: Color, modifier: Modifier = Modifier) {
         Canvas(modifier) {
-            val stroke = 11.dp.toPx()
+            val stroke = 12.dp.toPx()
             drawCircle(
                 color = tint,
                 radius = (size.minDimension - stroke) / 2f,
@@ -1304,12 +1304,12 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .offset(x = 22.dp, y = 22.dp),
+                        .offset(x = 13.dp, y = 19.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     StatusBadge(
                         tint = if (granted) greenTint else Color(0xFF9AA0A6),
-                        modifier = Modifier.size(96.dp)
+                        modifier = Modifier.size(118.dp)
                     )
                 }
             }
