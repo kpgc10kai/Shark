@@ -12,10 +12,16 @@
   <a href="https://github.com/Yunnijian/Shark"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
-> **English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
-> Upstream is the source of truth. This fork adds English documentation and UI
-> strings on top of it, and `.github/workflows/upstream-sync.yml` follows
-> upstream automatically (build-gated, conflicts reported as issues).
+> **Unofficial English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
+> This repository is not affiliated with, endorsed by, or maintained by the
+> upstream author. Upstream is the source of truth; this fork adds English
+> documentation and UI strings on top of it, and
+> `.github/workflows/upstream-sync.yml` follows upstream automatically
+> (build-gated, conflicts reported as issues).
+>
+> No warranty. Only use it on devices you own, and read
+> [Switching between the upstream and this fork](#switching-between-the-upstream-and-this-fork)
+> before installing.
 
 Shark supports OnePlus, OPPO, Realme, iQOO, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
@@ -235,6 +241,29 @@ Available features: `k61269`, `k61238`, `k61258`, `k61223`, `k66118`;
 The universal KO and dual-KMI loader are built in
 [KSU-Universal](https://github.com/Yunnijian/KSU-Universal); Shark only bundles the
 compiled `libksud_universal.so`.
+
+## Switching between the upstream and this fork
+
+This fork and the upstream build share the package name (`com.shark.kty`) but use
+**different signing keys**, so Android refuses to update one over the other:
+
+```
+INSTALL_FAILED_UPDATE_INCOMPATIBLE
+```
+
+To switch in either direction:
+
+1. Back up anything you care about.
+2. Uninstall the current build.
+3. Install the build you want from the matching releases page
+   ([this fork](https://github.com/kpgc10kai/Shark/releases) or
+   [upstream](https://github.com/Yunnijian/Shark/releases)).
+
+Uninstalling clears the app's settings, the selected manager and extras, and the
+run history. Root is temporary anyway and disappears on reboot.
+
+The older `com.pyb110.onekey` build is a separate application. It can stay
+installed alongside this one, but settings and history are not migrated.
 
 ## Notes
 
