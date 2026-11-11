@@ -3,13 +3,13 @@
 <p align="center"><b>One-tap temporary root and manager-switching tool for multiple Android devices</b></p>
 
 <p align="center">
-  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.0"><img src="docs/badges/release.svg" alt="Release"></a>
+  <a href="https://github.com/kpgc10kai/Shark/releases"><img src="docs/badges/release.svg" alt="Release"></a>
   <a href="LICENSE"><img src="docs/badges/license.svg" alt="License"></a>
   <img src="docs/badges/android.svg" alt="Android">
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
   <img src="docs/badges/compose.svg" alt="Compose">
   <img src="docs/badges/kernel.svg" alt="Kernel">
-  <a href="https://gitee.com/puci1/Shark/releases/tag/v2.0"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
+  <a href="https://github.com/Yunnijian/Shark"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
 > **English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
@@ -256,8 +256,8 @@ compiled `libksud_universal.so`.
 
 ## Release
 
-- GitHub: https://github.com/Yunnijian/Shark/releases/tag/v2.0
-- Gitee: https://gitee.com/puci1/Shark/releases/tag/v2.0
+- GitHub: https://github.com/kpgc10kai/Shark/releases
+- Gitee: https://github.com/Yunnijian/Shark
 - App: v2.0 (90)
 - APK SHA-256: `29dabba7fe144593a057715b30ccf0f1aaf5295b12d2883381f62fa6b10d3e94`
 
