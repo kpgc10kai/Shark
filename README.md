@@ -12,6 +12,11 @@
   <a href="https://gitee.com/puci1/Shark/releases/tag/v2.0"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
+> **English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
+> Upstream is the source of truth. This fork adds English documentation and UI
+> strings on top of it, and `.github/workflows/upstream-sync.yml` follows
+> upstream automatically (build-gated, conflicts reported as issues).
+
 Shark supports OnePlus, OPPO, Realme, iQOO, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
