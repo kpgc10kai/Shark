@@ -32,10 +32,8 @@ sealed interface UpdateCheckResult {
 }
 
 object UpdateChecker {
-    private const val GITEE_API =
-        "https://gitee.com/api/v5/repos/puci1/Shark/releases/latest"
     private const val GITHUB_API =
-        "https://api.github.com/repos/Yunnijian/Shark/releases/latest"
+        "https://api.github.com/repos/kpgc10kai/Shark/releases/latest"
     private const val USER_AGENT = "Shark-Updater"
 
     suspend fun check(context: Context): UpdateCheckResult = withContext(Dispatchers.IO) {
@@ -45,14 +43,6 @@ object UpdateChecker {
             ?: return@withContext UpdateCheckResult.Failed
         val currentParts = parseVersion(current)
         var fetched = false
-
-        val gitee = runCatching { fetch(GITEE_API, "Gitee", true) }.getOrNull()
-        if (gitee != null) {
-            fetched = true
-            if (compareVersion(parseVersion(gitee.version), currentParts) > 0) {
-                return@withContext UpdateCheckResult.Available(gitee)
-            }
-        }
 
         val github = runCatching { fetch(GITHUB_API, "GitHub", false) }.getOrNull()
         if (github != null) {
@@ -106,8 +96,7 @@ object UpdateChecker {
             ?.let(::extractSha256)
             ?: extractSha256(releaseBody)
         val pageUrl = json.optString("html_url").ifBlank {
-            if (gitee) "https://gitee.com/puci1/Shark/releases"
-            else "https://github.com/Yunnijian/Shark/releases/tag/$tag"
+            "https://github.com/kpgc10kai/Shark/releases/tag/$tag"
         }
         return UpdateInfo(
             version = version,

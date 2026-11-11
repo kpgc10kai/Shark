@@ -28,8 +28,9 @@ android {
         applicationId = "com.shark.kty"
         minSdk = 33
         targetSdk = 37
-        versionCode = 91
-        versionName = "2.1"
+        // CI stamps the release tag so the in-app updater can compare versions.
+        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 91
+        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.1"
         ndk {
             abiFilters.add("arm64-v8a")
         }

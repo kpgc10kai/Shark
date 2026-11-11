@@ -61,6 +61,8 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x gradlew
+          echo "SHARK_VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          echo "SHARK_VERSION_CODE=$((1000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
           URLS=(
             "https://mirrors.cloud.tencent.com/gradle/gradle-9.7.0-bin.zip"
             "https://mirrors.huaweicloud.com/gradle/gradle-9.7.0-bin.zip"
@@ -82,7 +84,8 @@ jobs:
           set -euo pipefail
           APK=$(ls app/app/build/outputs/apk/release/*.apk | head -n 1)
           cp "$APK" "Shark-${GITHUB_REF_NAME}.apk"
-          sha256sum "Shark-${GITHUB_REF_NAME}.apk" > SHA256SUMS
+          sha256sum "Shark-${GITHUB_REF_NAME}.apk" > "Shark-${GITHUB_REF_NAME}.apk.sha256.txt"
+          cp "Shark-${GITHUB_REF_NAME}.apk.sha256.txt" SHA256SUMS
           ls -l "Shark-${GITHUB_REF_NAME}.apk" SHA256SUMS
 
       - name: Publish the release
@@ -103,5 +106,6 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             --title "Shark $GITHUB_REF_NAME" \
             --notes-file notes.md \
-            --prerelease \
-            "Shark-${GITHUB_REF_NAME}.apk" SHA256SUMS
+            "Shark-${GITHUB_REF_NAME}.apk" \
+            "Shark-${GITHUB_REF_NAME}.apk.sha256.txt" \
+            SHA256SUMS
