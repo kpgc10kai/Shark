@@ -40,7 +40,9 @@ jobs:
       - name: Check for upstream changes
         id: check
         run: |
-          git fetch upstream "${UPSTREAM_BRANCH}" --tags
+          # upstream force-moves some tags, which makes `fetch --tags` fail.
+          # Tags are not needed for the merge, so fetch the branch only.
+          git fetch --no-tags upstream "${UPSTREAM_BRANCH}"
           if git merge-base --is-ancestor "upstream/${UPSTREAM_BRANCH}" HEAD; then
             echo "up_to_date=1" >> "$GITHUB_OUTPUT"
             echo "Already up to date with upstream/${UPSTREAM_BRANCH}."
