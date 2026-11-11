@@ -43,7 +43,8 @@ out=$(r2000 "cat $T/target" 2>/dev/null)
 [ "$out" = BACKING ] && ok "non-su redirected" || bad "non-su got '$out'"
 out=$(rroot "cat $T/target" 2>/dev/null)
 [ "$out" = BACKING ] && ok "root also redirected (scheme 0 covers non-app)" || bad "root got '$out'"
-# scheme 2: 非 su 重定向、root 不受影响；需要直接 adb shell 的非 su 进程，脚本内 su 仍属 su 域，故不在此测
+# scheme 2: redirects non-su callers and leaves root unaffected; it needs a non-su process
+# from a direct adb shell, and su inside this script still runs in the su domain, so it is not tested here
 echo "del $T/target" > /proc/susfs_open_redirect
 out=$(r2000 "cat $T/target" 2>/dev/null)
 [ "$out" = TARGET ] && ok "redirect del restores" || bad "redirect still active"

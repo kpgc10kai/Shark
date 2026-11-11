@@ -17,12 +17,12 @@ if (-not $NdkRoot) {
     }
 }
 if (-not $NdkRoot) {
-    throw "未找到 NDK。请设置 ANDROID_NDK_HOME，或解压到 ports\v2505a\tools\android-ndk-r28c。"
+    throw "NDK not found. Set ANDROID_NDK_HOME, or extract it to ports\v2505a\tools\android-ndk-r28c."
 }
 
 $cc = Join-Path $NdkRoot "toolchains\llvm\prebuilt\windows-x86_64\bin\aarch64-linux-android31-clang.cmd"
 if (-not (Test-Path -LiteralPath $cc)) {
-    throw "NDK clang 不存在: $cc"
+    throw "NDK clang not found: $cc"
 }
 
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
@@ -33,7 +33,7 @@ function Build-One([string]$Name, [string[]]$ExtraFlags) {
         @("-o", $target, $source)
     & $cc @ccArgs
     if ($LASTEXITCODE -ne 0) {
-        throw "编译失败: $Name"
+        throw "Compile failed: $Name"
     }
     Get-Item -LiteralPath $target | Select-Object FullName, Length
 }

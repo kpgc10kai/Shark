@@ -1,14 +1,14 @@
-# LKM 构建
+# LKM Build
 
-设备内核：`6.18.21-android17-5-gf957accaf563-ab15926176-4k`。
+Device kernel: `6.18.21-android17-5-gf957accaf563-ab15926176-4k`.
 
-## 环境
+## Environment
 
-- GKI 源：`android17-6.18-2026-06_r9`（SUBLEVEL=21）
-- KDIR：`gki_defconfig` + `modules_prepare` + `security/selinux/built-in.a`
-- DDK：`ghcr.io/ylarod/ddk-min:android17-6.18-20260828`（clang r584948c）
+- GKI source: `android17-6.18-2026-06_r9` (SUBLEVEL=21)
+- KDIR: `gki_defconfig` + `modules_prepare` + `security/selinux/built-in.a`
+- DDK: `ghcr.io/ylarod/ddk-min:android17-6.18-20260828` (clang r584948c)
 
-七个脚本都假定在 DDK 容器内、KMI 源与 KDIR 已挂载：
+All seven scripts assume they run inside the DDK container with the KMI source and KDIR mounted:
 
 ```bash
 docker run --rm \
@@ -23,43 +23,43 @@ docker run --rm \
   bash /work/build-next.sh
 ```
 
-## 产物
+## Outputs
 
-| 脚本 | 产物 | strip 后 |
+| Script | Output | After strip |
 | --- | --- | --- |
-| `build-kernelsu.sh` | 官方 KernelSU main `db6263d3`（UAPI6，32707） | 382,232 B |
-| `build-next.sh` | KernelSU Next dev `da0b3f37`（33442） | 489,264 B |
-| `build-bakasu.sh` | BakaSU 35253（4.2.0-rc3-82-g5785bdb8） | 435,616 B |
-| `build-sukisu.sh` | SukiSU Ultra v4.3.0 `e67b14e6`（41100） | 545,040 B |
-| `build-finasu.sh` | FinaSU master `9b32bde4`（v1.3.2 / 33090） | 496,744 B |
-| `build-susfs.sh` | SUSFS guard LKM（vendored） | 3,456,440 B（未 strip） |
-| `build-hybridmount.sh` | Hybrid Mount VFS provider（vendored） | 390,952 B |
+| `build-kernelsu.sh` | Official KernelSU main `db6263d3` (UAPI6, 32707) | 382,232 B |
+| `build-next.sh` | KernelSU Next dev `da0b3f37` (33442) | 489,264 B |
+| `build-bakasu.sh` | BakaSU 35253 (4.2.0-rc3-82-g5785bdb8) | 435,616 B |
+| `build-sukisu.sh` | SukiSU Ultra v4.3.0 `e67b14e6` (41100) | 545,040 B |
+| `build-finasu.sh` | FinaSU master `9b32bde4` (v1.3.2 / 33090) | 496,744 B |
+| `build-susfs.sh` | SUSFS guard LKM (vendored) | 3,456,440 B (not stripped) |
+| `build-hybridmount.sh` | Hybrid Mount VFS provider (vendored) | 390,952 B |
 
-vermagic 均为 `6.18.21-4k SMP preempt mod_unload modversions aarch64`。
+All of them use vermagic `6.18.21-4k SMP preempt mod_unload modversions aarch64`.
 
-## SUSFS guard LKM（实验）
+## SUSFS guard LKM (experimental)
 
-源码 vendored 在 [susfs4ksu-lkm](susfs4ksu-lkm/)（upstream `inforcqb/susfs4ksu-lkm`，基线 `b69dee4`，2026-10-27 rebase 到 `28b2e85`，GPL-2.0）。
-为 PYB110 的 `CONFIG_ARM64_BTI_KERNEL=y` 做了三处改动，详见 [MODIFICATIONS.md](susfs4ksu-lkm/MODIFICATIONS.md)：
+Source is vendored in [susfs4ksu-lkm](susfs4ksu-lkm/) (upstream `inforcqb/susfs4ksu-lkm`, baseline `b69dee4`, rebased to `28b2e85` on 2026-10-27, GPL-2.0).
+Three changes were made for `CONFIG_ARM64_BTI_KERNEL=y` on PYB110; see [MODIFICATIONS.md](susfs4ksu-lkm/MODIFICATIONS.md) for details:
 
-- supercall：`__arm64_sys_reboot` 的 kprobe 换成 `sys_call_table[__NR_reboot]` 模块 wrapper
-- hide_syms：`s_show`/`m_show` 的 kprobe 换成 `seq_operations.show` wrapper（调用原函数后回滚 `seq_file->count`）
-- sus_map：`show_map`/`show_smap` 的 kprobe 换成 `proc_pid_maps_op`/`proc_pid_smaps_op.show` wrapper；`show_map_vma` 是直接调用，保留 kprobe
+- supercall: the kprobe on `__arm64_sys_reboot` was replaced with a `sys_call_table[__NR_reboot]` module wrapper
+- hide_syms: the kprobe on `s_show`/`m_show` was replaced with a `seq_operations.show` wrapper (rolls back `seq_file->count` after calling the original function)
+- sus_map: the kprobe on `show_map`/`show_smap` was replaced with `proc_pid_maps_op`/`proc_pid_smaps_op.show` wrappers; `show_map_vma` is called directly and keeps its kprobe
 
-`bash lkm/build-susfs.sh`（容器内）产出 `susfs_guard_lkm-6.18.21.ko`。加载：
+`bash lkm/build-susfs.sh` (inside the container) produces `susfs_guard_lkm-6.18.21.ko`. Load it with:
 
 ```sh
 ksud insmod susfs_guard_lkm-6.18.21.ko expose_proc=1
 ```
 
-**已验证**：版本 `v2.3.0`、supercall、hide_syms、sus_map 的 maps/smaps 行隐藏、sus_path、kstat、open_redirect、hide_modules、uname、opath、日志开关；规则矩阵与工具在 [susfs-tools](susfs-tools/)。
+**Verified**: version `v2.3.0`, supercall, hide_syms, sus_map's maps/smaps line hiding, sus_path, kstat, open_redirect, hide_modules, uname, opath, and the log toggle; the rule matrix and tools are in [susfs-tools](susfs-tools/).
 
-**已知边界**：`sus_map` 只对 `susfs_is_current_proc_umounted_app()` 为真的 app 生效；`su` 授予 root 的进程不隐藏。`hide_mounts` 的任意 bind mount 不会被标记（`recorded=0`），实际挂载隐藏未验证。`hide_modules` 的 `/sys/module/<name>` 对 root 也会隐藏（SukiSU 的 `u:r:ksu:s0` 未被识别为 `su_ctx`）。
+**Known limitations**: `sus_map` only takes effect for apps for which `susfs_is_current_proc_umounted_app()` returns true; processes granted root by `su` are not hidden. Arbitrary bind mounts of `hide_mounts` are not marked (`recorded=0`), and actual mount hiding is unverified. The `hide_modules` `/sys/module/<name>` is hidden from root as well (SukiSU's `u:r:ksu:s0` is not recognized as `su_ctx`).
 
 ## Hybrid Mount VFS provider
 
-源码 vendored 在 [hybridmount](hybridmount/)（upstream `Hybrid-Mount/meta-hybrid_mount`，GPL-2.0，基线见 [PROVENANCE](hybridmount/PROVENANCE)）。
-上游的 `src/vfs/lkm_target.rs` 矩阵不含 6.18，这里直接对 6.18.21 GKI 编译：
+Source is vendored in [hybridmount](hybridmount/) (upstream `Hybrid-Mount/meta-hybrid_mount`, GPL-2.0, baseline in [PROVENANCE](hybridmount/PROVENANCE)).
+The upstream matrix in `src/vfs/lkm_target.rs` does not include 6.18, so it is compiled here directly against the 6.18.21 GKI:
 
 ```bash
 docker run --rm \
@@ -72,11 +72,11 @@ docker run --rm \
   bash /work/build-hybridmount.sh
 ```
 
-加载后 `/sys/module/hybridmount` 出现，metamodule 的 `vfs-doctor` 报 provider `hm`、`responds=true`。KERNEL_SECURITY_CHECK 会记录 `ko:[hybridmount.ko] hash not found`（只记录，不拦截）。
+After loading, `/sys/module/hybridmount` appears, and the metamodule's `vfs-doctor` reports provider `hm`, `responds=true`. KERNEL_SECURITY_CHECK logs `ko:[hybridmount.ko] hash not found` (logged only, not blocked).
 
-## 注意
+## Notes
 
-- DDK 镜像内置 `KDIR=/opt/ddk/kdir/android17-6.18`（6.18.32）；必须 `-e KDIR=/work/kdir/android17-6.18` 显式覆盖，否则编出的 vermagic 是 6.18.32。使用本地 kdir 时还要把 GKI 源挂到其 Makefile 记录的路径（`/work/gki-6.18.21`）。
-- 不能只改 vermagic 复用其它 minor 版本的官方 ko；ABI/CFI 不匹配会在加载后崩溃。
-- 模块加载参数只需 `allow_shell=1`；官方 / Next / BakaSU 都定义了该参数。
-- 管理器与 ksud 建议直接用官方 release / CI 产物，不要本地重复编译（管理器 debug 签名还会与旧 release 签名冲突）。
+- The DDK image has `KDIR=/opt/ddk/kdir/android17-6.18` (6.18.32) built in; you must override it explicitly with `-e KDIR=/work/kdir/android17-6.18`, otherwise the vermagic produced is 6.18.32. When using a local kdir, you also need to mount the GKI source at the path recorded in its Makefile (`/work/gki-6.18.21`).
+- You cannot just change vermagic to reuse an official ko from another minor version; a mismatched ABI/CFI crashes after loading.
+- The module load parameter only needs `allow_shell=1`; official / Next / BakaSU all define that parameter.
+- For the manager and ksud, use the official release / CI artifacts directly rather than recompiling locally (a debug-signed manager also conflicts with the old release signature).

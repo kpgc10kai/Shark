@@ -175,7 +175,7 @@ object UpdateChecker {
         val expected = info.sha256
         if (!expected.isNullOrBlank() && !actual.equals(expected, ignoreCase = true)) {
             target.delete()
-            throw IllegalStateException("SHA-256 校验失败")
+            throw IllegalStateException("SHA-256 verification failed")
         }
         target
     }
@@ -201,7 +201,7 @@ object UpdateChecker {
     }
 
     private fun extractSha256(text: String): String? =
-        Regex("(?i)sha-?256\\s*[:：=]?\\s*([0-9a-f]{64})")
+        Regex("(?i)sha-?256\\s*[:\uFF1A=]?\\s*([0-9a-f]{64})")
             .find(text)
             ?.groupValues
             ?.getOrNull(1)

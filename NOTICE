@@ -70,14 +70,14 @@ profile-switch module described in entry 9.
    Used: vendored VFS provider kernel module source under lkm/hybridmount/,
          built for GKI 6.18.21 by lkm/build-hybridmount.sh and shipped as
          lib/arm64-v8a/libhybridmount.so (loaded only when the optional
-         "VFS 支持" switch is on). Import baseline and divergences are listed
+         "VFS support" switch is on). Import baseline and divergences are listed
          in lkm/hybridmount/PROVENANCE.
 
 8. AboutLibraries
     Source: https://github.com/mikepenz/AboutLibraries
     License: Apache-2.0
     Used: Gradle plugin and core library that generate and parse the
-          dependency/license metadata shown on the in-app "开放源代码许可"
+          dependency/license metadata shown on the in-app "Open-source licenses"
           screen (com.mikepenz:aboutlibraries-core:15.2.0).
 
 9. Universal KSU profile-switch loader (libksud_universal.so)
