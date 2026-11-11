@@ -23,6 +23,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -99,8 +100,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -1232,6 +1237,29 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** Bold circle + check, so the badge reads like the KernelSU one. */
+    @Composable
+    private fun StatusBadge(tint: Color, modifier: Modifier = Modifier) {
+        Canvas(modifier) {
+            val stroke = 11.dp.toPx()
+            drawCircle(
+                color = tint,
+                radius = (size.minDimension - stroke) / 2f,
+                style = Stroke(width = stroke)
+            )
+            val path = Path().apply {
+                moveTo(size.width * 0.27f, size.height * 0.52f)
+                lineTo(size.width * 0.43f, size.height * 0.68f)
+                lineTo(size.width * 0.72f, size.height * 0.35f)
+            }
+            drawPath(
+                path = path,
+                color = tint,
+                style = Stroke(width = stroke, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
+        }
+    }
+
     @Composable
     private fun StatusCard(granted: Boolean) {
         val dark = CouiTheme.isDark
@@ -1279,11 +1307,9 @@ class MainActivity : ComponentActivity() {
                         .offset(x = 22.dp, y = 22.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    AppIcon(
-                        Icons.Rounded.CheckCircleOutline,
-                        null,
-                        Modifier.size(96.dp),
-                        tint = if (granted) greenTint else Color(0xFF9AA0A6)
+                    StatusBadge(
+                        tint = if (granted) greenTint else Color(0xFF9AA0A6),
+                        modifier = Modifier.size(96.dp)
                     )
                 }
             }
