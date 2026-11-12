@@ -222,6 +222,13 @@ private val localLicenses = listOf(
         "MIT",
         "licenses/MIT.txt",
         "https://github.com/AzirX1337/CVE-2026-98260-OnePlus16-PYB110-Jailbreak"
+    ),
+    LocalLicense(
+        "YuKongA CVE-2026-98260",
+        "MIT 许可的参考实现",
+        "MIT",
+        "licenses/MIT.txt",
+        "https://github.com/YuKongA/CVE-2026-98260"
     )
 )
 
