@@ -126,14 +126,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh label create upstream-sync --color FBCA04 --description "Upstream sync needs attention" --force >/dev/null 2>&1 || true
           body=$(printf 'Upstream `%s` has new commits but the automatic merge conflicts.\n\nConflicting files:\n\n```\n%s\n```\n\nResolve locally with:\n\n```bash\ngit fetch upstream\ngit merge upstream/main\n```\n\nWorkflow run: %s\n' \
             "$UPSTREAM_REPO" "$(cat /tmp/conflicts.txt)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-          existing=$(gh issue list --label upstream-sync --state open --limit 1 --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --state open --search "Upstream sync conflict in:title" --limit 1 --json number --jq '.[0].number // empty')
           if [ -n "${existing}" ]; then
             gh issue comment "${existing}" --body "${body}"
           else
-            gh issue create --title "Upstream sync conflict" --body "${body}" --label upstream-sync
+            gh issue create --title "Upstream sync conflict" --body "${body}"
           fi
 
       - name: Report a build failure
@@ -142,12 +141,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh label create upstream-sync --color FBCA04 --description "Upstream sync needs attention" --force >/dev/null 2>&1 || true
           body=$(printf 'The merged upstream tree **failed to build**, so it was not pushed.\n\nWorkflow run: %s\n' \
             "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-          existing=$(gh issue list --label upstream-sync --state open --limit 1 --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --state open --search "Upstream sync build failure in:title" --limit 1 --json number --jq '.[0].number // empty')
           if [ -n "${existing}" ]; then
             gh issue comment "${existing}" --body "${body}"
           else
-            gh issue create --title "Upstream sync build failure" --body "${body}" --label upstream-sync
+            gh issue create --title "Upstream sync build failure" --body "${body}"
           fi

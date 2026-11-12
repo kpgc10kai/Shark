@@ -66,17 +66,14 @@ SukiSU Ultra, or FinaSU root environment.
 | OPPO Find X10 (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
-| OPPO Pad Mini (OPD2512) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
+| OPPO Pad Mini (OPD2515) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OPPO Pad 5 Pro (OPD2511) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Pad4 Pro (OPD2409) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | Realme GT8 Pro (RMX5200) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | Realme GT8 (RMX6699) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| Realme GT7 Pro (RMX5010) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OPPO K13 Turbo Pro (PLE110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| iQOO 15 (V2505A) | OriginOS 6/7 | `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
-| iQOO 15 Ultra | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
-| iQOO Pad Pro 8.8-inch | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
-| iQOO Pad6 Pro | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
+| vivo / iQOO devices | OriginOS 6/7 | `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
 
 ## Supported managers
 
@@ -88,8 +85,8 @@ installed manager APK, so **install the manager you intend to use first**.
 ## What it can do
 
 - **One-tap temporary root**: After opening the app, no manual exploit selection is
-  needed; it uses `uname -r` to automatically match one of six chains: 6.18.21 /
-  6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118. A single tap on “One-tap
+  needed; it uses `uname -r` to automatically match one of seven chains: 6.18.21 /
+  6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127. A single tap on “One-tap
   Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
@@ -170,6 +167,7 @@ Shark/
 │   │   ├── libk61258.so         6.12.58 runner
 │   │   ├── libk61223.so         6.12.23 runner
 │   │   ├── libk66118.so         6.6.118 runner
+│   │   ├── libk66127.so         6.6.127 runner
 │   │   ├── libksud_universal.so Dual-KMI universal loader
 │   │   ├── libsusfs_guard_lkm.so
 │   │   ├── libsusfs_guard_lkm_612.so
@@ -188,6 +186,7 @@ Shark/
 ├── ports/v2505a/                V2505A notes and verification records
 ├── ports/coloros-61269/         6.12.69 dual-OTA build notes and recovery tools
 ├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
+├── ports/pd2454-66127/          vivo 6.6.127 notes and OTA extraction tools
 ├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
@@ -201,6 +200,7 @@ Shark/
   escalation, fake cred, `ksud late-load`, and cleanup.
 - `lkm/`: Source and build scripts for the SUSFS guard and Hybrid Mount VFS provider.
 - `ports/v2505a/`: Notes, constants, and verification records for the V2505A branch.
+- `ports/pd2454-66127/`: notes, constants and OTA extraction tools for the vivo 6.6.127 branch.
 - `third_party/`: Full third-party license texts and reference materials.
 
 **Tech stack**
@@ -285,10 +285,11 @@ installed alongside this one, but settings and history are not migrated.
 
 ## Release
 
-- GitHub: https://github.com/kpgc10kai/Shark/releases
-- Gitee: https://github.com/Yunnijian/Shark
-- App: v2.0 (90)
-- APK SHA-256: `29dabba7fe144593a057715b30ccf0f1aaf5295b12d2883381f62fa6b10d3e94`
+- This fork: https://github.com/kpgc10kai/Shark/releases
+- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.1
+- Based on upstream v2.2.1 (upstream versionCode 93); each fork release stamps its
+  own `2.2.1-en.N` version and is signed with the fork's release key
+- Every fork release ships the signed APK together with its SHA-256 file
 
 Universal kernel release:
 

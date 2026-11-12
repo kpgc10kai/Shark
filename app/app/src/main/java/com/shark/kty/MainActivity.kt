@@ -229,6 +229,13 @@ private val localLicenses = listOf(
         "MIT",
         "licenses/MIT.txt",
         "https://github.com/AzirX1337/CVE-2026-98260-OnePlus16-PYB110-Jailbreak"
+    ),
+    LocalLicense(
+        "YuKongA CVE-2026-98260",
+        "MIT-licensed reference implementation",
+        "MIT",
+        "licenses/MIT.txt",
+        "https://github.com/YuKongA/CVE-2026-98260"
     )
 )
 
@@ -1476,27 +1483,31 @@ class MainActivity : ComponentActivity() {
         ) {
             item {
                 Group {
-                    if (!isVivoV2505a() && exploit != ExploitKind.UNSUPPORTED) {
-                        SettingSwitchItem(
-                            icon = Icons.Filled.NotificationsOff,
-                            title = stringResource(R.string.after_root_disable_popup),
-                            checked = antiRootGuard,
-                            onCheckedChange = { updateAntiRootGuard(it) }
-                        )
-                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                    if (exploit != ExploitKind.UNSUPPORTED) {
+                        if (!isVivoV2505a()) {
+                            SettingSwitchItem(
+                                icon = Icons.Filled.NotificationsOff,
+                                title = stringResource(R.string.after_root_disable_popup),
+                                checked = antiRootGuard,
+                                onCheckedChange = { updateAntiRootGuard(it) }
+                            )
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        }
                         SettingSwitchItem(
                             icon = Icons.Filled.RestartAlt,
                             title = stringResource(R.string.after_root_soft_reboot),
                             checked = softRebootAfter,
                             onCheckedChange = { updateSoftRebootAfter(it) }
                         )
-                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                        SettingSwitchItem(
-                            icon = Icons.Filled.RemoveModerator,
-                            title = stringResource(R.string.after_root_unload_guard),
-                            checked = unloadGuard,
-                            onCheckedChange = { updateUnloadGuard(it) }
-                        )
+                        if (!isVivoV2505a()) {
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                            SettingSwitchItem(
+                                icon = Icons.Filled.RemoveModerator,
+                                title = stringResource(R.string.after_root_unload_guard),
+                                checked = unloadGuard,
+                                onCheckedChange = { updateUnloadGuard(it) }
+                            )
+                        }
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
                     }
                     if (supportsSusfs()) {
@@ -2256,7 +2267,7 @@ class MainActivity : ComponentActivity() {
 
     private fun readDeviceState(): Pair<Boolean, String> {
         val p = PrivService.newProcess(
-            arrayOf("sh", "-c", "if grep -qi kernelsu /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
+            arrayOf("sh", "-c", "if grep -q '^kernelsu .* Live ' /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
             shizukuEnv(), "/"
         )
         val lines = p.getInputStream()
@@ -2500,6 +2511,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE61223 -> arrayOf("$nativeDir/libk61223.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
+                    ExploitKind.CVE66127 -> arrayOf("$nativeDir/libk66127.so", "run")
                     ExploitKind.UNSUPPORTED -> null
                 } ?: run {
                     withContext(Dispatchers.Main) {
@@ -2521,7 +2533,7 @@ class MainActivity : ComponentActivity() {
                     selinuxText = se
                 }
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
-                if (active && !softReboot) {
+                if (rc == 0 && active && !softReboot) {
                     withContext(Dispatchers.Main) { launchManager() }
                 }
                 if (softReboot && rc == 0 && active) {
@@ -2555,6 +2567,7 @@ class MainActivity : ComponentActivity() {
         val env = shizukuEnv() + "PYB110_DIR=$dir" + "PYB110_MANAGER=${initialManager.manager}" +
             "PYB110_LATE_LOAD=1" +
             "PYB110_UNLOAD_GUARD=${if (unloadGuard) "1" else "0"}" +
+            "PYB110_GATE=${if (isGateKernel()) "1" else "0"}" +
             "PYB110_DISABLE_ANTIROOT=${if (antiRootGuard) "1" else "0"}" +
             "PYB110_SUSFS=${if (susfsActive) "1" else "0"}" +
             "PYB110_VFS=${if (vfsSupport) "1" else "0"}" +
@@ -2610,6 +2623,7 @@ class MainActivity : ComponentActivity() {
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE61223("CVE-2026-98260-vivo-6.12.23"),
         CVE66118("CVE-2026-98260-6.6.118"),
+        CVE66127("CVE-2026-98260-vivo-6.6.127"),
         UNSUPPORTED("Unsupported device")
     }
 
@@ -2626,6 +2640,13 @@ class MainActivity : ComponentActivity() {
         (exploit == ExploitKind.CVE61223 || exploit == ExploitKind.CVE61258) &&
             kernelVersion.contains("abogki")
 
+    /** OriginOS 7 builds load the KSU LKM through the hooks_defend gate. */
+    private fun isGateKernel(): Boolean =
+        exploit == ExploitKind.CVE66127 ||
+            (exploit == ExploitKind.CVE61258 &&
+                (kernelVersion.contains("gdd6fd5c98918") ||
+                    kernelVersion.contains("g690108013dcc")))
+
     private fun supportsUniversal(): Boolean =
         exploit == ExploitKind.CVE61821 ||
             exploit == ExploitKind.CVE61269 ||
@@ -2634,7 +2655,9 @@ class MainActivity : ComponentActivity() {
             exploit == ExploitKind.CVE61223
 
     private fun supportsSusfs(): Boolean =
-        exploit != ExploitKind.CVE66118 && exploit != ExploitKind.UNSUPPORTED
+        !isGateKernel() && exploit != ExploitKind.CVE66118 &&
+            exploit != ExploitKind.CVE66127 &&
+            exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
         if (supportsUniversal()) ManagerKind.entries
@@ -2657,6 +2680,8 @@ class MainActivity : ComponentActivity() {
             "6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k" to ExploitKind.CVE61223,
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
+            "6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k" to ExploitKind.CVE66127,
+            "6.12.58-android16-6-g690108013dcc-abogki576129896-4k" to ExploitKind.CVE61258,
         )
     }
 }

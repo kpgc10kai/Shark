@@ -103,6 +103,56 @@ BTF validation:
 - `sizeof(struct tracepoint) = 0x50`
 - `tracepoint.funcs = 0x48`
 
+## OS7 6.12.58 (gdd6fd5c98918) hooks_defend gate
+
+The second OriginOS 7 6.12.58 build
+`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` adds the vivo
+`hooks_defend` load gate (the same mechanism as 6.6.127), so a plain
+`ksud late-load` is rejected.
+
+- Full package: `https://sysuptxdl.vivo.com.cn/upgrade/oem/files/20261105053543df3dbd6f98071b0e38d9df5dab52b2b5.zip`
+- OTA metadata: `vivo/canoe/canoe:17/CP2A.260605.016/261104205930:user/release-keys`;
+  `post-version=PD2505_A_17.1.10.9.W10.V000L1`
+- boot: 100,663,296 bytes, SHA-256 `4557237b4eb31b31f62513fa9ac49c3090ff204230239359a97e55b44abc2a5f`
+- Kernel Image: 41,306,624 bytes, SHA-256
+  `fe2c8afae654d8b4f31bd4fe3c35ea9f642387b0fd191e8f83a1bf207f0c7337`
+- Constants for this build: timer site `0xffffffc0805173e4` (low21 `0x1173e4`),
+  copy site low21 `0x1f2218`, `__tracepoint_sys_exit` `0xffffffc0826d93e0`;
+  static `modules` address `0xffffffc0825d7d18` (+slide)
+- `struct module` (measured from BTF): `list 0x8`, `name 0x18`, `sect_attrs 0x4f0`;
+  `module_sect_attr` stride `0x50`, `address 0x48`
+- Gate handling matches 6.6.127: locate `hooks_defend` through tracefs kread, read
+  `.data` and scan for the `g[14]+perm[14]` signature (perm is a permutation of 0..13),
+  zero one aligned word at `g(perm[7])`, publish the SHA-256 prefix of the KO bound
+  through `khs_num`/`write_hash`, then `init_module` in a forked worker; when the zero
+  write misses, retry that stage at most 3 times (fresh spray and pages each round) and
+  then fail fast while keeping the holder
+- Symbols: `exploit/src/t61258os7_syms.h` resolves the 229 undefined symbols of the
+  6.12 KO from the OS7 kernel Image kallsyms, plus `get_free_pages_noprof` /
+  `vzalloc_noprof` for the SukiSU 6.12 KO, 266 entries in total
+- OS7 does not ship SUSFS yet (several gate whitelists are not finished; the n=1 path
+  with SUSFS off has been verified on hardware). Dynamic Switching is kept. The
+  two-hash / two-stage SUSFS code stays for later and the app does not enable it yet.
+
+`recover.py` and the OTA extraction flow are the same as OS6; the kallsyms/BTF results
+for the kernel Image match the table above.
+
+### 11.4 build (g690108013dcc)
+
+The 2026-11-11 11.4 OTA (patch, pre 17.1.10.12 -> post 17.1.11.4) moves the kernel to
+`6.12.58-android16-6-g690108013dcc-abogki576129896-4k`. The user-provided `boot_b.img`
+(100,663,296 B, sha256 `69f7231a...5f12`) matches the boot target hash of that
+incremental package, so it is the complete target boot.
+
+- Kernel Image: 41,372,160 B, sha256 `ae862162...cec0`
+- timer site `0xffffffc080517bec` (low21 `0x117bec`); copy low21 `0x1f27b0`
+- selinux `0xffffffc0827d6520`, panic_on_warn `0xffffffc08253afe0`,
+  sys_exit `0xffffffc0826e93e0`, root_user/init_* each +0x10000
+- `modules` `0xffffffc0825e7d18`; `struct module` layout same as gdd6fd
+- This build is the third runtime profile of `K61258` (gate=1); the symbol table is now
+  the two-column `t61258os7_syms.h` (gdd6fd / 114), selected by `g_gate_114`, and the
+  exec'd wait child inherits the marker through argv.
+
 ## Build
 
 The build sources are the `exploit/src/plant_core.inc` engine plus `K61223_plant.c` / `K61258_plant.c`.

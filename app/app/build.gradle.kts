@@ -29,8 +29,8 @@ android {
         minSdk = 33
         targetSdk = 37
         // CI stamps the release tag so the in-app updater can compare versions.
-        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 91
-        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.1"
+        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 93
+        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.2.1"
         ndk {
             abiFilters.add("arm64-v8a")
         }
@@ -76,6 +76,7 @@ android {
             keepDebugSymbols.add("**/libk61258.so")
             keepDebugSymbols.add("**/libk61238.so")
             keepDebugSymbols.add("**/libk66118.so")
+            keepDebugSymbols.add("**/libk66127.so")
             keepDebugSymbols.add("**/libsusfs_guard_lkm.so")
             keepDebugSymbols.add("**/libsusfs_guard_lkm_612.so")
             keepDebugSymbols.add("**/libhybridmount.so")
