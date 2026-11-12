@@ -61,11 +61,15 @@ SukiSU Ultra 或 FinaSU 的 root 环境。
 | Realme GT8（RMX6699） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme GT7 Pro（RMX5010） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme Neo8（RMX8899） | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| iQOO 15（V2505A） | OriginOS 6/7 | `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
+| iQOO 15（V2505A） | OriginOS 6/7 | `6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.58-android16-6-g690108013dcc-abogki576129896-4k` |
 | iQOO 15 Ultra | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
 | iQOO Pad Pro 8.8 英寸 | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
 | iQOO Pad6 Pro | OriginOS 7 | `6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k` |
 | vivo X200 Ultra（PD2454） | OriginOS 7 | `6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
+
+6.12.58 OS7（`gdd6fd5c98918` / `g690108013dcc`）与 6.6.127 使用 vivo `hooks_defend`
+加载门旁路。OS7 暂不提供 SUSFS（门的多条白名单未打通），保留管理器热切换；
+6.6.127 没有对应的 6.6 guard KO / 通用 loader，SUSFS 与热切换都不提供。
 
 ## 支持的管理器
 
