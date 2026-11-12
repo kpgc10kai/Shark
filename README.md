@@ -286,9 +286,9 @@ installed alongside this one, but settings and history are not migrated.
 ## Release
 
 - This fork: https://github.com/kpgc10kai/Shark/releases
-- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.1
-- Based on upstream v2.2.1 (upstream versionCode 93); each fork release stamps its
-  own `2.2.1-en.N` version and is signed with the fork's release key
+- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
+- Based on upstream v2.2.3 (upstream versionCode 95); each fork release stamps its
+  own `2.2.3-en.N` version and is signed with the fork's release key
 - Every fork release ships the signed APK together with its SHA-256 file
 
 Universal kernel release:

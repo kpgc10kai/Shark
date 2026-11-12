@@ -79,6 +79,7 @@ import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RemoveModerator
 import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -123,6 +124,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.core.content.FileProvider
 import java.io.File
@@ -264,6 +267,9 @@ class MainActivity : ComponentActivity() {
     private var selinuxText by mutableStateOf("")
     private var antiRootGuard by mutableStateOf(true)
     private var softRebootAfter by mutableStateOf(false)
+    private var softRebootDelayMin by mutableStateOf(0)
+    private var softRebootJob: Job? = null
+    private val softRebootDelays = listOf(0, 1, 2, 3)
     private var unloadGuard by mutableStateOf(true)
     private var susfsSupport by mutableStateOf(false)
     private var vfsSupport by mutableStateOf(false)
@@ -440,6 +446,7 @@ class MainActivity : ComponentActivity() {
         refreshAuth()
         antiRootGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("antiroot_guard", true)
         softRebootAfter = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("soft_reboot_after", false)
+        softRebootDelayMin = getSharedPreferences("pyb110", MODE_PRIVATE).getInt("soft_reboot_delay_min", 0)
         unloadGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("unload_guard", true)
         susfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("susfs_support", false)
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)
@@ -1499,6 +1506,17 @@ class MainActivity : ComponentActivity() {
                             checked = softRebootAfter,
                             onCheckedChange = { updateSoftRebootAfter(it) }
                         )
+                        if (softRebootAfter) {
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                            DropdownItem(
+                                icon = Icons.Filled.Schedule,
+                                title = stringResource(R.string.soft_reboot_time),
+                                values = softRebootDelays,
+                                selected = softRebootDelayMin,
+                                label = { softRebootDelayLabel(LocalContext.current, it) },
+                                onSelect = { updateSoftRebootDelay(it) }
+                            )
+                        }
                         if (!isVivoV2505a()) {
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             SettingSwitchItem(
@@ -2287,7 +2305,22 @@ class MainActivity : ComponentActivity() {
     private fun updateSoftRebootAfter(value: Boolean) {
         softRebootAfter = value
         getSharedPreferences("pyb110", MODE_PRIVATE).edit().putBoolean("soft_reboot_after", value).apply()
+        if (!value) {
+            softRebootJob?.cancel()
+            softRebootJob = null
+        }
         addLog("Soft reboot after jailbreak: ${if (value) "on" else "off"}")
+    }
+
+    private fun updateSoftRebootDelay(minutes: Int) {
+        softRebootDelayMin = minutes
+        getSharedPreferences("pyb110", MODE_PRIVATE).edit().putInt("soft_reboot_delay_min", minutes).apply()
+        addLog("Soft reboot time: ${softRebootDelayLabel(this, minutes)}")
+    }
+
+    private fun softRebootDelayLabel(ctx: Context, minutes: Int): String = when (minutes) {
+        0 -> ctx.getString(R.string.soft_reboot_now)
+        else -> ctx.getString(R.string.soft_reboot_in_min, minutes)
     }
 
     private fun updateUnloadGuard(value: Boolean) {
@@ -2537,14 +2570,24 @@ class MainActivity : ComponentActivity() {
                     withContext(Dispatchers.Main) { launchManager() }
                 }
                 if (softReboot && rc == 0 && active) {
-                    addLog("Jailbreak complete; restarting zygote")
-                    val rebootRc = runCatching {
-                        PrivService.newProcess(
-                            arrayOf("su", "-c", "setprop ctl.restart zygote"),
-                            shizukuEnv(), "/"
-                        ).waitFor()
-                    }.getOrDefault(-1)
-                    if (rebootRc != 0) addLog("Soft reboot failed rc=$rebootRc")
+                    val delayMin = softRebootDelayMin
+
+                    softRebootJob?.cancel()
+                    softRebootJob = lifecycleScope.launch(Dispatchers.IO) {
+                        if (delayMin > 0) {
+                            addLog("Jailbreak complete; restarting zygote in ${softRebootDelayLabel(this@MainActivity, delayMin)}")
+                            delay(delayMin * 60_000L)
+                        } else {
+                            addLog("Jailbreak complete; restarting zygote")
+                        }
+                        val rebootRc = runCatching {
+                            PrivService.newProcess(
+                                arrayOf("su", "-c", "setprop ctl.restart zygote"),
+                                shizukuEnv(), "/"
+                            ).waitFor()
+                        }.getOrDefault(-1)
+                        if (rebootRc != 0) addLog("Soft reboot failed rc=$rebootRc")
+                    }
                 }
             } catch (t: Throwable) {
                 addLog("ERROR: $t")

@@ -122,4 +122,7 @@
     <string name="third_party_deps">第三方依赖</string>
     <string name="third_party_deps_count">第三方依赖（%1$d）</string>
     <string name="unsupported_kernel">当前机型/内核不受支持：%1$s</string>
+    <string name="soft_reboot_time">软重启时间</string>
+    <string name="soft_reboot_now">立即</string>
+    <string name="soft_reboot_in_min">%1$dMin后</string>
 </resources>

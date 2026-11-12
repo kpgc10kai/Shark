@@ -122,4 +122,7 @@
     <string name="third_party_deps">Third-party dependencies</string>
     <string name="third_party_deps_count">Third-party dependencies (%1$d)</string>
     <string name="unsupported_kernel">Unsupported device/kernel: %1$s</string>
+    <string name="soft_reboot_time">Soft reboot time</string>
+    <string name="soft_reboot_now">Immediately</string>
+    <string name="soft_reboot_in_min">In %1$d min</string>
 </resources>
