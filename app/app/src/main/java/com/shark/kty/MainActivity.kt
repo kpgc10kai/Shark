@@ -1437,27 +1437,31 @@ class MainActivity : ComponentActivity() {
         ) {
             item {
                 Group {
-                    if (!isVivoV2505a() && exploit != ExploitKind.UNSUPPORTED) {
-                        SettingSwitchItem(
-                            icon = Icons.Filled.NotificationsOff,
-                            title = "越狱后禁用安全弹窗",
-                            checked = antiRootGuard,
-                            onCheckedChange = { updateAntiRootGuard(it) }
-                        )
-                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                    if (exploit != ExploitKind.UNSUPPORTED) {
+                        if (!isVivoV2505a()) {
+                            SettingSwitchItem(
+                                icon = Icons.Filled.NotificationsOff,
+                                title = "越狱后禁用安全弹窗",
+                                checked = antiRootGuard,
+                                onCheckedChange = { updateAntiRootGuard(it) }
+                            )
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        }
                         SettingSwitchItem(
                             icon = Icons.Filled.RestartAlt,
                             title = "越狱后软重启",
                             checked = softRebootAfter,
                             onCheckedChange = { updateSoftRebootAfter(it) }
                         )
-                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                        SettingSwitchItem(
-                            icon = Icons.Filled.RemoveModerator,
-                            title = "越狱后卸载内核安全防护",
-                            checked = unloadGuard,
-                            onCheckedChange = { updateUnloadGuard(it) }
-                        )
+                        if (!isVivoV2505a()) {
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                            SettingSwitchItem(
+                                icon = Icons.Filled.RemoveModerator,
+                                title = "越狱后卸载内核安全防护",
+                                checked = unloadGuard,
+                                onCheckedChange = { updateUnloadGuard(it) }
+                            )
+                        }
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
                     }
                     if (supportsSusfs()) {
