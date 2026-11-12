@@ -2206,7 +2206,7 @@ class MainActivity : ComponentActivity() {
 
     private fun readDeviceState(): Pair<Boolean, String> {
         val p = PrivService.newProcess(
-            arrayOf("sh", "-c", "if grep -qi kernelsu /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
+            arrayOf("sh", "-c", "if grep -q '^kernelsu .* Live ' /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
             shizukuEnv(), "/"
         )
         val lines = p.getInputStream()
@@ -2450,6 +2450,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE61223 -> arrayOf("$nativeDir/libk61223.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
+                    ExploitKind.CVE66127 -> arrayOf("$nativeDir/libk66127.so", "run")
                     ExploitKind.UNSUPPORTED -> null
                 } ?: run {
                     withContext(Dispatchers.Main) {
@@ -2471,7 +2472,7 @@ class MainActivity : ComponentActivity() {
                     selinuxText = se
                 }
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
-                if (active && !softReboot) {
+                if (rc == 0 && active && !softReboot) {
                     withContext(Dispatchers.Main) { launchManager() }
                 }
                 if (softReboot && rc == 0 && active) {
@@ -2560,6 +2561,7 @@ class MainActivity : ComponentActivity() {
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE61223("CVE-2026-98260-vivo-6.12.23"),
         CVE66118("CVE-2026-98260-6.6.118"),
+        CVE66127("CVE-2026-98260-vivo-6.6.127"),
         UNSUPPORTED("当前机型不支持")
     }
 
@@ -2584,7 +2586,8 @@ class MainActivity : ComponentActivity() {
             exploit == ExploitKind.CVE61223
 
     private fun supportsSusfs(): Boolean =
-        exploit != ExploitKind.CVE66118 && exploit != ExploitKind.UNSUPPORTED
+        exploit != ExploitKind.CVE66118 && exploit != ExploitKind.CVE66127 &&
+            exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
         if (supportsUniversal()) ManagerKind.entries
@@ -2607,6 +2610,7 @@ class MainActivity : ComponentActivity() {
             "6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k" to ExploitKind.CVE61223,
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
+            "6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k" to ExploitKind.CVE66127,
         )
     }
 }
