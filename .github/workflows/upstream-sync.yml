@@ -2,11 +2,14 @@ name: upstream-sync
 
 on:
   schedule:
-    # daily at 03:00 UTC
-    - cron: "0 3 * * *"
+    # GitHub's minimum is 5 minutes; scheduled runs can be delayed, so poll
+    # every 10 minutes and keep the no-change path cheap.
+    - cron: "*/10 * * * *"
   workflow_dispatch:
   push:
     # run once when this workflow itself changes, so the setup can be tested
+    branches:
+      - main
     paths:
       - ".github/workflows/upstream-sync.yml"
 
@@ -29,7 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          # shallow on purpose: the common case is "nothing new"
+          fetch-depth: 1
 
       - name: Configure git
         run: |
@@ -37,24 +41,73 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git remote add upstream "https://github.com/${UPSTREAM_REPO}.git"
 
-      - name: Check for upstream changes
+      - name: Detect upstream changes
         id: check
         run: |
-          # upstream force-moves some tags, which makes `fetch --tags` fail.
-          # Tags are not needed for the merge, so fetch the branch only.
-          git fetch --no-tags upstream "${UPSTREAM_BRANCH}"
-          if git merge-base --is-ancestor "upstream/${UPSTREAM_BRANCH}" HEAD; then
+          set -euo pipefail
+          remote_sha=$(git ls-remote "https://github.com/${UPSTREAM_REPO}.git" "refs/heads/${UPSTREAM_BRANCH}" | cut -f1)
+          if [ -z "$remote_sha" ]; then
+            echo "could not read upstream ${UPSTREAM_BRANCH}" >&2
+            exit 1
+          fi
+          echo "sha=${remote_sha}" >> "$GITHUB_OUTPUT"
+          echo "short=${remote_sha:0:8}" >> "$GITHUB_OUTPUT"
+          marker=$(cat .github/upstream-sha 2>/dev/null | tr -d '[:space:]' || true)
+          echo "marker=${marker}" >> "$GITHUB_OUTPUT"
+          if [ "$remote_sha" = "$marker" ]; then
             echo "up_to_date=1" >> "$GITHUB_OUTPUT"
-            echo "Already up to date with upstream/${UPSTREAM_BRANCH}."
+            echo "Already synced ${remote_sha:0:8}."
           else
             echo "up_to_date=0" >> "$GITHUB_OUTPUT"
-            echo "count=$(git rev-list --count HEAD..upstream/${UPSTREAM_BRANCH})" >> "$GITHUB_OUTPUT"
-            echo "New upstream commits: $(git rev-list --count HEAD..upstream/${UPSTREAM_BRANCH})"
+            echo "Upstream moved to ${remote_sha:0:8} (marker ${marker:0:8:-})."
+          fi
+
+      - name: Stop if an unresolved conflict is already open
+        id: blocked
+        if: steps.check.outputs.up_to_date == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          short="${{ steps.check.outputs.short }}"
+          open=$(gh issue list --state open --search "Upstream sync conflict ${short} in:title" --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "${open}" ]; then
+            echo "blocked=1" >> "$GITHUB_OUTPUT"
+            echo "Conflict issue #${open} already tracks ${short}; waiting for a manual fix."
+          else
+            echo "blocked=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch history and upstream
+        if: steps.check.outputs.up_to_date == '0' && steps.blocked.outputs.blocked == '0'
+        run: |
+          set -euo pipefail
+          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+            git fetch --unshallow origin
+          fi
+          git fetch --no-tags upstream "${UPSTREAM_BRANCH}"
+
+      - name: Record the marker when already merged
+        id: merged
+        if: steps.check.outputs.up_to_date == '0' && steps.blocked.outputs.blocked == '0'
+        run: |
+          set -euo pipefail
+          if git merge-base --is-ancestor "upstream/${UPSTREAM_BRANCH}" HEAD; then
+            # already contains the upstream tip (e.g. a previous run pushed the
+            # merge but not the marker), so only refresh the marker
+            echo "${{ steps.check.outputs.sha }}" > .github/upstream-sha
+            git add .github/upstream-sha
+            git commit -m "chore: record synced upstream ${{ steps.check.outputs.short }}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            echo "already=1" >> "$GITHUB_OUTPUT"
+            echo "Already contains the upstream tip; marker updated."
+          else
+            echo "already=0" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Merge upstream
         id: merge
-        if: steps.check.outputs.up_to_date == '0'
+        if: steps.merged.outputs.already == '0'
         run: |
           set +e
           git merge "upstream/${UPSTREAM_BRANCH}" --no-edit
@@ -91,7 +144,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build the merged tree
-        id: build
         if: steps.merge.outputs.merged == '1'
         working-directory: app
         run: |
@@ -117,23 +169,21 @@ jobs:
         if: steps.merge.outputs.merged == '1' && success()
         run: |
           set -euo pipefail
-          # the build above already validated this tree
+          echo "${{ steps.check.outputs.sha }}" > .github/upstream-sha
+          git add .github/upstream-sha
+          git commit -m "chore: record synced upstream ${{ steps.check.outputs.short }}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Report a merge conflict
-        if: steps.check.outputs.up_to_date == '0' && steps.merge.outputs.merged == '0'
+        if: steps.merge.outputs.merged == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          body=$(printf 'Upstream `%s` has new commits but the automatic merge conflicts.\n\nConflicting files:\n\n```\n%s\n```\n\nResolve locally with:\n\n```bash\ngit fetch upstream\ngit merge upstream/main\n```\n\nWorkflow run: %s\n' \
-            "$UPSTREAM_REPO" "$(cat /tmp/conflicts.txt)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-          existing=$(gh issue list --state open --search "Upstream sync conflict in:title" --limit 1 --json number --jq '.[0].number // empty')
-          if [ -n "${existing}" ]; then
-            gh issue comment "${existing}" --body "${body}"
-          else
-            gh issue create --title "Upstream sync conflict" --body "${body}"
-          fi
+          short="${{ steps.check.outputs.short }}"
+          body=$(printf 'Upstream `%s` moved to `%s` but the automatic merge conflicts.\n\nConflicting files:\n\n```\n%s\n```\n\nResolve locally with:\n\n```bash\ngit fetch upstream\ngit merge upstream/main\n```\n\nA successful sync records `.github/upstream-sha` automatically, so no manual marker edit is needed.\n\nWorkflow run: %s\n' \
+            "$UPSTREAM_REPO" "$short" "$(cat /tmp/conflicts.txt)" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+          gh issue create --title "Upstream sync conflict ${short}" --body "${body}"
 
       - name: Report a build failure
         if: steps.merge.outputs.merged == '1' && failure()
@@ -141,11 +191,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          body=$(printf 'The merged upstream tree **failed to build**, so it was not pushed.\n\nWorkflow run: %s\n' \
-            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-          existing=$(gh issue list --state open --search "Upstream sync build failure in:title" --limit 1 --json number --jq '.[0].number // empty')
-          if [ -n "${existing}" ]; then
-            gh issue comment "${existing}" --body "${body}"
-          else
-            gh issue create --title "Upstream sync build failure" --body "${body}"
-          fi
+          short="${{ steps.check.outputs.short }}"
+          body=$(printf 'The merged upstream tree (`%s`) **failed to build**, so it was not pushed.\n\nWorkflow run: %s\n' \
+            "$short" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+          gh issue create --title "Upstream sync build failure ${short}" --body "${body}"
