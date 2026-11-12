@@ -2513,6 +2513,7 @@ class MainActivity : ComponentActivity() {
         val env = shizukuEnv() + "PYB110_DIR=$dir" + "PYB110_MANAGER=${initialManager.manager}" +
             "PYB110_LATE_LOAD=1" +
             "PYB110_UNLOAD_GUARD=${if (unloadGuard) "1" else "0"}" +
+            "PYB110_GATE=${if (isGateKernel()) "1" else "0"}" +
             "PYB110_DISABLE_ANTIROOT=${if (antiRootGuard) "1" else "0"}" +
             "PYB110_SUSFS=${if (susfsActive) "1" else "0"}" +
             "PYB110_VFS=${if (vfsSupport) "1" else "0"}" +
@@ -2585,6 +2586,13 @@ class MainActivity : ComponentActivity() {
         (exploit == ExploitKind.CVE61223 || exploit == ExploitKind.CVE61258) &&
             kernelVersion.contains("abogki")
 
+    /** OriginOS 7 builds load the KSU LKM through the hooks_defend gate. */
+    private fun isGateKernel(): Boolean =
+        exploit == ExploitKind.CVE66127 ||
+            (exploit == ExploitKind.CVE61258 &&
+                (kernelVersion.contains("gdd6fd5c98918") ||
+                    kernelVersion.contains("g690108013dcc")))
+
     private fun supportsUniversal(): Boolean =
         exploit == ExploitKind.CVE61821 ||
             exploit == ExploitKind.CVE61269 ||
@@ -2593,7 +2601,8 @@ class MainActivity : ComponentActivity() {
             exploit == ExploitKind.CVE61223
 
     private fun supportsSusfs(): Boolean =
-        exploit != ExploitKind.CVE66118 && exploit != ExploitKind.CVE66127 &&
+        !isGateKernel() && exploit != ExploitKind.CVE66118 &&
+            exploit != ExploitKind.CVE66127 &&
             exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
@@ -2618,6 +2627,7 @@ class MainActivity : ComponentActivity() {
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
             "6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k" to ExploitKind.CVE66127,
+            "6.12.58-android16-6-g690108013dcc-abogki576129896-4k" to ExploitKind.CVE61258,
         )
     }
 }
