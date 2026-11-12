@@ -1507,13 +1507,14 @@ class MainActivity : ComponentActivity() {
                             onCheckedChange = { updateSoftRebootAfter(it) }
                         )
                         if (softRebootAfter) {
+                            val softRebootCtx = LocalContext.current
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             DropdownItem(
                                 icon = Icons.Filled.Schedule,
                                 title = stringResource(R.string.soft_reboot_time),
                                 values = softRebootDelays,
                                 selected = softRebootDelayMin,
-                                label = { softRebootDelayLabel(LocalContext.current, it) },
+                                label = { softRebootDelayLabel(softRebootCtx, it) },
                                 onSelect = { updateSoftRebootDelay(it) }
                             )
                         }
