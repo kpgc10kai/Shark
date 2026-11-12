@@ -3,13 +3,13 @@
 <p align="center"><b>多机型 Android 一键临时 Root 与管理器切换工具</b></p>
 
 <p align="center">
-  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.2.2"><img src="docs/badges/release.svg" alt="Release"></a>
+  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.2.3"><img src="docs/badges/release.svg" alt="Release"></a>
   <a href="LICENSE"><img src="docs/badges/license.svg" alt="License"></a>
   <img src="docs/badges/android.svg" alt="Android">
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
   <img src="docs/badges/compose.svg" alt="Compose">
   <img src="docs/badges/kernel.svg" alt="Kernel">
-  <a href="https://gitee.com/puci1/Shark/releases/tag/v2.2.2"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
+  <a href="https://gitee.com/puci1/Shark/releases/tag/v2.2.3"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
 Shark 支持 OnePlus、OPPO、Realme、iQOO 等设备，不用解锁 BL，起手只需要
@@ -236,10 +236,10 @@ Shark 只内置编译好的 `libksud_universal.so`。
 
 ## 发布
 
-- GitHub：https://github.com/Yunnijian/Shark/releases/tag/v2.2.2
-- Gitee：https://gitee.com/puci1/Shark/releases/tag/v2.2.2
-- App：v2.2.2（94）
-- APK SHA-256：`4cb9df4be2f395941ef45c9b972cf78a4f7b6bc12ec9ceeea66b86792696ed5c`
+- GitHub：https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
+- Gitee：https://gitee.com/puci1/Shark/releases/tag/v2.2.3
+- App：v2.2.3（95）
+- APK SHA-256：`4ec906782cdefc724fe8e84d011cb29a4447c1cb3091731d7987a14e8fe30493`
 
 通用内核发布：
 
