@@ -59,7 +59,7 @@ jobs:
             echo "Already synced ${remote_sha:0:8}."
           else
             echo "up_to_date=0" >> "$GITHUB_OUTPUT"
-            echo "Upstream moved to ${remote_sha:0:8} (marker ${marker:0:8:-})."
+            echo "Upstream moved to ${remote_sha:0:8} (marker ${marker:0:8})."
           fi
 
       - name: Stop if an unresolved conflict is already open
