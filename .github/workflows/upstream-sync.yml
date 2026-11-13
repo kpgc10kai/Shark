@@ -1,11 +1,11 @@
 name: upstream-sync
-# poll cadence: every 10 minutes (GitHub may delay scheduled runs)
+# poll cadence: every 5 minutes (the GitHub minimum) (GitHub may delay scheduled runs)
 
 on:
   schedule:
     # GitHub's minimum is 5 minutes; scheduled runs can be delayed, so poll
-    # every 10 minutes and keep the no-change path cheap.
-    - cron: "*/10 * * * *"
+    # every 5 minutes (the GitHub minimum) and keep the no-change path cheap.
+    - cron: "*/5 * * * *"
   workflow_dispatch:
   push:
     # run once when this workflow itself changes, so the setup can be tested
