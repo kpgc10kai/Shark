@@ -1445,7 +1445,7 @@ class MainActivity : ComponentActivity() {
             item {
                 Group {
                     if (exploit != ExploitKind.UNSUPPORTED) {
-                        if (!isVivoV2505a()) {
+                        if (!hidesOplusOnlyOptions()) {
                             SettingSwitchItem(
                                 icon = Icons.Filled.NotificationsOff,
                                 title = "越狱后禁用安全弹窗",
@@ -1471,7 +1471,7 @@ class MainActivity : ComponentActivity() {
                                 onSelect = { updateSoftRebootDelay(it) }
                             )
                         }
-                        if (!isVivoV2505a()) {
+                        if (!hidesOplusOnlyOptions()) {
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             SettingSwitchItem(
                                 icon = Icons.Filled.RemoveModerator,
@@ -2639,6 +2639,14 @@ class MainActivity : ComponentActivity() {
     private fun isVivoV2505a(): Boolean =
         (exploit == ExploitKind.CVE61223 || exploit == ExploitKind.CVE61258) &&
             kernelVersion.contains("abogki")
+
+    /** The OPPO anti-root actions are meaningless on the Xiaomi-port kernels. */
+    private fun isXiaomiPortKernel(): Boolean =
+        kernelVersion == "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" ||
+            kernelVersion == "6.18.21-android17-5-g284297031c53-abogki555938958-4k"
+
+    private fun hidesOplusOnlyOptions(): Boolean =
+        isVivoV2505a() || isXiaomiPortKernel()
 
     /** OriginOS 7 builds load the KSU LKM through the hooks_defend gate. */
     private fun isGateKernel(): Boolean =
