@@ -55,7 +55,7 @@ SukiSU Ultra, or FinaSU root environment.
 | OnePlus Ace7 (PYF110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OnePlus Ace6T (PLR110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.38-android16-5-g844001fb8721-ab14552068-4k` |
 | OnePlus Ace6 Ultra (PMB110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus Ace6 (PLQ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OnePlus Ace6 (PLQ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k`<br>`6.6.118-android15-8-gb1422e39c313-abogki552867473-4k` |
 | OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
@@ -286,9 +286,9 @@ installed alongside this one, but settings and history are not migrated.
 ## Release
 
 - This fork: https://github.com/kpgc10kai/Shark/releases
-- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
-- Based on upstream v2.2.3 (upstream versionCode 95); each fork release stamps its
-  own `2.2.3-en.N` version and is signed with the fork's release key
+- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.3.2
+- Based on upstream v2.3.2 (upstream versionCode 98); each fork release stamps its
+  own `2.3.2-en.N` version and is signed with the fork's release key
 - Every fork release ships the signed APK together with its SHA-256 file
 
 Universal kernel release:
