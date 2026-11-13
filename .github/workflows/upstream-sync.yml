@@ -1,4 +1,5 @@
 name: upstream-sync
+# poll cadence: every 10 minutes (GitHub may delay scheduled runs)
 
 on:
   schedule:
