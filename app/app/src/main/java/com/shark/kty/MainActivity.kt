@@ -2491,7 +2491,11 @@ class MainActivity : ComponentActivity() {
                 val nativeDir = applicationInfo.nativeLibraryDir
                 addLog("Starting ${exploit.fullLabel}")
                 val cmd = when (exploit) {
-                    ExploitKind.CVE61821 -> arrayOf("$nativeDir/libk61821.so", "run")
+                    ExploitKind.CVE61821 -> arrayOf(
+                        if (kernelVersion == "6.18.21-android17-5-g284297031c53-abogki555938958-4k")
+                            "$nativeDir/libk61821p.so" else "$nativeDir/libk61821.so",
+                        "run"
+                    )
                     ExploitKind.CVE61269 -> arrayOf("$nativeDir/libk61269.so", "run")
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
@@ -2667,6 +2671,7 @@ class MainActivity : ComponentActivity() {
         private val PROFILE_BY_RELEASE: Map<String, ExploitKind> = mapOf(
             "6.18.21-android17-5-gf957accaf563-ab15926176-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g7fcbffcad3e1-ab16353812-4k" to ExploitKind.CVE61821,
+            "6.18.21-android17-5-g284297031c53-abogki555938958-4k" to ExploitKind.CVE61821,
             "6.12.69-android16-6-g242e1a07f878-ab15865446-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g5fd39602326e-ab16372235-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
