@@ -3,7 +3,7 @@
 <p align="center"><b>多机型 Android 一键临时 Root 与管理器切换工具</b></p>
 
 <p align="center">
-  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.2.3"><img src="docs/badges/release.svg" alt="Release"></a>
+  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.3"><img src="docs/badges/release.svg" alt="Release"></a>
   <a href="LICENSE"><img src="docs/badges/license.svg" alt="License"></a>
   <img src="docs/badges/android.svg" alt="Android">
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
@@ -236,10 +236,10 @@ Shark 只内置编译好的 `libksud_universal.so`。
 
 ## 发布
 
-- GitHub：https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
+- GitHub：https://github.com/Yunnijian/Shark/releases/tag/v2.3
 - Gitee：https://gitee.com/puci1/Shark/releases/tag/v2.2.3
-- App：v2.2.3（95）
-- APK SHA-256：`4ec906782cdefc724fe8e84d011cb29a4447c1cb3091731d7987a14e8fe30493`
+- App：v2.3（96）
+- APK SHA-256：`735201c7b84e7f7d44e1ae3bc9dcbd97f0b79831bfcf02d1a60f8622002692b3`
 
 通用内核发布：
 
