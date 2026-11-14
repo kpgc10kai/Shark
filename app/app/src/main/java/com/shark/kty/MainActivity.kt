@@ -79,6 +79,7 @@ import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RemoveModerator
 import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Smartphone
@@ -269,6 +270,8 @@ class MainActivity : ComponentActivity() {
     private var softRebootAfter by mutableStateOf(false)
     private var softRebootDelayMin by mutableStateOf(0)
     private var softRebootJob: Job? = null
+    private var autoRootOnBoot by mutableStateOf(false)
+    private var autoRootRequested by mutableStateOf(false)
     private val softRebootDelays = listOf(0, 1, 2, 3)
     private var unloadGuard by mutableStateOf(true)
     private var susfsSupport by mutableStateOf(false)
@@ -447,6 +450,11 @@ class MainActivity : ComponentActivity() {
         antiRootGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("antiroot_guard", true)
         softRebootAfter = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("soft_reboot_after", false)
         softRebootDelayMin = getSharedPreferences("pyb110", MODE_PRIVATE).getInt("soft_reboot_delay_min", 0)
+        autoRootOnBoot = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean(AutoRootBootReceiver.KEY_ENABLED, false)
+        autoRootRequested = intent?.getBooleanExtra(AutoRootBootReceiver.EXTRA_AUTO_ROOT, false) == true
+        if (autoRootRequested) {
+            addLog("Auto root on boot: starting")
+        }
         unloadGuard = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("unload_guard", true)
         susfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("susfs_support", false)
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)
@@ -1518,6 +1526,13 @@ class MainActivity : ComponentActivity() {
                                 onSelect = { updateSoftRebootDelay(it) }
                             )
                         }
+                        SettingSwitchItem(
+                            icon = Icons.Filled.PowerSettingsNew,
+                            title = stringResource(R.string.auto_root_on_boot),
+                            checked = autoRootOnBoot,
+                            onCheckedChange = { updateAutoRootOnBoot(it) }
+                        )
+                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
                         if (!hidesOplusOnlyOptions()) {
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             SettingSwitchItem(
@@ -2267,6 +2282,16 @@ class MainActivity : ComponentActivity() {
 
     private fun refreshAuth() {
         authorized = PrivService.granted()
+        maybeStartAutoRoot()
+    }
+
+    private fun maybeStartAutoRoot() {
+        if (!autoRootRequested) return
+        if (busy) return
+        if (!binderReady || !authorized) return
+        autoRootRequested = false
+        addLog("Auto root on boot: running")
+        runFlow()
     }
 
     private fun refreshKsuAsync() {
@@ -2301,6 +2326,28 @@ class MainActivity : ComponentActivity() {
         antiRootGuard = value
         getSharedPreferences("pyb110", MODE_PRIVATE).edit().putBoolean("antiroot_guard", value).apply()
         addLog("Anti-root guard: ${if (value) "on (stop riskdetect HAL; restored on reboot)" else "off"}")
+    }
+
+    private fun updateAutoRootOnBoot(value: Boolean) {
+        autoRootOnBoot = value
+        getSharedPreferences("pyb110", MODE_PRIVATE).edit()
+            .putBoolean(AutoRootBootReceiver.KEY_ENABLED, value).apply()
+        if (!value) {
+            getSharedPreferences("pyb110", MODE_PRIVATE).edit()
+                .putBoolean(AutoRootBootReceiver.KEY_RUNNING, false).apply()
+        }
+        addLog("Auto root on boot: ${if (value) "on" else "off"}")
+        if (value && !Settings.canDrawOverlays(this)) {
+            addLog("Allow \"Display over other apps\" so the root flow can start after boot")
+            runCatching {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
+                )
+            }
+        }
     }
 
     private fun updateSoftRebootAfter(value: Boolean) {
@@ -2598,6 +2645,8 @@ class MainActivity : ComponentActivity() {
                 addLog("ERROR: $t")
             } finally {
                 HistoryStore.finish(success, exit, System.currentTimeMillis() - startedAt)
+                getSharedPreferences("pyb110", MODE_PRIVATE).edit()
+                    .putBoolean(AutoRootBootReceiver.KEY_RUNNING, false).apply()
                 withContext(Dispatchers.Main) { busy = false }
             }
         }

@@ -90,6 +90,12 @@ installed manager APK, so **install the manager you intend to use first**.
   Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
+- **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
+  result is shown in the log. The app asks for the "Display over other apps"
+  permission so it can start from the background; allow Shark to auto-start in
+  your device's battery/settings screen, or it cannot run after a reboot. If the
+  previous automatic attempt never finished (a reboot during the flow), the
+  option disables itself to avoid a loop.
 - **Five manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or
   FinaSU directly from the ROOT Manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the

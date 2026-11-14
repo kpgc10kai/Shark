@@ -29,8 +29,8 @@ android {
         minSdk = 33
         targetSdk = 37
         // CI stamps the release tag so the in-app updater can compare versions.
-        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 98
-        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.3.2"
+        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 100
+        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.4.1"
         ndk {
             abiFilters.add("arm64-v8a")
         }

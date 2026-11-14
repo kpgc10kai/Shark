@@ -125,4 +125,5 @@
     <string name="soft_reboot_time">Soft reboot time</string>
     <string name="soft_reboot_now">Immediately</string>
     <string name="soft_reboot_in_min">In %1$d min</string>
+    <string name="auto_root_on_boot">Auto root on boot</string>
 </resources>

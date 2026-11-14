@@ -125,4 +125,5 @@
     <string name="soft_reboot_time">软重启时间</string>
     <string name="soft_reboot_now">立即</string>
     <string name="soft_reboot_in_min">%1$dMin后</string>
+    <string name="auto_root_on_boot">开机自动 root 化</string>
 </resources>
