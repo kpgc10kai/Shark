@@ -1,18 +1,10 @@
 name: upstream-sync
-# poll cadence: every 5 minutes (the GitHub minimum) (GitHub may delay scheduled runs)
+# Upstream (github.com/Yunnijian/Shark) was removed in November 2026, so the
+# automatic schedule is disabled. Run this workflow manually if the upstream
+# repository ever returns.
 
 on:
-  schedule:
-    # GitHub's minimum is 5 minutes; scheduled runs can be delayed, so poll
-    # every 5 minutes (the GitHub minimum) and keep the no-change path cheap.
-    - cron: "*/5 * * * *"
   workflow_dispatch:
-  push:
-    # run once when this workflow itself changes, so the setup can be tested
-    branches:
-      - main
-    paths:
-      - ".github/workflows/upstream-sync.yml"
 
 permissions:
   contents: write
@@ -46,10 +38,21 @@ jobs:
         id: check
         run: |
           set -euo pipefail
-          remote_sha=$(git ls-remote "https://github.com/${UPSTREAM_REPO}.git" "refs/heads/${UPSTREAM_BRANCH}" | cut -f1)
+          if ! remote_sha=$(git ls-remote "https://github.com/${UPSTREAM_REPO}.git" "refs/heads/${UPSTREAM_BRANCH}" 2>/dev/null | cut -f1); then
+            echo "::warning::Upstream ${UPSTREAM_REPO} is not reachable (removed or private). Nothing to sync."
+            echo "up_to_date=1" >> "$GITHUB_OUTPUT"
+            echo "sha=" >> "$GITHUB_OUTPUT"
+            echo "short=" >> "$GITHUB_OUTPUT"
+            echo "marker=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -z "$remote_sha" ]; then
-            echo "could not read upstream ${UPSTREAM_BRANCH}" >&2
-            exit 1
+            echo "::warning::Upstream ${UPSTREAM_REPO} has no branch ${UPSTREAM_BRANCH}. Nothing to sync."
+            echo "up_to_date=1" >> "$GITHUB_OUTPUT"
+            echo "sha=" >> "$GITHUB_OUTPUT"
+            echo "short=" >> "$GITHUB_OUTPUT"
+            echo "marker=" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           echo "sha=${remote_sha}" >> "$GITHUB_OUTPUT"
           echo "short=${remote_sha:0:8}" >> "$GITHUB_OUTPUT"

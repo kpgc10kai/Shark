@@ -287,6 +287,8 @@ installed alongside this one, but settings and history are not migrated.
 
 - This fork: https://github.com/kpgc10kai/Shark/releases
 - Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.3.2
+  (the upstream repository was removed in November 2026; this fork continues
+  from the last synced commit, v2.3.2)
 - Based on upstream v2.3.2 (upstream versionCode 98); each fork release stamps its
   own `2.3.2-en.N` version and is signed with the fork's release key
 - Every fork release ships the signed APK together with its SHA-256 file
