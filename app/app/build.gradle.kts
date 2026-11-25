@@ -55,6 +55,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix = ".a6test"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
