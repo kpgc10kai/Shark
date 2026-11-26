@@ -129,7 +129,10 @@
     <string name="wireless_adb_pairing">Wireless ADB pairing</string>
     <string name="wireless_adb_button">Wireless ADB</string>
     <string name="wireless_adb_connected_button">Wireless ADB</string>
-    <string name="wireless_adb_pairing_summary">Pair over Wireless debugging to activate the shell service (experimental)</string>
+    <string name="wireless_adb_pairing_summary">Pair over Wireless debugging; the helper can enter the code automatically</string>
+    <string name="pairing_helper_title">Pairing helper</string>
+    <string name="pairing_helper_enabled">Enabled - pairing codes are read automatically</string>
+    <string name="pairing_helper_disabled">Disabled - tap to enable automatic pairing</string>
     <string name="wireless_debugging_pairing_channel">Wireless debugging pairing</string>
     <string name="pairing_alert_channel">Pairing code</string>
     <string name="pairing_service_found">Pairing service found</string>
@@ -151,4 +154,23 @@
     <string name="pairing_in_progress">Pairing…</string>
     <string name="search_stopped">Search stopped</string>
     <string name="pairing_service_not_found_retry">Pairing service not found. Retry?</string>
-</resources>
+    <!-- Shell supervisor -->
+    <string name="shell_channel_name">Shell service</string>
+    <string name="shell_channel_desc">Keeps the privileged shell running</string>
+    <string name="shell_notification_title">Shark Shell</string>
+    <string name="shell_notification_connecting">Connecting to the privileged shell…</string>
+    <string name="shell_notification_running">Privileged shell is running</string>    <!-- In-app pairing code -->
+    <string name="pairing_code_dialog_title">Enter pairing code</string>
+    <string name="pairing_code_dialog_message">Keep the Wireless debugging pairing dialog open in Settings, then enter the 6-digit code here.</string>
+    <string name="pairing_code_hint">6-digit code</string>
+    <string name="pairing_code_pair">Pair</string>
+    <string name="pairing_code_cancel">Cancel</string>    <!-- Accessibility pairing helper -->
+    <string name="accessibility_service_label">Shark pairing helper</string>
+    <string name="accessibility_service_description">Reads the six-digit pairing code from the Android wireless debugging dialog so you do not have to type it. Only the Settings app is observed.</string>
+    <string name="accessibility_prompt_title">Enable automatic pairing?</string>
+    <string name="accessibility_prompt_message">Shark can read the pairing code from Settings automatically. Enable the Shark pairing helper under Accessibility to skip typing the code.</string>
+    <string name="accessibility_prompt_open">Open settings</string>
+    <string name="accessibility_prompt_skip">Not now</string>
+    <string name="pairing_notification_required_title">Notifications are off</string>
+    <string name="pairing_notification_required_message">Shark shows the pairing-code field in a notification. Enable notifications for Shark, then tap Wireless ADB again.</string>
+    <string name="pairing_notification_settings">Open notification settings</string></resources>

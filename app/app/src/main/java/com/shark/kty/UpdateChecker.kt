@@ -14,6 +14,7 @@ data class UpdateAsset(
     val name: String,
     val url: String,
     val size: Long,
+    val digest: String? = null,
 )
 
 data class UpdateInfo(
@@ -79,7 +80,12 @@ object UpdateChecker {
                 val url = item.optString("browser_download_url")
                     .ifBlank { item.optString("download_url") }
                 if (url.isBlank()) continue
-                val asset = UpdateAsset(name, url, item.optLong("size", 0L))
+                val asset = UpdateAsset(
+                    name,
+                    url,
+                    item.optLong("size", 0L),
+                    item.optString("digest").ifBlank { null },
+                )
                 if (apk == null && name.endsWith(".apk", ignoreCase = true)) apk = asset
                 if (shaAsset == null &&
                     (name.endsWith(".sha256", ignoreCase = true) ||
@@ -91,9 +97,14 @@ object UpdateChecker {
         }
         val apkAsset = apk ?: return null
         val releaseBody = json.optString("body")
-        val expectedSha = shaAsset
-            ?.let { runCatching { downloadText(it.url) }.getOrNull() }
-            ?.let(::extractSha256)
+        val expectedSha = apkAsset.digest
+            ?.takeIf { it.startsWith("sha256:", ignoreCase = true) }
+            ?.substringAfter(':')
+            ?.takeIf { it.matches(Regex("[0-9a-fA-F]{64}")) }
+            ?.lowercase()
+            ?: shaAsset
+                ?.let { runCatching { downloadText(it.url) }.getOrNull() }
+                ?.let(::extractSha256)
             ?: extractSha256(releaseBody)
         val pageUrl = json.optString("html_url").ifBlank {
             "https://github.com/kpgc10kai/Shark/releases/tag/$tag"

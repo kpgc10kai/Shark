@@ -305,6 +305,7 @@ class MainActivity : ComponentActivity() {
     private var droidspacesProgress by mutableStateOf(0f)
     private var droidspacesError by mutableStateOf<String?>(null)
     private var droidspacesSavedPath by mutableStateOf<String?>(null)
+    private var pairingHelperEnabled by mutableStateOf(false)
 
     /* UI-only state hoisted for the COUI top bar / dialogs. */
     private var aboutPage by mutableStateOf(AboutPage.HOME)
@@ -321,11 +322,13 @@ class MainActivity : ComponentActivity() {
         binderReady = PrivService.pick() != null
         refreshAuth()
         refreshKsuAsync()
+        if (binderReady) ShellSupervisorService.start(this)
     }
     private val stellarBinderListener = Stellar.OnBinderReceivedListener {
         binderReady = PrivService.pick() != null
         refreshAuth()
         refreshKsuAsync()
+        if (binderReady) ShellSupervisorService.start(this)
     }
 
     private fun onPermissionResult(ok: Boolean) {
@@ -334,8 +337,15 @@ class MainActivity : ComponentActivity() {
         if (ok) refreshKsuAsync()
     }
 
+    override fun onResume() {
+        super.onResume()
+        pairingHelperEnabled = isPairingAccessibilityEnabled()
+    }
+
     override fun onStart() {
         super.onStart()
+        pairingHelperEnabled = isPairingAccessibilityEnabled()
+        if (BuildConfig.VERSION_NAME.contains("exp", ignoreCase = true)) return
         if (updateCheckedThisForeground) return
         updateCheckedThisForeground = true
         if (updateDialogVisible || updateDownloading) return
@@ -460,6 +470,10 @@ class MainActivity : ComponentActivity() {
             addLog("Auto root on boot: starting")
         }
         StellarSettings.init(this)
+        requestShellBinder()
+        if (WirelessAdb.connected || PrivService.pick() != null) {
+            ShellSupervisorService.start(this)
+        }
         val adbPairingPort = intent?.getIntExtra("adb_pairing_port", -1) ?: -1
         if (adbPairingPort > 0) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -469,6 +483,7 @@ class MainActivity : ComponentActivity() {
                         addLog("Wireless ADB connected (port $adbPairingPort)")
                         binderReady = true
                         authorized = true
+                        AdbPairingService.cancel(this@MainActivity)
                     } else {
                         addLog("Wireless ADB connection failed (port $adbPairingPort)")
                     }
@@ -1585,6 +1600,20 @@ class MainActivity : ComponentActivity() {
                             onClick = { startWirelessAdbPairing() }
                         )
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        SettingItem(
+                            icon = Icons.Filled.Security,
+                            title = stringResource(R.string.pairing_helper_title),
+                            summary = stringResource(
+                                if (pairingHelperEnabled) R.string.pairing_helper_enabled
+                                else R.string.pairing_helper_disabled
+                            ),
+                            onClick = {
+                                runCatching {
+                                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                                }
+                            }
+                        )
+                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
                         if (!hidesOplusOnlyOptions()) {
                             Divider(startIndent = itemDividerIndent(), color = colors.divider)
                             SettingSwitchItem(
@@ -2380,6 +2409,21 @@ class MainActivity : ComponentActivity() {
         addLog("Anti-root guard: ${if (value) "on (stop riskdetect HAL; restored on reboot)" else "off"}")
     }
 
+    private fun requestShellBinder() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dir = getExternalFilesDir(null) ?: filesDir
+            val result = runCatching {
+                File(dir, "binder-request").writeText(System.currentTimeMillis().toString())
+            }
+            withContext(Dispatchers.Main) {
+                addLog(
+                    if (result.isSuccess) "Requested shell binder"
+                    else "Shell binder request failed: ${result.exceptionOrNull()?.message}"
+                )
+            }
+        }
+    }
+
     private fun startWirelessAdbPairing() {
         StellarSettings.init(this)
         val wanted = mutableListOf<String>()
@@ -2393,7 +2437,47 @@ class MainActivity : ComponentActivity() {
             checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
         }
         if (missing.isNotEmpty()) {
+            addLog("Notification permission is required for the pairing code field")
             requestPermissions(missing.toTypedArray(), 1001)
+            return
+        }
+        val notificationManager = getSystemService(android.app.NotificationManager::class.java)
+        val notificationsEnabled = notificationManager.areNotificationsEnabled()
+        val alertChannel = notificationManager.getNotificationChannel(
+            AdbPairingService.alertNotificationChannel
+        )
+        val alertChannelBlocked =
+            alertChannel != null && alertChannel.importance == android.app.NotificationManager.IMPORTANCE_NONE
+        if (!notificationsEnabled || alertChannelBlocked) {
+            addLog("Pairing notifications are disabled; cannot show the code field")
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.pairing_notification_required_title)
+                .setMessage(R.string.pairing_notification_required_message)
+                .setPositiveButton(R.string.pairing_notification_settings) { _, _ ->
+                    runCatching {
+                        startActivity(
+                            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                        )
+                    }
+                }
+                .setNegativeButton(R.string.accessibility_prompt_skip, null)
+                .show()
+            return
+        }
+        if (!isPairingAccessibilityEnabled()) {
+            addLog("Pairing helper is not enabled")
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.accessibility_prompt_title)
+                .setMessage(R.string.accessibility_prompt_message)
+                .setPositiveButton(R.string.accessibility_prompt_open) { _, _ ->
+                    runCatching {
+                        startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                    }
+                }
+                .setNegativeButton(R.string.accessibility_prompt_skip, null)
+                .show()
+            return
         }
         addLog("Wireless ADB pairing: searching for the pairing service…")
         startForegroundService(AdbPairingService.startIntent(this))
@@ -2406,6 +2490,17 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
+    }
+
+    private fun isPairingAccessibilityEnabled(): Boolean {
+        val enabled = runCatching {
+            Settings.Secure.getString(
+                contentResolver,
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            )
+        }.getOrNull() ?: return false
+        val target = "$packageName/com.shark.kty.PairingAccessibilityService"
+        return enabled.split(':').any { it.equals(target, ignoreCase = true) }
     }
 
     private fun updateAutoRootOnBoot(value: Boolean) {
@@ -2708,10 +2803,17 @@ class MainActivity : ComponentActivity() {
                     // Issue #3: PROBE_TRACE can leave ftrace enlarged. Restore it
                     // after a successful run, but never block the flow on a
                     // manager root prompt: give it 3 seconds, then move on.
+                    // The HONOR 600 runner restores the original per-CPU size
+                    // before it parks, so leave the buffer alone there; resetting
+                    // it to 1 here would undo that restore.
+                    val plantRestoresTrace =
+                        kernelVersion == "6.6.118-android15-8-gc901ea41aa32-ab15981388-4k"
                     val restoreTrace = "echo 0 > /sys/kernel/tracing/tracing_on 2>/dev/null; " +
-                        "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; " +
+                        (if (plantRestoresTrace) "" else
+                            "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; ") +
                         "echo 0 > /sys/kernel/debug/tracing/tracing_on 2>/dev/null; " +
-                        "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null"
+                        (if (plantRestoresTrace) "" else
+                            "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null")
                     Thread {
                         val process = runCatching {
                             PrivService.newProcess(
@@ -2853,6 +2955,8 @@ class MainActivity : ComponentActivity() {
         NEXT("KernelSU Next", "com.rifsxd.ksunext", "next"),
         BAKASU("BakaSU", "com.resukisu.resukisu", "bakasu"),
         SUKISU("SukiSU Ultra", "com.sukisu.ultra", "sukisu"),
+        YUKISU("YukiSU", "org.rouyashiki.yukisu", "yukisu"),
+        NOVA("SukiSU Nova", "com.sukisu.nova", "nova"),
         DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
     }
 
@@ -2901,6 +3005,7 @@ class MainActivity : ComponentActivity() {
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gb1422e39c313-abogki552867473-4k" to ExploitKind.CVE66118,
+            "6.6.118-android15-8-gc901ea41aa32-ab15981388-4k" to ExploitKind.CVE66118,
         )
     }
 }

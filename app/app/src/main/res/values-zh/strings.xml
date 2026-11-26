@@ -126,4 +126,20 @@
     <string name="soft_reboot_now">立即</string>
     <string name="soft_reboot_in_min">%1$dMin后</string>
     <string name="auto_root_on_boot">开机自动 root 化</string>
-</resources>
+    <!-- Shell supervisor -->
+    <string name="shell_channel_name">Shell 服务</string>
+    <string name="shell_channel_desc">保持特权 Shell 运行</string>
+    <string name="shell_notification_title">Shark Shell</string>
+    <string name="shell_notification_connecting">正在连接特权服务…</string>
+    <string name="shell_notification_running">特权 Shell 正在运行</string>    <!-- In-app pairing code -->
+    <string name="pairing_code_dialog_title">输入配对码</string>
+    <string name="pairing_code_dialog_message">请保持设置中的无线调试配对对话框打开，然后在此输入 6 位配对码。</string>
+    <string name="pairing_code_hint">6 位配对码</string>
+    <string name="pairing_code_pair">配对</string>
+    <string name="pairing_code_cancel">取消</string>    <!-- Accessibility pairing helper -->
+    <string name="accessibility_service_label">Shark 配对助手</string>
+    <string name="accessibility_service_description">从 Android 无线调试对话框读取六位配对码，免去手动输入。仅观察设置应用。</string>
+    <string name="accessibility_prompt_title">启用自动配对？</string>
+    <string name="accessibility_prompt_message">Shark 可以从设置中自动读取配对码。请在无障碍中启用 Shark 配对助手，以跳过手动输入。</string>
+    <string name="accessibility_prompt_open">打开设置</string>
+    <string name="accessibility_prompt_skip">以后再说</string></resources>

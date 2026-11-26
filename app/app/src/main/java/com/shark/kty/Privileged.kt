@@ -29,11 +29,23 @@ class PrivProcess(
 }
 
 object PrivService {
-    fun pick(): PrivBackend? = when {
-        WirelessAdb.connected -> PrivBackend.WIRELESS_ADB
-        runCatching { Stellar.pingBinder() }.getOrDefault(false) -> PrivBackend.STELLAR
-        runCatching { Shizuku.pingBinder() }.getOrDefault(false) -> PrivBackend.SHIZUKU
-        else -> null
+    fun pick(): PrivBackend? {
+        val wireless = WirelessAdb.connected
+        val stellar = runCatching { Stellar.pingBinder() }.getOrDefault(false)
+        val shizuku = runCatching { Shizuku.pingBinder() }.getOrDefault(false)
+        android.util.Log.i(
+            "PYB110",
+            if (wireless || stellar || shizuku)
+                "pick: wireless=$wireless stellar=$stellar shizuku=$shizuku"
+            else
+                "pick: no backend"
+        )
+        return when {
+            wireless -> PrivBackend.WIRELESS_ADB
+            stellar -> PrivBackend.STELLAR
+            shizuku -> PrivBackend.SHIZUKU
+            else -> null
+        }
     }
 
     fun granted(): Boolean = when (pick()) {

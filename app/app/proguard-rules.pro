@@ -8,3 +8,6 @@
 -dontwarn roro.stellar.**
 -dontwarn com.stellar.**
 
+
+-keep class com.shark.kty.shell.** { *; }
+-keep class moe.shizuku.api.BinderContainer { *; }

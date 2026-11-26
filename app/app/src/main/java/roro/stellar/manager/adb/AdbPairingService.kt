@@ -27,6 +27,12 @@ import com.shark.kty.R
 import roro.stellar.manager.StellarSettings
 import kotlin.getValue
 import androidx.core.content.edit
+import java.io.File
+import java.net.InetSocketAddress
+import java.net.Socket
+import java.util.Collections
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.R)
 class AdbPairingService : Service() {
@@ -48,20 +54,41 @@ class AdbPairingService : Service() {
         private const val stopAction = "stop"
         private const val stopAndRetryAction = "stop_and_retry"
         private const val replyAction = "reply"
+        private const val pairAction = "pair_in_app"
         private const val remoteInputResultKey = "paring_code"
         private const val portKey = "paring_code"
+        private const val inAppCodeKey = "in_app_pairing_code"
 
         @Volatile
         private var isRunning = false
 
+        @Volatile
+        var pairingActive = false
+
         fun startIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(startAction)
+
+        /** Pair with a code entered inside the app instead of the notification. */
+        fun pairIntent(context: Context, code: String): Intent =
+            Intent(context, AdbPairingService::class.java)
+                .setAction(pairAction)
+                .putExtra(inAppCodeKey, code)
 
         private fun stopIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(stopAction)
 
         private fun stopAndRetryIntent(context: Context): Intent =
             Intent(context, AdbPairingService::class.java).setAction(stopAndRetryAction)
+
+        /** Drop every pairing notification and stop discovery. */
+        fun cancel(context: Context) {
+            runCatching {
+                val manager = context.getSystemService(NotificationManager::class.java)
+                manager.cancel(notificationId)
+                manager.cancel(alertNotificationId)
+            }
+            runCatching { context.stopService(Intent(context, AdbPairingService::class.java)) }
+        }
 
         private fun replyIntent(context: Context, port: Int): Intent =
             Intent(context, AdbPairingService::class.java).setAction(replyAction).putExtra(portKey, port)
@@ -70,14 +97,35 @@ class AdbPairingService : Service() {
     private var adbMdns: AdbMdns? = null
     private val retryHandler = Handler(Looper.getMainLooper())
     private var discoveredPort: Int = -1
+    private var retryAttempts = 0
+
+    private val retryRunnable = object : Runnable {
+        override fun run() {
+            if (!started || discoveredPort > 0) return
+            if (retryAttempts >= 8) {
+                Log.w(tag, "discovery retry limit reached")
+                onSearchMaxRefresh()
+                return
+            }
+            retryAttempts++
+            Log.i(tag, "restarting discovery (attempt $retryAttempts)")
+            stopSearch()
+            adbMdns?.destroy()
+            adbMdns = null
+            startSearch()
+            retryHandler.postDelayed(this, 6000)
+        }
+    }
 
     private val observer = Observer<Int> { port ->
         Log.i(tag, "pairing service port: $port")
-        if (port <= 0) {
+        if (port <= 0 || !pairingActive) {
             return@Observer
         }
 
         discoveredPort = port
+        retryAttempts = 0
+        retryHandler.removeCallbacks(retryRunnable)
 
         val notification = createInputNotification(port)
         try {
@@ -91,16 +139,26 @@ class AdbPairingService : Service() {
         } catch (e: Exception) {
             Log.e(tag, "failed to update notification", e)
             getSystemService(NotificationManager::class.java).notify(notificationId, notification)
-
-            val alertNotification = Notification.Builder(this, alertNotificationChannel)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getString(R.string.pairing_service_found))
-                .setContentText(getString(R.string.enter_pairing_code))
-                .addAction(replyNotificationAction(port))
-                .setAutoCancel(true)
-                .build()
-            getSystemService(NotificationManager::class.java).notify(alertNotificationId, alertNotification)
         }
+
+        // Separate high-importance notification so the system shows a heads-up
+        // with the code input, even when the foreground notification is
+        // minimized.
+        showPairingAlert(port)
+    }
+
+    private fun showPairingAlert(port: Int) {
+        if (!pairingActive) return
+        val alertNotification = Notification.Builder(this, alertNotificationChannel)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle(getString(R.string.pairing_service_found))
+            .setContentText(getString(R.string.enter_pairing_code))
+            .setContentIntent(contentIntent)
+            .addAction(replyNotificationAction(port))
+            .setAutoCancel(true)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .build()
+        getSystemService(NotificationManager::class.java).notify(alertNotificationId, alertNotification)
     }
 
     private var started = false
@@ -152,6 +210,10 @@ class AdbPairingService : Service() {
             stopAndRetryAction -> {
                 onStopAndRetry()
             }
+            pairAction -> {
+                val code = intent.getStringExtra(inAppCodeKey) ?: ""
+                onPairCommand(code)
+            }
             else -> {
                 return START_NOT_STICKY
             }
@@ -177,6 +239,8 @@ class AdbPairingService : Service() {
     private fun startSearch() {
         if (started) return
         started = true
+        adbMdns?.destroy()
+        adbMdns = null
         adbMdns = AdbMdns(
             this,
             AdbMdns.TLS_PAIRING,
@@ -186,8 +250,10 @@ class AdbPairingService : Service() {
     }
 
     private fun stopSearch() {
-        if (!started) return
         started = false
+        runCatching {
+            getSystemService(NotificationManager::class.java).cancel(alertNotificationId)
+        }
         try {
             adbMdns?.stop()
         } catch (e: Exception) {
@@ -198,6 +264,7 @@ class AdbPairingService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
+        pairingActive = false
         retryHandler.removeCallbacksAndMessages(null)
         stopSearch()
         adbMdns?.destroy()
@@ -207,12 +274,16 @@ class AdbPairingService : Service() {
     }
 
     private fun onStart(): Notification {
-        if (isRunning && started) {
-            Log.i(tag, "service already running; ignoring duplicate start")
-            return searchingNotification
-        }
         isRunning = true
-        startSearch()
+        pairingActive = true
+        stopSearch()
+        adbMdns?.destroy()
+        adbMdns = null
+        discoveredPort = -1
+        retryAttempts = 0
+        retryHandler.removeCallbacks(retryRunnable)
+        // Let the previous discovery finish stopping before registering again.
+        retryHandler.postDelayed({ startSearch() }, 700)
         return searchingNotification
     }
 
@@ -247,8 +318,12 @@ class AdbPairingService : Service() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun onInput(code: String, port: Int): Notification {
-        if (port == -1) {
-            return createManualInputNotification(-1)
+        if (port <= 0) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val ok = pairAcrossCandidates(code)
+                handleResult(ok)
+            }
+            return workingNotification
         }
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -276,10 +351,107 @@ class AdbPairingService : Service() {
 
     private var connectMdns: AdbMdns? = null
 
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun onPairCommand(code: String): Notification {
+        val trimmed = code.trim()
+        if (trimmed.isEmpty()) {
+            return searchingNotification
+        }
+        Log.i(tag, "pairing code submitted in app (${trimmed.length} digits)")
+        val port = discoveredPort
+        GlobalScope.launch(Dispatchers.IO) {
+            var ok = false
+            if (port > 0) {
+                ok = pairOnPort(trimmed, port)
+                Log.i(tag, "in-app pair on discovered port $port: $ok")
+            }
+            if (!ok) {
+                Log.i(tag, "falling back to a local port scan")
+                ok = pairAcrossCandidates(trimmed)
+            }
+            handleResult(ok)
+        }
+        return workingNotification
+    }
+
+    private fun pairOnPort(code: String, port: Int): Boolean {
+        val key = runCatching {
+            AdbKey(PreferenceAdbKeyStore(StellarSettings.getPreferences()), "Stellar")
+        }.getOrNull() ?: return false
+        return runCatching {
+            AdbPairingClient(
+                "127.0.0.1", port, code, key,
+                connectTimeoutMs = 3_000,
+                readTimeoutMs = 8_000,
+            ).start()
+        }.getOrDefault(false)
+    }
+
+    private fun pairAcrossCandidates(code: String): Boolean {
+        val candidates = candidatePorts()
+        Log.i(tag, "pairing candidates (${candidates.size}): $candidates")
+        val deadline = System.currentTimeMillis() + 20_000L
+        for (port in candidates) {
+            if (System.currentTimeMillis() >= deadline) {
+                Log.w(tag, "pairing candidate deadline reached")
+                break
+            }
+            val ok = pairOnPort(code, port)
+            Log.i(tag, "pair attempt on $port: $ok")
+            if (ok) return true
+        }
+        return false
+    }
+
+    /** Listening ports from /proc, preferring the ephemeral range used by adbd. */
+    private fun candidatePorts(): List<Int> {
+        val ports = LinkedHashSet<Int>()
+        listOf("/proc/net/tcp", "/proc/net/tcp6").forEach { path ->
+            runCatching {
+                File(path).useLines { lines ->
+                    lines.drop(1).forEach { line ->
+                        val parts = line.trim().split(Regex("\\s+"))
+                        if (parts.size > 3 && parts[3] == "0A") {
+                            val port = parts[1].substringAfterLast(':')
+                                .toIntOrNull(16) ?: return@forEach
+                            if (port in 1024..65535) ports.add(port)
+                        }
+                    }
+                }
+            }
+        }
+        val preferred = ports.filter { it in 30000..50100 }
+        if (preferred.isNotEmpty()) return preferred.sorted()
+        if (ports.isNotEmpty()) return ports.sorted()
+        return scanOpenPorts()
+    }
+
+    private fun scanOpenPorts(): List<Int> {
+        val found = Collections.synchronizedList(mutableListOf<Int>())
+        val pool = Executors.newFixedThreadPool(128)
+        for (port in 30000..50000) {
+            pool.execute {
+                runCatching {
+                    Socket().use { socket ->
+                        socket.connect(InetSocketAddress("127.0.0.1", port), 20)
+                        found.add(port)
+                    }
+                }
+            }
+        }
+        pool.shutdown()
+        runCatching { pool.awaitTermination(30, TimeUnit.SECONDS) }
+        return found.sorted()
+    }
+
     private fun handleResult(success: Boolean) {
         retryHandler.post {
             if (success) {
                 Log.i(tag, "paired; searching for the connect service")
+                pairingActive = false
+                runCatching {
+                    getSystemService(NotificationManager::class.java).cancel(alertNotificationId)
+                }
                 stopSearch()
 
                 val successNotification = Notification.Builder(this, notificationChannel)
@@ -437,8 +609,14 @@ class AdbPairingService : Service() {
         }
         startActivity(intent)
 
+        runCatching {
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.cancel(notificationId)
+            manager.cancel(alertNotificationId)
+        }
         stopForeground(STOP_FOREGROUND_REMOVE)
         isRunning = false
+        pairingActive = false
         stopSelf()
     }
 
@@ -522,23 +700,25 @@ class AdbPairingService : Service() {
             .build()
     }
 
-    private val replyNotificationAction by lazy {
+    private fun replyNotificationAction(port: Int): Notification.Action {
         val remoteInput = RemoteInput.Builder(remoteInputResultKey).run {
             setLabel(getString(R.string.pairing_code))
             build()
         }
 
+        // Use a per-port request code so the pending intent always carries the
+        // port the pairing service was discovered on.
         val pendingIntent = PendingIntent.getForegroundService(
             this,
-            replyRequestId,
-            replyIntent(this, -1),
+            10000 + port,
+            replyIntent(this, port),
             if (atLeast31)
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             else
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        Notification.Action.Builder(
+        return Notification.Action.Builder(
             null,
             getString(R.string.enter_pairing_code_action),
             pendingIntent
@@ -547,26 +727,26 @@ class AdbPairingService : Service() {
             .build()
     }
 
-    private fun replyNotificationAction(port: Int): Notification.Action {
-        val action = replyNotificationAction
-
-        PendingIntent.getForegroundService(
+    private val contentIntent by lazy {
+        PendingIntent.getActivity(
             this,
-            replyRequestId,
-            replyIntent(this, port),
+            0,
+            Intent(this, com.shark.kty.MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            },
             if (atLeast31)
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             else
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
-
-        return action
     }
 
     private val searchingNotification by lazy {
         Notification.Builder(this, notificationChannel)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.searching_pairing_service))
+            .setContentIntent(contentIntent)
+            .addAction(replyNotificationAction(-1))
             .addAction(stopNotificationAction)
             .addAction(stopAndRetryNotificationAction)
             .build()
@@ -575,6 +755,7 @@ class AdbPairingService : Service() {
     private fun createInputNotification(port: Int): Notification =
         Notification.Builder(this, notificationChannel)
             .setContentTitle(getString(R.string.pairing_service_found))
+            .setContentIntent(contentIntent)
             .setSmallIcon(R.mipmap.ic_launcher)
             .addAction(replyNotificationAction(port))
             .build()
@@ -583,6 +764,7 @@ class AdbPairingService : Service() {
         Notification.Builder(this, notificationChannel)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.pairing_service_not_found))
+            .setContentIntent(contentIntent)
             .setContentText(getString(R.string.ensure_wireless_debugging_open))
             .addAction(retryNotificationAction)
             .build()
@@ -598,6 +780,7 @@ class AdbPairingService : Service() {
         Notification.Builder(this, notificationChannel)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(getString(R.string.search_stopped))
+            .setContentIntent(contentIntent)
             .setContentText(if (port > 0) getString(R.string.enter_pairing_code) else getString(R.string.pairing_service_not_found_retry))
             .addAction(if (port > 0) replyNotificationAction(port) else retryNotificationAction)
             .build()

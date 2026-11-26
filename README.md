@@ -82,8 +82,11 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Xiaomi 18 Fold (lhasa) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki576585092-4k` |
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
+| HONOR 600 (VKJ-NX9) | MagicOS 11 / Android 17 | `6.6.118-android15-8-gc901ea41aa32-ab15981388-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
+>
+> HONOR 600 (VKJ-NX9) working report: on-device verification by [@Windroid234](https://github.com/Windroid234), recorded in [ports/honor600-66118/README.md](ports/honor600-66118/README.md).
 >
 > Redmi Pad SE 8.7 (`flare`) community verification: end-to-end root was
 > confirmed on `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
@@ -280,6 +283,7 @@ Shark/
 ├── docs/screenshots/            README screenshots
 ├── ports/coloros-61269/         6.12.69 dual-OTA build notes and recovery tools
 ├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
+├── ports/honor600-66118/        HONOR 600 6.6.118 notes and verification records
 ├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
@@ -385,12 +389,12 @@ installed alongside this one, but settings and history are not migrated.
 
 ### Release policy
 
-- Only the **latest `en.N` of each version line** keeps downloadable assets
-  (`2.5-en.14`, `2.4.1-en.3`, `2.3.2-en.1`, `2.2.3-en.1`, `2.2.1-en.1`, `2.1-en.4`).
+- Starting with `2.5.1-en.6`, published APKs are **retained as release assets**.
+  Older superseded or intermediate builds may still be archived.
 - Superseded, broken or intermediate builds keep a notice page as a
   **pre-release** with the APK removed, so their old links still lead to
   https://github.com/kpgc10kai/Shark/releases/latest
-- Only the latest build of each line carries downloadable assets.
+- `tools/archive-release.sh` refuses to archive retained tags from `2.5.1-en.6` onward.
 - Archiving is scripted: `tools/archive-release.sh v2.5.1-en.2` removes the
   assets, marks the release as a pre-release, and leaves the latest-download
   notice.

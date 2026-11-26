@@ -155,7 +155,14 @@ private class PairingContext private constructor(private val nativePtr: Long) {
 }
 
 @RequiresApi(Build.VERSION_CODES.R)
-class AdbPairingClient(private val host: String, private val port: Int, private val pairCode: String, private val key: AdbKey) : Closeable {
+class AdbPairingClient(
+    private val host: String,
+    private val port: Int,
+    private val pairCode: String,
+    private val key: AdbKey,
+    private val connectTimeoutMs: Int = 10000,
+    private val readTimeoutMs: Int = 30000,
+) : Closeable {
 
     private enum class State {
         Ready,
@@ -196,12 +203,12 @@ class AdbPairingClient(private val host: String, private val port: Int, private 
     private fun setupTlsConnection() {
         socket = Socket()
         socket.tcpNoDelay = true
-        socket.soTimeout = 30000
-        socket.connect(java.net.InetSocketAddress(host, port), 10000)
+        socket.soTimeout = readTimeoutMs
+        socket.connect(java.net.InetSocketAddress(host, port), connectTimeoutMs)
 
         val sslContext = key.sslContext
         val sslSocket = sslContext.socketFactory.createSocket(socket, host, port, true) as SSLSocket
-        sslSocket.soTimeout = 30000
+        sslSocket.soTimeout = readTimeoutMs
         sslSocket.startHandshake()
         Log.d(TAG, "handshake succeeded")
 
