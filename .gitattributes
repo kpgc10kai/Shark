@@ -1,4 +1,5 @@
 * text=auto
+.gitattributes text eol=lf
 
 # Source and docs: keep LF in the repository and working tree.
 *.c text eol=lf
