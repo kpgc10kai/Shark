@@ -74,4 +74,4 @@ The complete kernel-version table is in the
 
 ## Release policy
 
-Only the latest build of each version line keeps downloadable assets. Superseded, broken or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
+Starting with `2.5.1-en.6`, published APKs are retained as release assets. Older superseded or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
