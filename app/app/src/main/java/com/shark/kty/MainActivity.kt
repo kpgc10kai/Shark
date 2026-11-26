@@ -497,6 +497,11 @@ class MainActivity : ComponentActivity() {
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault(getString(R.string.unknown))
         exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
+        // The vivo chain's bundled fallback LKM is KernelSU-Next; prefer its
+        // manager on a first run so kernel module and userspace match.
+        if (exploit == ExploitKind.V2562 && savedManager == null) {
+            manager = ManagerKind.NEXT
+        }
         if (manager == ManagerKind.DYNAMIC && !supportsUniversal()) {
             manager = ManagerKind.KERNELSU
         }
@@ -2392,7 +2397,7 @@ class MainActivity : ComponentActivity() {
 
     private fun readDeviceState(): Pair<Boolean, String> {
         val p = PrivService.newProcess(
-            arrayOf("sh", "-c", "if grep -q '^kernelsu .* Live ' /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
+            arrayOf("sh", "-c", "if grep -qE '^kernels[uv] .* Live ' /proc/modules; then echo YES; elif timeout 3 su -c id 2>/dev/null | grep -q uid=0; then echo YES; else echo NO; fi; getenforce"),
             shizukuEnv(), "/"
         )
         val lines = p.getInputStream()
@@ -2777,6 +2782,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61269 -> arrayOf("$nativeDir/libk61269.so", "run")
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
+                    ExploitKind.V2562 -> arrayOf("$nativeDir/libv2562.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.UNSUPPORTED -> null
                 } ?: run {
@@ -2946,6 +2952,7 @@ class MainActivity : ComponentActivity() {
         CVE61238("CVE-2026-98260-6.12.38"),
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE66118("CVE-2026-98260-6.6.118"),
+        V2562("CVE-2026-98260-6.12.58 vivo"),
         UNSUPPORTED("Unsupported device")
     }
 
@@ -2965,7 +2972,8 @@ class MainActivity : ComponentActivity() {
         kernelVersion == "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" ||
             kernelVersion == "6.18.21-android17-5-g284297031c53-abogki555938958-4k"
 
-    private fun hidesOplusOnlyOptions(): Boolean = isXiaomiPortKernel()
+    private fun hidesOplusOnlyOptions(): Boolean =
+        isXiaomiPortKernel() || exploit == ExploitKind.V2562
 
     /** No gate kernels remain. */
     private fun isGateKernel(): Boolean = false
@@ -2978,6 +2986,7 @@ class MainActivity : ComponentActivity() {
 
     private fun supportsSusfs(): Boolean =
         !isGateKernel() && exploit != ExploitKind.CVE66118 &&
+            exploit != ExploitKind.V2562 &&
             exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
@@ -3002,6 +3011,7 @@ class MainActivity : ComponentActivity() {
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
             "6.12.38-android16-5-g844001fb8721-ab14552068-4k" to ExploitKind.CVE61238,
             "6.12.58-android16-6-g7704a1ae279b-ab15213644-4k" to ExploitKind.CVE61258,
+            "6.12.58-android16-6-g09eda8c8505a-ab15950084-4k" to ExploitKind.V2562,
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gb1422e39c313-abogki552867473-4k" to ExploitKind.CVE66118,

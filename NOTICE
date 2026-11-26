@@ -49,8 +49,20 @@ profile-switch module described in entry 9.
    Used: timer UAF trigger and reclaim flow adapted from the 6.12.69-ex
          branch's timer.c, tuned and shipped through the per-kernel runners
          built from exploit/src/plant_core.inc: libk61269.so (6.12.69),
-         libk61238.so (6.12.38), libk61258.so (6.12.58), libk61223.so
-         (6.12.23), libk66118.so (6.6.118) and libk66127.so (6.6.127).
+         libk61238.so (6.12.38), libk61258.so (6.12.58), libk66118.so
+         (6.6.118), and the separately derived vivo X300 Ultra chain
+         libv2562.so described in ports/v2562/README.md (ported from the
+         local vivoTimer timer17 PoC, itself adapted from the same upstream).
+
+4a. KernelSU-Next LKM payload (exploit/payload/v2562_ksu.ko)
+   Source: https://github.com/KernelSU-Next/KernelSU-Next
+           (android16-6.12 KMI kernel module)
+   License: GPL-2.0 (full text: app/src/main/assets/licenses/GPL-2.0.txt)
+   Used: bundled fallback LKM for the vivo X300 Ultra chain only, when the
+         installed manager's own android16-6.12 module cannot be extracted or
+         lacks a symbol the kernel does not export. Embedded in
+         libv2562.so and patched on-device by exploit/src/ko_patch.inc.
+         The bundle is not used on any other kernel.
 
 5. Stellar (Shizuku fork) / Stellar API SDK
    Source: https://github.com/roro2239/Stellar (manager),

@@ -59,6 +59,10 @@ one of the versions below **exactly**; anything else is rejected.
 ### 6.12.58 / 6.12.38 (Android 16)
 - OnePlus Pad3 Pro (OPD2513), OPPO Pad Mini (OPD2515)
 - OnePlus Ace6T (PLR110), Realme Neo8 (RMX8899)
+- vivo X300 Ultra (V2562) — separate `v2562` chain: the vendor blocks
+  `ksud late-load`, so the app wipes the vendor hook table and the module
+  COMING notifier, then loads the LKM directly. Ported from the working
+  `vivoTimer` timer17 PoC; see `ports/v2562/README.md`.
 
 ### 6.6.118 (Android 15)
 - OnePlus Ace6 (PLQ110), OnePlus Ace5 Pro (PKR110)

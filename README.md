@@ -83,6 +83,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 | HONOR 600 (VKJ-NX9) | MagicOS 11 / Android 17 | `6.6.118-android15-8-gc901ea41aa32-ab15981388-4k` |
+| vivo X300 Ultra (V2562) | OriginOS 16 / 17 | `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
 >
@@ -119,8 +120,10 @@ installed manager APK, so **install the manager you intend to use first**.
 ## What it can do
 
 - **One-click root**: After opening the app, no manual exploit selection is
-  needed; it uses `uname -r` to automatically match one of five chains: 6.18.21 /
-  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
+  needed; it uses `uname -r` to automatically match a supported chain: 6.18.21 /
+  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. The vivo X300 Ultra 6.12.58 build is
+  a separate chain (`v2562`) because the vendor blocks `ksud late-load`; it
+  loads the LKM directly after wiping the vendor gates. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
 - **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
@@ -141,7 +144,7 @@ installed manager APK, so **install the manager you intend to use first**.
   FinaSU directly from the Root manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the
   `ksud` and LKM from that APK.
-- **Manager hot-switch**: Supported on 6.18 and 6.12. On the first clean boot,
+- **Manager hot-switch**: Supported on 6.18 and 6.12 (not on the vivo X300 Ultra chain). On the first clean boot,
   select `Dynamic Switching` to load the universal KSU LKM (initially KernelSU);
   afterward, choose the target manager under “Manager hot-switch” in Extras.
   Switching synchronizes the version number, feature, private ioctl, and primary manager,
@@ -265,6 +268,7 @@ Shark/
 │   │   ├── libk61269.so         6.12.69 runner
 │   │   ├── libk61238.so         6.12.38 runner
 │   │   ├── libk61258.so         6.12.58 runner
+│   │   ├── libv2562.so          vivo X300 Ultra 6.12.58 runner (embedded LKM payload)
 │   │   ├── libk66118.so         6.6.118 runner
 │   │   ├── libksud_universal.so Dual-KMI universal loader
 │   │   ├── libsusfs_guard_lkm.so
@@ -275,6 +279,7 @@ Shark/
 ├── exploit/
 │   ├── rust-k61821/             6.18.21 Rust runner
 │   ├── rust-kplant/             6.12 / 6.6 Rust runner (feature selects the K source file)
+│   ├── payload/                 vivo X300 Ultra bundled LKM + symbol table
 │   └── src/                     plant_core.inc + K<version>_plant.c (one per kernel)
 ├── lkm/
 │   ├── susfs4ksu-lkm/           SUSFS guard source
@@ -284,6 +289,7 @@ Shark/
 ├── ports/coloros-61269/         6.12.69 dual-OTA build notes and recovery tools
 ├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
 ├── ports/honor600-66118/        HONOR 600 6.6.118 notes and verification records
+├── ports/v2562/                 vivo X300 Ultra gate chain notes and LKM details
 ├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
