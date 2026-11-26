@@ -2803,10 +2803,17 @@ class MainActivity : ComponentActivity() {
                     // Issue #3: PROBE_TRACE can leave ftrace enlarged. Restore it
                     // after a successful run, but never block the flow on a
                     // manager root prompt: give it 3 seconds, then move on.
+                    // The HONOR 600 runner restores the original per-CPU size
+                    // before it parks, so leave the buffer alone there; resetting
+                    // it to 1 here would undo that restore.
+                    val plantRestoresTrace =
+                        kernelVersion == "6.6.118-android15-8-gc901ea41aa32-ab15981388-4k"
                     val restoreTrace = "echo 0 > /sys/kernel/tracing/tracing_on 2>/dev/null; " +
-                        "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; " +
+                        (if (plantRestoresTrace) "" else
+                            "echo 1 > /sys/kernel/tracing/buffer_size_kb 2>/dev/null; ") +
                         "echo 0 > /sys/kernel/debug/tracing/tracing_on 2>/dev/null; " +
-                        "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null"
+                        (if (plantRestoresTrace) "" else
+                            "echo 1 > /sys/kernel/debug/tracing/buffer_size_kb 2>/dev/null")
                     Thread {
                         val process = runCatching {
                             PrivService.newProcess(
@@ -2998,6 +3005,7 @@ class MainActivity : ComponentActivity() {
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gb1422e39c313-abogki552867473-4k" to ExploitKind.CVE66118,
+            "6.6.118-android15-8-gc901ea41aa32-ab15981388-4k" to ExploitKind.CVE66118,
         )
     }
 }
