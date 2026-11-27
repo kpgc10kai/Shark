@@ -102,3 +102,41 @@ This matches the `IC_PROFILE_OP12_61157` assumptions. The `ic-op12 ksu`
 reboot is therefore not explained by a wrong cred layout; the next suspect is
 the fake/late-load/handoff path itself. `IC_LOG_PATH` and a clean-boot run are
 needed before changing offsets.
+
+## Shark integration result (2026-11-28)
+
+A 6.1 runner built from the GPL-3.0 `ic-timer-lpe` core now exists as
+`libk61157.so`. The app maps the OP12 release to it and runs it with
+`PAYLOAD_CMD=sh /data/local/tmp/ksu_stage.sh`.
+
+Verified end to end on a clean boot:
+
+```text
+Shizuku authorized
+One-click root
+CVE-2026-98260-6.1.157
+```
+
+Result:
+
+```text
+su -c "id; getenforce"
+uid=0(root) ... context=u:r:ksu:s0
+Enforcing
+
+kernelsu 225280 1 - Live
+```
+
+The manager shows **Working [Jailbreak mode]**, manager v3.3.1, kernel
+`6.1.157-android14-11-o-g3d5d51510424`, device OnePlus 12.
+
+Implementation notes:
+
+```text
+• core profile IC_PROFILE_OP12_61157
+• __tracepoint_sys_exit = 0xffffffc00a1f2f00 (from vmlinux symbols)
+• core writes ksu_stage.sh before the fake-cred child
+• app passes PAYLOAD_CMD to that script
+```
+
+This is a Shark-en-specific 6.1 chain, not an upstream-supported target.
