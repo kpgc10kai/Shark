@@ -175,3 +175,22 @@ run 10-20 more before promoting OP12 out of experimental.
 
 Cumulative: **9/10 (90%)**, success range 5.5-9.5 s.
 The one failure was boot 2 (reboot during fake).
+
+## Cold-boot repetitions 11-12
+
+| boot | result | payload time |
+|---|---|---|
+| 11 | parked, no root | — |
+| 12 | parked, no root | — |
+
+Both failures ended with the core in `sigsuspend`; reboot is the only cleanup.
+Cumulative:
+
+```text
+success 9/12 (75%)
+success range 5.5-9.5 s
+failures: 1 reboot during fake, 2 parked runs
+```
+
+This is **not stable enough** to promote OP12 out of experimental. The next
+work is fake-plant retry/timeout handling, not more blind cold boots.
