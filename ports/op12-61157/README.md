@@ -140,3 +140,25 @@ Implementation notes:
 ```
 
 This is a Shark-en-specific 6.1 chain, not an upstream-supported target.
+
+## Cold-boot repetitions (direct runner)
+
+Five clean boots, direct `ic-op12 ksu` (no app UI):
+
+| boot | result | payload time |
+|---|---|---|
+| 1 | KSU loaded | 5.468 s |
+| 2 | reboot during fake | — |
+| 3 | KSU loaded | 9.460 s |
+| 4 | KSU loaded | 5.795 s |
+| 5 | KSU loaded | 9.323 s |
+
+```text
+success rate   4/5 (80%)
+success range  5.5 - 9.5 s
+failure        one cold-boot timer race reboot
+```
+
+The app-path run that produced the screenshot completed in 7.222 s.
+This is promising, but 5 boots are not enough for a stable designation;
+run 10-20 more before promoting OP12 out of experimental.
