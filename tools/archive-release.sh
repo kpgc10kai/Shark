@@ -16,6 +16,12 @@ if ! gh release view "v$tag" --repo "$repo" >/dev/null 2>&1; then
     exit 1
 fi
 
+# 2.5.1-en.6 and later are retained as downloadable APKs.
+if [[ "$tag" =~ ^2\.5\.1-en\.([0-9]+)$ ]] && (( BASH_REMATCH[1] >= 6 )); then
+    echo "refusing to archive retained release v$tag" >&2
+    exit 1
+fi
+
 assets_file=$(mktemp)
 trap 'rm -f "$assets_file"' EXIT
 gh release view "v$tag" --repo "$repo" --json assets --jq '.assets[].name' | tr -d '\r' > "$assets_file"

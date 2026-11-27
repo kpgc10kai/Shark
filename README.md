@@ -1,6 +1,6 @@
 <h1 align="center"><img src="docs/images/app-icon.png" width="56" height="56" align="absmiddle" alt="Shark"> Shark</h1>
 
-<p align="center"><b>One-tap temporary root and manager-switching tool for multiple Android devices</b></p>
+<p align="center"><b>One-click temporary root and manager-switching tool for multiple Android devices</b></p>
 
 <p align="center">
   <a href="https://github.com/kpgc10kai/Shark/releases"><img src="docs/badges/release.svg" alt="Release"></a>
@@ -9,7 +9,6 @@
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
   <img src="docs/badges/compose.svg" alt="Compose">
   <img src="docs/badges/kernel.svg" alt="Kernel">
-  <a href="https://github.com/Yunnijian/Shark"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
 > **Unofficial English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).**
@@ -17,7 +16,7 @@
 > binaries and update notes in
 > [Yunnijian/Shark-Releases](https://github.com/Yunnijian/Shark-Releases)
 > (releases only, no source). This fork continues from the last synced source
-> (v2.3.2) and follows that releases page: app features and new kernel profiles
+> (v2.5.1) and follows that releases page: app features and new kernel profiles
 > are ported from the published APKs, and each fork release states which
 > upstream version it tracks. Source-level sync with upstream is no longer
 > possible.
@@ -29,7 +28,7 @@
 Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
-for the selected manager, ultimately providing a KernelSU, KernelSU-Next, BakaSU,
+for the selected manager, ultimately providing a KernelSU, KernelSU Next, BakaSU,
 SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 
 ## Interface
@@ -37,7 +36,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 <table align="center">
   <tr>
     <td align="center"><img src="docs/screenshots/app-home.jpg" width="180" alt="Home"><br><sub><b>Home</b></sub></td>
-    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="ROOT Manager"><br><sub><b>ROOT Manager</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="Root manager"><br><sub><b>Root manager</b></sub></td>
     <td align="center"><img src="docs/screenshots/app-extras.jpg" width="180" alt="Extras"><br><sub><b>Extras</b></sub></td>
   </tr>
   <tr>
@@ -66,7 +65,9 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OPPO Find X9 Pro (PLG110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X10 (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Reno15 5G (CPH2825) | ColorOS 16 / 17 beta | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
+| OPPO Find X10 (PMW110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X10 Pro Max (PMX110) | ColorOS 17 | `6.18.21-android17-5-gf957accaf563-ab15926176-4k` |
 | OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Pad Mini (OPD2515) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
@@ -82,24 +83,47 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 | HONOR 600 (VKJ-NX9) | MagicOS 11 / Android 17 | `6.6.118-android15-8-gc901ea41aa32-ab15981388-4k` |
+| vivo X300 Ultra (V2562) — experimental | OriginOS 16 / 17 | `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
-> HONOR 600 (VKJ-NX9) working report: [ports/honor600-66118/README.md](ports/honor600-66118/README.md), tested on-device by [@Windroid234](https://github.com/Windroid234).
-> The HONOR 600 port targets `experimental/shellserver`; after device verification it can be cherry-picked to `main`.
+>
+> HONOR 600 (VKJ-NX9) working report: on-device verification by [@Windroid234](https://github.com/Windroid234), recorded in [ports/honor600-66118/README.md](ports/honor600-66118/README.md).
+>
+> Redmi Pad SE 8.7 (`flare`) community verification: end-to-end root was
+> confirmed on `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
+> [@nestchao](https://github.com/nestchao) in
+> [#6](https://github.com/kpgc10kai/Shark/issues/6). The low-21 KASLR
+> alignment fix used here shipped in `2.5.1-en.3`. This is a verified kernel
+> report, not a separate device profile.
+>
+> OPPO Reno15 5G (CPH2825) working report: SukiSU Nova reported **Working** on
+> ColorOS 16 and again on ColorOS 17 beta (`CPH2825_17.0.0.102`, November 2026
+> patch) with the same `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` kernel
+> by [@huanhoahongso3-collab](https://github.com/huanhoahongso3-collab) in
+> [#8](https://github.com/kpgc10kai/Shark/issues/8).
+>
+
+
+> **Model/kernel note:** Find X10 is `PMW110` (MT6993, 6.12 kernel family);
+> Find X10 Pro Max is `PMX110` (MT6995, verified `6.18.21-android17-5-gf957accaf563-ab15926176-4k`).
+> The upstream `Find X10（PMX110）` entry mixed the standard name with the
+> Pro Max code. Both are now listed separately; the exact PMW110 build still
+> needs a device dump to confirm.
 
 ## Supported managers
 
-Seven options are supported: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
+Seven options are supported: KernelSU, KernelSU Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
 
 Manager APKs are not distributed with Shark. Normal mode uses the `ksud` inside the
 installed manager APK, so **install the manager you intend to use first**.
 
 ## What it can do
 
-- **One-tap temporary root**: After opening the app, no manual exploit selection is
-  needed; it uses `uname -r` to automatically match one of five chains: 6.18.21 /
-  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. A single tap on “One-tap
-  Jailbreak” completes privilege escalation, `ksud late-load`, module installation,
+- **One-click root**: After opening the app, no manual exploit selection is
+  needed; it uses `uname -r` to automatically match a supported chain: 6.18.21 /
+  6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. The vivo X300 Ultra 6.12.58 build is
+  an experimental separate chain (`v2562`) because the vendor blocks
+  `ksud late-load`; it loads the LKM directly after wiping the vendor gates. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
 - **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
@@ -110,32 +134,33 @@ installed manager APK, so **install the manager you intend to use first**.
 - **Wired ADB activation**: Connect USB and run `tools/wired-adb.sh` to start
   the privileged shell through ADB. Shark detects it as the Shizuku backend, so
   no Wireless debugging pairing is required.
-- **Auto root on boot**: When enabled, the one-tap flow runs after boot and the
+- **Auto root on boot**: When enabled, the one-click flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
   permission so it can start from the background; allow Shark to auto-start in
   your device's battery/settings screen, or it cannot run after a reboot. If the
   previous automatic attempt never finished (a reboot during the flow), the
   option disables itself to avoid a loop.
-- **Seven manager choices**: Pick KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, or
-  FinaSU directly from the ROOT Manager dropdown. The app is not tied to a single
+- **Seven manager choices**: Pick KernelSU, KernelSU Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, or
+  FinaSU directly from the Root manager dropdown. The app is not tied to a single
   manager; the manager APK must be installed separately, and normal mode uses the
   `ksud` and LKM from that APK.
-- **Hot manager switching**: Supported on 6.18 and 6.12. On the first clean boot,
+- **Manager hot-switch**: Supported on 6.18 and 6.12 (not on the vivo X300 Ultra chain). On the first clean boot,
   select `Dynamic Switching` to load the universal KSU LKM (initially KernelSU);
-  afterward, choose the target manager under “Hot Manager Switching” in Extras.
+  afterward, choose the target manager under “Manager hot-switch” in Extras.
   Switching synchronizes the version number, feature, private ioctl, and primary manager,
   and automatically reopens the target manager; no reboot or re-exploitation is
   required.
-- **Extras**: On 6.18, a VFS provider can be loaded; on 6.12, SUSFS can be
-  loaded. Other toggles suppress anti-root dialogs, perform a soft reboot after
-  jailbreaking, and unload kernel security protections. Enable them as needed; a
+- **Extras**: On 6.18, **VFS support** loads the VFS provider; on 6.12,
+  **SUSFS support** loads SUSFS. Other toggles disable security popups after
+  rooting, perform a soft reboot after rooting, and unload the kernel security
+  guard. Enable them as needed; a
   failure in one item does not affect root that is already active.
-- **Logs and history**: Runtime logs scroll in real time. Each jailbreak saves a
+- **Logs and history**: Runtime logs scroll in real time. Each root run saves a
   complete log to the History page, where it can be viewed, deleted, or swiped left
   to export and share, making it easier to troubleshoot failures or keep records.
-- **Online updates**: Gitee Releases is checked at startup, falling back to GitHub if
-  that fails. When a new version is found, it is downloaded in-app, its SHA-256 and
-  APK signature are verified, and it is then handed to the system installer.
+- **Online updates**: GitHub Releases is checked at startup. When a new version
+  is found, it is downloaded in-app, its SHA-256 and APK signature are verified,
+  and it is then handed to the system installer.
 - **Droidspaces support**: On 6.18, the latest `droidspaces_lkm` module can be
   fetched with one tap and saved to `Download/Shark/`, after which it can be flashed
   in the KernelSU manager; the app does not bundle this module.
@@ -144,17 +169,17 @@ installed manager APK, so **install the manager you intend to use first**.
 
 ### Normal mode
 
-Choose a manager in ROOT Manager; the app uses the `ksud` bundled with that
+Choose a manager in Root manager; the app uses the `ksud` bundled with that
 manager's APK to load its own LKM. This is the manager's native root environment.
 
 In normal mode, changing managers still requires a reboot.
 
-### Extended mode
+### Dynamic Switching
 
-Select `Dynamic Switching` in ROOT Manager. The app uses the bundled
+Select `Dynamic Switching` in Root manager. The app uses the bundled
 `libksud_universal.so` to load the universal KSU LKM; the initial manager is KernelSU.
 
-After loading completes, “Hot Manager Switching” appears in Extras: open the
+After loading completes, “Manager hot-switch” appears in Extras: open the
 dropdown and choose the target manager; the app applies the switch and automatically
 reopens the target manager. Switching only changes the manager profile in the kernel;
 it does not uninstall modules or reboot.
@@ -166,12 +191,12 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 ## Usage
 
 1. Install the manager APK you want to use. If you plan to use Dynamic Switching,
-   installing all five is recommended.
-2. Start Stellar or Shizuku and grant access to Shark.
-3. Select a normal manager or `Dynamic Switching` in the ROOT Manager dropdown.
+   installing all seven is recommended.
+2. Connect a backend: start Stellar or Shizuku and grant access, tap **Wireless ADB** and pair, or run `tools/wired-adb.sh` over USB (see below).
+3. Select a normal manager or `Dynamic Switching` in the Root manager dropdown.
 4. Enable the Extras you need.
-5. Tap “One-tap Jailbreak” and wait for `DONE` to appear in the logs.
-6. In normal mode, open the manager and grant root; with Dynamic Switching, select
+5. Tap **One-click root** (it becomes **Verify / root again** after a successful run). The exploit prints `DONE` when it finishes.
+6. In normal mode, the selected manager opens and asks for root; with Dynamic Switching, select
    the target manager in Extras, and the app switches to it and opens it automatically.
 
 ### Wireless ADB pairing
@@ -204,7 +229,7 @@ tools/wired-adb.sh
 
 The script starts `ShellServer` as the shell user through `app_process`. Shark
 detects the Shizuku-compatible binder and shows **Shizuku authorized**; the
-normal One-click root flow then works over the wired connection.
+normal root flow then works over the wired connection.
 
 To run it manually:
 
@@ -235,7 +260,7 @@ Shark/
 ├── app/                         Android app (Gradle project)
 │   ├── app/src/main/java/com/shark/kty/
 │   │   ├── MainActivity.kt      Four tabs, flow control, manager and Extras state
-│   │   ├── UpdateChecker.kt     Gitee / GitHub update checks
+│   │   ├── UpdateChecker.kt     GitHub update checks
 │   │   ├── HistoryStore.kt      Log persistence, history records
 │   │   └── DroidspacesModule.kt Droidspaces module download
 │   ├── app/src/main/jniLibs/arm64-v8a/
@@ -243,6 +268,7 @@ Shark/
 │   │   ├── libk61269.so         6.12.69 runner
 │   │   ├── libk61238.so         6.12.38 runner
 │   │   ├── libk61258.so         6.12.58 runner
+│   │   ├── libv2562.so          vivo X300 Ultra 6.12.58 runner (embedded LKM payload)
 │   │   ├── libk66118.so         6.6.118 runner
 │   │   ├── libksud_universal.so Dual-KMI universal loader
 │   │   ├── libsusfs_guard_lkm.so
@@ -253,6 +279,7 @@ Shark/
 ├── exploit/
 │   ├── rust-k61821/             6.18.21 Rust runner
 │   ├── rust-kplant/             6.12 / 6.6 Rust runner (feature selects the K source file)
+│   ├── payload/                 vivo X300 Ultra bundled LKM + symbol table
 │   └── src/                     plant_core.inc + K<version>_plant.c (one per kernel)
 ├── lkm/
 │   ├── susfs4ksu-lkm/           SUSFS guard source
@@ -262,6 +289,7 @@ Shark/
 ├── ports/coloros-61269/         6.12.69 dual-OTA build notes and recovery tools
 ├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
 ├── ports/honor600-66118/        HONOR 600 6.6.118 notes and verification records
+├── ports/v2562/                 vivo X300 Ultra gate chain notes and LKM details
 ├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
@@ -362,17 +390,17 @@ installed alongside this one, but settings and history are not migrated.
 - Upstream releases (binaries only, no source):
   https://github.com/Yunnijian/Shark-Releases
 - Upstream source repository was removed in November 2026. This fork continues
-  from the last synced source (v2.3.2, upstream versionCode 98) and tracks the
+  from the last synced source (v2.5.1, upstream versionCode 103) and tracks the
   upstream releases page.
 
 ### Release policy
 
-- Only the **latest `en.N` of each version line** keeps downloadable assets
-  (`2.5-en.14`, `2.4.1-en.3`, `2.3.2-en.1`, `2.2.3-en.1`, `2.2.1-en.1`, `2.1-en.4`).
+- Starting with `2.5.1-en.6`, published APKs are **retained as release assets**.
+  Older superseded or intermediate builds may still be archived.
 - Superseded, broken or intermediate builds keep a notice page as a
   **pre-release** with the APK removed, so their old links still lead to
   https://github.com/kpgc10kai/Shark/releases/latest
-- Only the latest build of each line carries downloadable assets.
+- `tools/archive-release.sh` refuses to archive retained tags from `2.5.1-en.6` onward.
 - Archiving is scripted: `tools/archive-release.sh v2.5.1-en.2` removes the
   assets, marks the release as a pre-release, and leaves the latest-download
   notice.

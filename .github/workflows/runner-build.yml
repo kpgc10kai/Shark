@@ -1,0 +1,71 @@
+name: runner-build
+
+# Rebuilds the Rust runners from source and checks the bundled vivo LKM.
+# The vivo chain is the only one that ships a kernel module, so it gets an
+# explicit provenance check here; the 6.12.58 runner is rebuilt as the
+# regression check for the shared code.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rust-runners:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install the pinned Rust toolchain
+        run: |
+          set -euo pipefail
+          rustup toolchain install 1.99.1 --profile minimal --target aarch64-linux-android
+          echo "RUSTUP_TOOLCHAIN=1.99.1" >> "$GITHUB_ENV"
+
+      - name: Install NDK 28.2.13676358
+        run: |
+          set -euo pipefail
+          NDK_ROOT="$RUNNER_TEMP/android-ndk-r28c"
+          if [ ! -d "$NDK_ROOT" ]; then
+            curl -fsSL -o "$RUNNER_TEMP/ndk.zip" \
+              https://dl.google.com/android/repository/android-ndk-r28c-linux.zip
+            unzip -q "$RUNNER_TEMP/ndk.zip" -d "$RUNNER_TEMP"
+          fi
+          echo "ANDROID_NDK_HOME=$NDK_ROOT" >> "$GITHUB_ENV"
+
+      - name: Verify the bundled vivo LKM
+        working-directory: exploit/payload
+        run: sha256sum -c v2562_ksu.ko.sha256
+
+      - name: Build the runners
+        run: |
+          set -euo pipefail
+          cd exploit/rust-kplant
+          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang"
+          for f in k61258 v2562; do
+            CARGO_TARGET_DIR="target/$f" cargo build --release --target aarch64-linux-android \
+              --no-default-features --features "$f"
+            cp "target/$f/aarch64-linux-android/release/kplant" "$RUNNER_TEMP/lib$f.so"
+          done
+
+      - name: Report hashes
+        run: |
+          set -euo pipefail
+          hashes=$(sha256sum "$RUNNER_TEMP"/lib*.so \
+            app/app/src/main/jniLibs/arm64-v8a/libk61258.so \
+            app/app/src/main/jniLibs/arm64-v8a/libv2562.so)
+          {
+            echo "## Runner hashes"
+            echo
+            echo '```'
+            echo "$hashes"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          if cmp -s "$RUNNER_TEMP/libv2562.so" \
+              app/app/src/main/jniLibs/arm64-v8a/libv2562.so; then
+            echo "libv2562.so matches a clean build" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::libv2562.so differs from a clean build; compare the hashes above"
+          fi

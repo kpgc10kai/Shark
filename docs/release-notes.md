@@ -7,6 +7,16 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.1-en.7
+
+- **HONOR 600 (VKJ-NX9) support**: new 6.6.118 profile for MagicOS 11 /
+  Android 17, verified on-device by @Windroid234. The reliability fixes
+  (trace-ring sizing, split page discovery, order-1 spray drip) are enabled
+  only for this profile.
+- Promotion of the `experimental/shellserver` features into the stable
+  release, including YukiSU / SukiSU Nova and Wireless ADB.
+- README cleanup and line-ending normalization.
+
 ## What's new in 2.5.1-en.6
 
 - **YukiSU manager support**: Root manager selection now includes YukiSU
@@ -34,6 +44,7 @@ one of the versions below **exactly**; anything else is rejected.
 - Xiaomi 18 Fold (lhasa) — experimental, offsets taken from upstream and not verified against the matching firmware
 - Xiaomi Pad 7S Pro (violin) — experimental, offsets taken from upstream 2.5.1
 - Xiaomi Pad 9 Pro Max (yingtian) — experimental, offsets taken from upstream 2.5.1
+- OPPO Find X10 Pro Max (PMX110)
 
 ### 6.12.69 (Android 16)
 - OnePlus 15 (PLK110), OnePlus 15T (PLZ110)
@@ -41,13 +52,21 @@ one of the versions below **exactly**; anything else is rejected.
 - OnePlus Ace6T (PLR110), OnePlus Ace6 Ultra (PMB110)
 - OnePlus Pad3 Pro (OPD2513)
 - OPPO Find X9 Ultra (PMA110), Find X9 Pro (PLG110), Find X9 (PLJ110)
-- OPPO Find X9s Pro (PME110EX), Find X10 (PMX110)
+- OPPO Find X9s Pro (PME110EX), Find X10 (PMW110)
 - OPPO Pad Mini (OPD2515), OPPO Pad 5 Pro (OPD2511)
 - Realme GT8 Pro (RMX5200), Realme Neo8 (RMX8899)
 
 ### 6.12.58 / 6.12.38 (Android 16)
 - OnePlus Pad3 Pro (OPD2513), OPPO Pad Mini (OPD2515)
 - OnePlus Ace6T (PLR110), Realme Neo8 (RMX8899)
+
+### Experimental (not part of the stable support list)
+- vivo X300 Ultra (V2562), 6.12.58 — separate `v2562` chain: the vendor blocks
+  `ksud late-load`, so the app wipes the vendor hook table and the module
+  COMING notifier, then loads the LKM directly. Ported from the working
+  `vivoTimer` timer17 PoC. The plant fails or cold-reboots on roughly half of
+  cold boots, and replaying the boot stages restarts the UI once; see
+  `ports/v2562/README.md`.
 
 ### 6.6.118 (Android 15)
 - OnePlus Ace6 (PLQ110), OnePlus Ace5 Pro (PKR110)
@@ -56,11 +75,11 @@ one of the versions below **exactly**; anything else is rejected.
 - OPPO Pad4 Pro (OPD2409)
 - Realme GT8 (RMX6699)
 - OPPO K13 Turbo Pro (PLE110)
+- HONOR 600 (VKJ-NX9) — MagicOS 11 / Android 17, verified on-device
 
 The complete kernel-version table is in the
 [README](https://github.com/kpgc10kai/Shark#supported-devices).
 
 ## Release policy
 
-Only the latest build of each version line keeps downloadable assets. Superseded, broken or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
-
+Starting with `2.5.1-en.6`, published APKs are retained as release assets. Older superseded or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
