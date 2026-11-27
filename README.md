@@ -433,7 +433,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5.1-en.5` | 2.5.1 | SukiSU Nova manager support; robust pairing-code auto entry; KASLR single-scan fast path for aligned kernels; soft-reboot troubleshooting guidance |
 | `2.5.1-en.6` | 2.5.1 | YukiSU manager support (`org.rouyashiki.yukisu`); seven manager choices; YukiSU late-load and universal-switch integration |
 | `2.5.1-en.7` | 2.5.1 | HONOR 600 (VKJ-NX9) 6.6.118 profile, verified on-device; `experimental/shellserver` features promoted (YukiSU, SukiSU Nova, wireless ADB); README cleanup and line-ending normalization |
-| `2.5.1-en.8` *(pending)* | 2.5.1 | Xiaomi 18 Pro Max (`madrid`) `6.18.21-g73d8f0bd19e0` profile, verified end to end on-device; `sizeof(task_struct)` is now a per-profile `task_bytes` (5760 here, 5248 on the OnePlus builds) |
+| `2.5.1-en.8` | 2.5.1 | Xiaomi 18 Pro Max (`madrid`) `6.18.21-g73d8f0bd19e0` profile, verified end to end on-device; `sizeof(task_struct)` is now a per-profile `task_bytes` (5760 here, 5248 on the OnePlus builds) |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.

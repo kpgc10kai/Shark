@@ -7,17 +7,19 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.1-en.7
+## What's new in 2.5.1-en.8
 
-- **HONOR 600 (VKJ-NX9) support**: new 6.6.118 profile for MagicOS 11 /
-  Android 17, verified on-device by @Windroid234. The reliability fixes
-  (trace-ring sizing, split page discovery, order-1 spray drip) are enabled
-  only for this profile.
-- Promotion of the `experimental/shellserver` features into the stable
-  release, including YukiSU / SukiSU Nova and Wireless ADB.
-- README cleanup and line-ending normalization.
+- **OnePlus 13 (CPH2649) support**: the 6.6.118 `g4127a25dcf3` chain is
+  verified end to end on the clean ColorOS 17 build, with KernelSU late-load.
+- **Xiaomi 18 Pro Max (madrid) support**: new 6.18.21 `g73d8f0bd19e0`
+  profile, verified on-device with KernelSU v3.3.1.
+- `sizeof(struct task_struct)` is now a per-profile `task_bytes` value
+  (5760 on the Xiaomi 18 builds, 5248 on the OnePlus builds) instead of a
+  global 5248 filter.
+- HONOR 600 (VKJ-NX9) and the `experimental/shellserver` features from
+  en.7 remain included.
 
-Previous stable release: [Shark v2.5.1-en.6](https://github.com/kpgc10kai/Shark/releases/tag/v2.5.1-en.6) — its APK and checksums are kept there.
+Previous stable release: [Shark v2.5.1-en.7](https://github.com/kpgc10kai/Shark/releases/tag/v2.5.1-en.7) — its APK and checksums are kept there.
 
 ## Fork features
 
@@ -52,6 +54,7 @@ Previous stable release: [Shark v2.5.1-en.6](https://github.com/kpgc10kai/Shark/
 - OnePlus Ace6T (PLR110), Realme Neo8 (RMX8899)
 
 ### 6.6.118 (Android 15)
+- OnePlus 13 (CPH2649) — verified on-device
 - OnePlus Ace6 (PLQ110), OnePlus Ace5 Pro (PKR110)
 - OnePlus Pad2 Pro (OPD2413)
 - OPPO Find X8 Ultra (PKJ110), OPPO Find N5 (PKH110)
