@@ -47,3 +47,33 @@ device rebooted; `su` did not appear.
    fake/KSU stage is stable.
 
 This branch is for option 1/2 exploration; it is not a release target.
+
+## 6.1 core experiment
+
+The GPL-3.0 `ic-timer-lpe` 6.1 core was given an `IC_PROFILE_OP12_61157`
+profile:
+
+```text
+timer site  0xffffffc00844bcac
+task cred   0x838
+cred uid    +4
+timer alloc 0x108
+```
+
+`ic-op12 ids` passed:
+
+```text
+[ids] page_alloc=265 page_free=263 pairs=1029
+```
+
+`PAYLOAD_CMD=... ic-op12 ksu` rebooted the device immediately and produced no
+KSU. The first suspect is the assumed 6.1 cred field offsets: the core profile
+uses the QEMU 6.1 layout, but OP12's BTF must be checked before the next run.
+
+Current status:
+
+```text
+root shell (timer)   works
+KSU fake/core ksu    reboots, no KSU
+Shark app             still unsupported
+```
