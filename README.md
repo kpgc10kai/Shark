@@ -80,6 +80,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OPPO K15 Pro+ (PMG110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | Xiaomi 18 Pro (M610BB) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k` |
+| Xiaomi 18 Pro Max (2611FPNFAG, madrid) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g73d8f0bd19e0-ab16191870-4k` — verified on-device ([notes](ports/xiaomi18promax-61821/README.md)) |
 | Xiaomi 18 Fold (lhasa) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki576585092-4k` |
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
@@ -88,6 +89,10 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
 >
 > HONOR 600 (VKJ-NX9) working report: on-device verification by [@Windroid234](https://github.com/Windroid234), recorded in [ports/honor600-66118/README.md](ports/honor600-66118/README.md).
+>
+> Xiaomi 18 Pro Max (`madrid`) working report: end-to-end root verified on-device
+> on `6.18.21-android17-5-g73d8f0bd19e0-ab16191870-4k` (KernelSU v3.3.1 late-load),
+> recorded in [ports/xiaomi18promax-61821/README.md](ports/xiaomi18promax-61821/README.md).
 >
 > Redmi Pad SE 8.7 (`flare`) community verification: end-to-end root was
 > confirmed on `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
@@ -427,6 +432,8 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5.1-en.4` | 2.5.1 | Wired ADB activation (`tools/wired-adb.sh`); pairing-helper status in Extras; bounded pairing timeouts; digest-first update checks; supervisor notification cleanup; `probe`/`--help` and no-arg diagnostics; archive tooling |
 | `2.5.1-en.5` | 2.5.1 | SukiSU Nova manager support; robust pairing-code auto entry; KASLR single-scan fast path for aligned kernels; soft-reboot troubleshooting guidance |
 | `2.5.1-en.6` | 2.5.1 | YukiSU manager support (`org.rouyashiki.yukisu`); seven manager choices; YukiSU late-load and universal-switch integration |
+| `2.5.1-en.7` | 2.5.1 | HONOR 600 (VKJ-NX9) 6.6.118 profile, verified on-device; `experimental/shellserver` features promoted (YukiSU, SukiSU Nova, wireless ADB); README cleanup and line-ending normalization |
+| `2.5.1-en.8` *(pending)* | 2.5.1 | Xiaomi 18 Pro Max (`madrid`) `6.18.21-g73d8f0bd19e0` profile, verified end to end on-device; `sizeof(task_struct)` is now a per-profile `task_bytes` (5760 here, 5248 on the OnePlus builds) |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.

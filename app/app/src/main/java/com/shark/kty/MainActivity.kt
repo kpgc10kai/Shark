@@ -2997,6 +2997,7 @@ class MainActivity : ComponentActivity() {
             "6.18.21-android17-5-g1d099fcb35e0-abogki540753930-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g805aa6adea19-abogki576585092-4k" to ExploitKind.CVE61821,
             "6.18.21-android17-5-g805aa6adea19-abogki565292102-4k" to ExploitKind.CVE61821,
+            "6.18.21-android17-5-g73d8f0bd19e0-ab16191870-4k" to ExploitKind.CVE61821,
             "6.12.69-android16-6-g242e1a07f878-ab15865446-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g5fd39602326e-ab16372235-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
