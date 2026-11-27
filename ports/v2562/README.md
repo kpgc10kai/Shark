@@ -45,11 +45,23 @@ Origin device and image:
 - OriginOS 16.0.7.10 W30 and 17.1.6.41 W30 (same kernel image)
 - Kernel `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k`
 - Manager: KernelSU-Next v3.4.2 (`com.rifsxd.ksunext`)
-- PoC: `timer17` v108, stable over two weeks of daily driving
+- PoC: `timer17` v108 upstream, locally v109 (wait-loop idle fix)
 
 The plant itself is flaky on this image (roughly half the cold boots): it can
 panic during the timer reclaim or the vendor scanner can cold-reboot the phone
 seconds after root is delivered. A cold reboot clears it; retry.
+
+## Process lifetime
+
+The `wait verify` child (and its finit grandchild) used to spin for their
+whole lifetime. On a failed or parked run the orphaned child pegged one core
+until reboot; on success the post-finit hold and the root heartbeat spun
+forever too. v109 keeps the established syscall-free spin only for the
+cap-plant to GO window: before it, the child idles on the go pipe
+(`POLLHUP` = parent gone) and the parent raises shared-page `pg[50]` just
+before it first writes the child's cred. The armed spin and the post-GO
+verdict hold are wall-clock bounded, and the successful hold/heartbeat block
+in `pause`/`usleep` instead of yielding.
 
 
 ## Why this needs a separate chain
