@@ -88,6 +88,7 @@ import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -497,9 +498,11 @@ class MainActivity : ComponentActivity() {
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault(getString(R.string.unknown))
         exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
-        // The vivo chain's bundled fallback LKM is KernelSU-Next; prefer its
-        // manager on a first run so kernel module and userspace match.
-        if (exploit == ExploitKind.V2562 && savedManager == null) {
+        // The vivo chain's bundled fallback LKM is KernelSU-Next and the port
+        // is only verified with its manager, so this chain ignores a manager
+        // saved on another kernel instead of pairing a foreign manager with
+        // the loaded module.
+        if (exploit == ExploitKind.V2562) {
             manager = ManagerKind.NEXT
         }
         if (manager == ManagerKind.DYNAMIC && !supportsUniversal()) {
@@ -1533,6 +1536,15 @@ class MainActivity : ComponentActivity() {
             SettingItem(Icons.Filled.Fingerprint, stringResource(R.string.system_fingerprint), summary = fingerprint)
             Divider(startIndent = itemDividerIndent(), color = colors.divider)
             SettingItem(Icons.Filled.Security, stringResource(R.string.selinux_status), summary = selinux)
+        }
+        if (exploit == ExploitKind.V2562) {
+            Group {
+                SettingItem(
+                    Icons.Filled.Warning,
+                    stringResource(R.string.vivo_chain_warning_title),
+                    summary = stringResource(R.string.vivo_chain_warning)
+                )
+            }
         }
     }
 
@@ -2990,8 +3002,14 @@ class MainActivity : ComponentActivity() {
             exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
-        if (supportsUniversal()) ManagerKind.entries
-        else ManagerKind.entries.filter { it != ManagerKind.DYNAMIC }
+        when {
+            // Only KernelSU-Next is verified with the vivo chain's bundled
+            // fallback LKM; offering the others would pair a manager with a
+            // kernel module nobody tested.
+            exploit == ExploitKind.V2562 -> listOf(ManagerKind.NEXT)
+            supportsUniversal() -> ManagerKind.entries
+            else -> ManagerKind.entries.filter { it != ManagerKind.DYNAMIC }
+        }
 
     private fun hotManagerChoices(): List<ManagerKind> =
         ManagerKind.entries.filter { it != ManagerKind.DYNAMIC }

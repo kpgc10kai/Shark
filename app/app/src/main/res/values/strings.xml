@@ -79,6 +79,8 @@
     <string name="device_model">Device model</string>
     <string name="system_fingerprint">System fingerprint</string>
     <string name="selinux_status">SELinux status</string>
+    <string name="vivo_chain_warning_title">Experimental chain</string>
+    <string name="vivo_chain_warning">Roughly half of cold boots fail in the plant and need a cold reboot. Replaying the boot stages also restarts the UI once.</string>
     <string name="after_root_disable_popup">Disable security popups after rooting</string>
     <string name="after_root_soft_reboot">Soft reboot after rooting</string>
     <string name="after_root_unload_guard">Unload the kernel security guard after rooting</string>

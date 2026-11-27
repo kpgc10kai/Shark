@@ -2,7 +2,7 @@
 
 Shark drives the on-device 98260 exploit as shell through Stellar or Shizuku to load the manager LKM. On first use, complete authorization first, then jailbreak with one tap.
 
-> Shark currently supports OPPO/OnePlus/Realme/Xiaomi devices running kernels 6.18.21, 6.12.69, 6.12.38, 6.12.58, 6.12.23, 6.6.118 and 6.6.127 plus the vivo X300 Ultra 6.12.58 build, matched exactly against the full `uname -r`; unmatched models are reported as unsupported.
+> Shark currently supports OPPO/OnePlus/Realme/Xiaomi devices running kernels 6.18.21, 6.12.69, 6.12.38, 6.12.58, 6.12.23, 6.6.118 and 6.6.127 plus the experimental vivo X300 Ultra 6.12.58 build, matched exactly against the full `uname -r`; unmatched models are reported as unsupported.
 
 ## Quick Start
 
@@ -120,7 +120,7 @@ other subcommands.
 - **6.18.21** → `libk61821.so`; **6.12.69** → `libk61269.so` (the two OTA builds select the call site by uname).
 - **6.12.38 (PLR110)** → `libk61238.so`; **6.12.58 (PLZ110)** → `libk61258.so`.
 - **6.6.118 (PKJ110 / PKH110 / Pad, etc.)** → `libk66118.so` (the two OTA builds select the call site by uname); KMI android15-6.6.
-- **vivo X300 Ultra (V2562)** → `libv2562.so`; single release `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k`. vivo blocks `ksud late-load`, so this chain wipes the vendor hooks/notifier and calls `finit_module` on a symbol-baked LKM with `allow_shell=1`. It uses the installed manager's own android16-6.12 LKM when it can extract it, and otherwise the KernelSU-Next image bundled in `libv2562.so`. SUSFS and the Oplus-only toggles are not exposed on this chain.
+- **vivo X300 Ultra (V2562), experimental** → `libv2562.so`; single release `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k`. vivo blocks `ksud late-load`, so this chain wipes the vendor hooks/notifier and calls `finit_module` on a symbol-baked LKM with `allow_shell=1`. It uses the installed manager's own android16-6.12 LKM when it can extract it, and otherwise the KernelSU-Next image bundled in `libv2562.so`. KernelSU-Next is the only verified manager. SUSFS and the Oplus-only toggles are not exposed on this chain. Roughly half of cold boots fail in the plant or cold-reboot; a cold reboot clears it.
 - All of the above match by **exact `uname -r`**; when unmatched, tapping "One-Tap Jailbreak" immediately reports that the model is unsupported.
 - All entry points run in place directly from the app's native libraries (`nativeLibraryDir`); the child process's cwd/HOME/TMPDIR are all in the app filesDir, and no tools or files are deployed to `/data/local/tmp` — except the vivo chain, which stages its LKM at `/data/local/tmp/ksu-p.ko` (the fake-cred child pre-opens it before any tamper) and mirrors `ksud` there for the post-load SELinux restore. ksud otherwise runs in place from the installed manager APK. SUSFS is supported on the 6.18/6.12 branches (6.12 uses `libsusfs_guard_lkm_612.so`) and not on 6.6.118 / 6.6.127, the 6.12.58 OS7 build, or the vivo chain; the VFS switch is exposed only for the 6.18 entry point.
 - For system research on your own devices only.

@@ -9,8 +9,9 @@ tasks. This port carries the ladder that was proven on the device for two weeks
 
 ## Status
 
-Verified end to end on 2026-11-26 from the built `libv2562.so`, both as the
-`shell` uid (what Shizuku gives the app) and from the Shark UI itself:
+Experimental. Verified end to end on 2026-11-26 from the built `libv2562.so`,
+both as the `shell` uid (what Shizuku gives the app) and from the Shark UI
+itself:
 
 ```
 PROFILE_V2562=6.12.58-android16-6-g09eda8c8505a-ab15950084-4k
@@ -120,8 +121,8 @@ Source order:
    manager, so normal mode keeps manager freedom.
 2. If extraction fails or the module needs a symbol the table does not carry,
    the bundled KernelSU-Next image
-   `exploit/payload/v2562_ksu.ko` (500,656 bytes,
-   md5 `8f16f514631b603686f18cca8b499289`) is patched instead. It is the exact
+   `exploit/payload/v2562_ksu.ko` (500,656 bytes, sha256
+   `67c5d9e8…c211e7`) is patched instead. It is the exact
    image the PoC validated: patching it with the PoC's slide reproduces the
    proven `ksu-p.ko` byte for byte except for the module name
    (`kernelsu` here, `kernelsv` in the PoC asset).
@@ -130,6 +131,49 @@ The payload and the symbol table are embedded in `libv2562.so` and written to
 `/data/local/tmp` by the runner, because the shell-uid plant cannot read
 app-private assets. The patched image is always `/data/local/tmp/ksu-p.ko`,
 which the fake-cred child pre-opens before any tamper.
+
+### Payload provenance and reproducibility
+
+`exploit/payload/v2562_ksu.ko` is not a Shark build. It is the release
+`android16-6.12_kernelsu.ko` embedded in the official KernelSU-Next v3.4.2
+manager (`com.rifsxd.ksunext`, versionCode 33355), extracted verbatim with
+`ksud debug extract-binary android16-6.12_kernelsu.ko`. Upstream source is tag
+`v3.4.2` = commit `4c706b5938665866ebe16944a481a7b91e3396af`, and their
+`.github/workflows/ddk-lkm-ksu.yml` builds the module for KMI `android16-6.12`
+with:
+
+- container `ghcr.io/ylarod/ddk-min:android16-6.12-20260828`
+- `cd kernel && CONFIG_KSU=m CC=clang make`
+- `llvm-strip -d`, artifact `android16-6.12_kernelsu.ko`
+
+The file is committed unchanged; `ko_patch.inc` is applied in memory on the
+device (symbols to absolute addresses, `track_throne` cred, vermagic). To
+re-check the hash against a manager install:
+
+```sh
+K=$(pm path com.rifsxd.ksunext | sed 's|package:||; s|/base.apk$||')/lib/arm64/libksud.so
+printf 'ksud debug extract-binary android16-6.12_kernelsu.ko /data/local/tmp/k.ko\nsha256sum /data/local/tmp/k.ko\n' |
+    "$K" debug su
+```
+
+It prints the hash in `exploit/payload/v2562_ksu.ko.sha256`, so the payload can
+also be checked without a device with `sha256sum -c`.
+
+`libv2562.so` is built from this tree with Rust 1.99.1 and NDK 28.2.13676358:
+
+```sh
+cd exploit/rust-kplant
+export ANDROID_NDK_HOME=$HOME/Android/Sdk/ndk/28.2.13676358
+export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang
+CARGO_TARGET_DIR=target/v2562 cargo build --release --target aarch64-linux-android \
+    --no-default-features --features v2562
+```
+
+The result is 1,005,840 bytes, sha256
+`e3603e3539a190938169631c46bb7826649c7e50b527a07c460364f628a2127c`, identical
+across two clean builds on that toolchain (the committed file). `build-all.sh`
+rebuilds every runner; the other `lib*.so` in the tree are the untouched
+binaries from `main`.
 
 ## Integration points
 

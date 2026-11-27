@@ -83,7 +83,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | Xiaomi Pad 7S Pro (violin) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g284297031c53-abogki553682993-4k` |
 | Xiaomi Pad 9 Pro Max (yingtian) | HyperOS 4 / Android 17 | `6.18.21-android17-5-g805aa6adea19-abogki565292102-4k` |
 | HONOR 600 (VKJ-NX9) | MagicOS 11 / Android 17 | `6.6.118-android15-8-gc901ea41aa32-ab15981388-4k` |
-| vivo X300 Ultra (V2562) | OriginOS 16 / 17 | `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k` |
+| vivo X300 Ultra (V2562) — experimental | OriginOS 16 / 17 | `6.12.58-android16-6-g09eda8c8505a-ab15950084-4k` |
 
 > OPPO K15 Pro+ working report: [@nakajimegame](https://x.com/nakajimegame/status/2124641337920348587).
 >
@@ -122,8 +122,8 @@ installed manager APK, so **install the manager you intend to use first**.
 - **One-click root**: After opening the app, no manual exploit selection is
   needed; it uses `uname -r` to automatically match a supported chain: 6.18.21 /
   6.12.69 / 6.12.38 / 6.12.58 / 6.6.118. The vivo X300 Ultra 6.12.58 build is
-  a separate chain (`v2562`) because the vendor blocks `ksud late-load`; it
-  loads the LKM directly after wiping the vendor gates. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
+  an experimental separate chain (`v2562`) because the vendor blocks
+  `ksud late-load`; it loads the LKM directly after wiping the vendor gates. Tap **One-click root** to complete privilege escalation, `ksud late-load`, module installation,
   and manager launch. Temporary root disappears after a reboot; just run it again on
   the next boot.
 - **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
