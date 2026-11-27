@@ -33,6 +33,7 @@ Previous stable release: [Shark v2.5.1-en.7](https://github.com/kpgc10kai/Shark/
 
 ### 6.18.21 (Android 17)
 - OnePlus 16 (PYB110)
+- Xiaomi 18 Pro Max (madrid) — verified on-device
 - Xiaomi 18 Pro (M610BB)
 - Xiaomi 18 Fold (lhasa) — experimental, offsets taken from upstream and not verified against the matching firmware
 - Xiaomi Pad 7S Pro (violin) — experimental, offsets taken from upstream 2.5.1
