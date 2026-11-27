@@ -1,6 +1,6 @@
 # OnePlus 13 (CPH2649) — 6.6.118 g4127
 
-Status: **app profile recognized; Shark runner verification pending**
+Status: **Shark runner verified on-device (2026-11-27)**
 
 ```text
 device           CPH2649 (OnePlus 13, India)
@@ -52,7 +52,7 @@ timer fake:
 This proves the kernel and the g4127 constants on CPH2649. It does not yet
 prove Shark's own `libk66118.so` runner end to end on this device.
 
-## Remaining verification
+## Shark verification
 
 The device was carrying an existing KernelSU session while this was recorded.
 For a clean Shark test:

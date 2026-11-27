@@ -59,7 +59,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OnePlus Ace6 Ultra (PMB110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
 | OnePlus Ace6 (PLQ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k`<br>`6.6.118-android15-8-gb1422e39c313-abogki552867473-4k` |
 | OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| OnePlus 13 (CPH2649) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` — profile recognized; runner verification pending ([notes](ports/op13-66118/README.md)) |
+| OnePlus 13 (CPH2649) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` — verified on-device ([notes](ports/op13-66118/README.md)) |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
