@@ -22,8 +22,8 @@ soc              SM8750
 
 ## Clean-stock verification
 
-The device was restored to stock, rebooted, and RootLab was disabled. Shizuku
-was started, then Shark One-click root was run.
+The device was restored to stock, rebooted, and a separate local test app was
+disabled. Shizuku was started, then Shark One-click root was run.
 
 ```text
 Device model    OnePlus 13
