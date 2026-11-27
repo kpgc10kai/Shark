@@ -77,3 +77,28 @@ root shell (timer)   works
 KSU fake/core ksu    reboots, no KSU
 Shark app             still unsupported
 ```
+
+## BTF check
+
+The OP12 `Image` was extracted from the boot image and its BTF dumped:
+
+```text
+usage            0x00 (atomic_t)
+uid              0x04
+securebits       0x24
+cap_inheritable  0x28
+cap_permitted    0x30
+cap_effective    0x38
+cap_bset         0x40
+cap_ambient      0x48
+security         0x78
+user             0x80
+user_ns          0x88
+ucounts          0x90
+group_info       0x98
+```
+
+This matches the `IC_PROFILE_OP12_61157` assumptions. The `ic-op12 ksu`
+reboot is therefore not explained by a wrong cred layout; the next suspect is
+the fake/late-load/handoff path itself. `IC_LOG_PATH` and a clean-boot run are
+needed before changing offsets.
