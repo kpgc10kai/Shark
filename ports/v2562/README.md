@@ -171,9 +171,11 @@ CARGO_TARGET_DIR=target/v2562 cargo build --release --target aarch64-linux-andro
 
 The result is 1,005,840 bytes, sha256
 `e3603e3539a190938169631c46bb7826649c7e50b527a07c460364f628a2127c`, identical
-across two clean builds on that toolchain (the committed file). `build-all.sh`
-rebuilds every runner; the other `lib*.so` in the tree are the untouched
-binaries from `main`.
+across two clean builds on that toolchain (the committed file).
+`.github/workflows/runner-build.yml` builds `k61258` and `v2562` with the same
+Rust and NDK versions, verifies the LKM checksum and reproduces this hash byte
+for byte. `build-all.sh` rebuilds every runner; the other `lib*.so` in the tree
+are the untouched binaries from `main`.
 
 ## Integration points
 
