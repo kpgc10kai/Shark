@@ -17,16 +17,7 @@ one of the versions below **exactly**; anything else is rejected.
   release, including YukiSU / SukiSU Nova and Wireless ADB.
 - README cleanup and line-ending normalization.
 
-## What's new in 2.5.1-en.6
-
-- **YukiSU manager support**: Root manager selection now includes YukiSU
-  (`org.rouyashiki.yukisu`). Shark resolves its `lib/arm64/libksud.so` payload
-  even though YukiSU does not print a KernelSU-style `uapi` version string, and
-  the normal late-load path works end-to-end.
-- **Seven manager choices**: KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra,
-  SukiSU Nova, YukiSU, and FinaSU.
-- YukiSU is included in the universal manager switch and the manager
-  force-stop list.
+Previous stable release: [Shark v2.5.1-en.6](https://github.com/kpgc10kai/Shark/releases/tag/v2.5.1-en.6) — its APK and checksums are kept there.
 
 ## Fork features
 
