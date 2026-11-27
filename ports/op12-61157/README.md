@@ -162,3 +162,16 @@ failure        one cold-boot timer race reboot
 The app-path run that produced the screenshot completed in 7.222 s.
 This is promising, but 5 boots are not enough for a stable designation;
 run 10-20 more before promoting OP12 out of experimental.
+
+## Cold-boot repetitions 6-10
+
+| boot | result | payload time |
+|---|---|---|
+| 6 | KSU loaded | 5.690 s |
+| 7 | KSU loaded | 5.523 s |
+| 8 | KSU loaded | 8.931 s |
+| 9 | KSU loaded | 5.666 s |
+| 10 | KSU loaded | 9.054 s |
+
+Cumulative: **9/10 (90%)**, success range 5.5-9.5 s.
+The one failure was boot 2 (reboot during fake).
