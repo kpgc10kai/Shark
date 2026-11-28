@@ -1,6 +1,20 @@
 # POCO X7 Pro / F7 HyperOS 4 (6.6.118) experimental port
 
-Status: **offline analysis complete; on-device test pending (exp1)**
+Status: **verified once on POCO X7 Pro; cold-boot repetition pending**
+
+## Verified result
+
+```text
+POCO X7 Pro (rodin), HyperOS 4 OS4.0.1.0.XOJEUXM
+Kernel 6.6.118-android15-8-g0908354dac1b-ab16143355-4k
+PROFILE_66118 matched; PROBE_OK
+KernelSU late-load rc=0; kernelsu 180224 1 - Live
+su: uid=0(root) context=u:r:ksu:s0
+SELinux Enforcing
+exploit exit=0 / DONE
+```
+
+POCO F7 has the same kernel string but has not reported separately.
 
 ## Target
 
