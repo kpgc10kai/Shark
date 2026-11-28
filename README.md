@@ -57,6 +57,16 @@ The `Shark-en_2.5.3-exp1` pre-release adds a separate 6.1.157 runner for:
 - OnePlus Ace5 (PKG110), `6.1.157-android14-11-o-g7cdd565ce1ed`
 - OnePlus 13R (CPH2691), `6.1.157-android14-11-o-gaf313efe1149`
 
+Expected firmware (ColorOS 17):
+
+```text
+Ace5   PKG110_17.0.0.105
+13R    CPH2691_17.0.0.105
+```
+
+Only devices already on these exact builds are needed; other builds are
+unsupported for this round.
+
 Download: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.3-exp1>
 
 Tester reports: <https://github.com/kpgc10kai/Shark-en/issues/19>
