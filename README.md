@@ -104,9 +104,11 @@ HyperOS 4  OS4.0.1.0.XOJEUXM
 ```
 
 The OTA boot image is vulnerable to 98260 (`posix_cpu_timer_del` stale node).
-The profile is **verified on the POCO X7 Pro (3/3 cold boots, 4.9–9.5 s)**;
-the F7 has the same kernel but no separate report yet. It is disabled in the
-stable 2.5.4 build.
+The profile is **verified on the POCO X7 Pro (3/3 cold boots, 4.9–9.5 s)**.
+The POCO F7 reports the same GKI kernel string but is a different device
+(`onyx`, Snapdragon 8s Gen 4) from the X7 Pro (`rodin`, Dimensity 8400-Ultra),
+so it still needs its own on-device confirmation. The profile is disabled in
+the stable 2.5.4 build.
 
 Test build: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.4-exp1>
 
