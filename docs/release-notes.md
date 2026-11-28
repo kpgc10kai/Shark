@@ -8,6 +8,20 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.5
+
+**Stable: POCO X7 Pro support.**
+
+- Added the POCO X7 Pro (`rodin`) 6.6.118 profile for
+  `6.6.118-android15-8-g0908354dac1b-ab16143355-4k`, HyperOS 4
+  `OS4.0.1.0.XOJEUXM`.
+- Verified on-device: 3/3 cold boots (5.6 s, 4.9 s, 9.5 s), KernelSU
+  late-load, `uid=0 ... u:r:ksu:s0`, SELinux Enforcing.
+- **POCO F7 is kept separate.** It reports the same kernel string but is a
+  different device and remains unverified; the stable build therefore disables
+  the F7 profile. Use `Shark-en_2.5.4-exp1` for F7 testing.
+- The OnePlus 13R, OnePlus 12 6.1, and previous profiles are unchanged.
+
 ## What's new in 2.5.4-exp1
 
 **POCO X7 Pro / F7 HyperOS 4 tester build.**

@@ -93,25 +93,31 @@ whether the device rebooted, hung, or reached u:r:ksu:s0
 
 Do not use the Ace5 runner on OP12 or any other kernel profile.
 
-### POCO X7 Pro / F7 HyperOS 4 test build
+### POCO X7 Pro stable / F7 test
 
-The same 6.1.157 tester channel now has an experimental 6.6.118 profile for:
+The stable `Shark-en_2.5.5` release includes the POCO X7 Pro.
+The POCO F7 is a separate device and remains experimental.
+
+- POCO X7 Pro (`rodin`), `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — verified 3/3 cold boots
+- POCO F7 (`onyx`), same kernel string — separate hardware, unverified
+
+Expected firmware:
 
 ```text
-POCO X7 Pro (rodin) / POCO F7
-6.6.118-android15-8-g0908354dac1b-ab16143355-4k
-HyperOS 4  OS4.0.1.0.XOJEUXM
+X7 Pro  OS4.0.1.0.XOJEUXM
+F7      same GKI kernel string only; separate firmware
 ```
 
-The OTA boot image is vulnerable to 98260 (`posix_cpu_timer_del` stale node).
-The profile is **verified on the POCO X7 Pro (3/3 cold boots, 4.9–9.5 s)**.
-The POCO F7 is a separate device that reports the same kernel string; its
-success is not assumed. F7 remains unverified and separate from the X7 Pro.
-The profile is disabled in the stable 2.5.4 build.
+Stable download:
 
-Test build: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.4-exp1>
+<https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.5>
 
-Use the Logs tab → **Share / Export log** action and attach the full log.
+F7 test build:
+
+<https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.4-exp1>
+
+The X7 Pro success does not validate the F7. Do not use a single result for
+both devices.
 
 ## Supported devices
 
@@ -130,8 +136,8 @@ Use the Logs tab → **Share / Export log** action and attach the full log.
 | OnePlus 12 (CPH2573) | ColorOS 17 | `6.1.157-android14-11-o-g3d5d51510424` — experimental 6.1 chain, verified on-device ([notes](ports/op12-61157/README.md)) |
 | OnePlus Ace5 (PKG110, `PKG110_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-g7cdd565ce1ed` — **test build only (exp2)**, not in stable |
 | OnePlus 13R (CPH2691, `CPH2691_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-gaf313efe1149` — verified on-device, 3/3 cold boots |
-| POCO X7 Pro | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — **verified 3/3 cold boots** ([notes](ports/xiaomi-hyperos4-66118/README.md)) |
-| POCO F7 | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — same kernel string, **separate device; unverified** |
+| POCO X7 Pro | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — **verified 3/3, stable** ([notes](ports/xiaomi-hyperos4-66118/README.md)) |
+| POCO F7 | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — same kernel string, **separate device; experimental** |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
