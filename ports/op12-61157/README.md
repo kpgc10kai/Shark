@@ -340,3 +340,15 @@ Six consecutive successes with variant E and a 40 s settle. The missing
 10th is now dominated by harness start misses, not the exploit. The app
 runner remains E; the next change is a deterministic "wait for boot_completed
 and core log" launcher.
+
+## Deterministic launcher campaign
+
+```text
+E3  4/4 success
+E4  5/6 success, one no-core-log start (not a park)
+```
+
+Best consecutive KSU streak: 8. The remaining failures are harness start
+misses after a spontaneous reboot, not fake_uid bursts. The next harness
+change must sample boot_id/uptime before starting and retry the whole boot
+if the device rebooted mid-settle.
