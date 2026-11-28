@@ -285,3 +285,18 @@ run 10      fake_uid burst missed -> park
 The only genuine C failure in that batch was run 10. The parked log is
 committed as `logs/variantC-parked.log`. The harness must wait for a settled
 boot before starting the core, or it records false failures.
+
+## Variant E (12 spray threads)
+
+With `SPRAY_THREADS=12`, `SPRAY_SOCKS=4096`, `SPRAY_POST=40000`, 30 s burst:
+
+```text
+E1-E5   success
+E6      fake_uid burst missed (park)
+E7      started before boot settled (no core log)
+E8-E10  success
+```
+
+True exploit result: 8/9 (89%); the app runner was rebuilt with E.
+A 10-consecutive run is still pending; settle/start handling is the next
+harness fix, followed by one more spray/thread sweep if the park remains.
