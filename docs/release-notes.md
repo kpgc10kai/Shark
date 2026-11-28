@@ -8,6 +8,15 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.6
+
+- Kept **POCO X7 Pro** stable.
+- Split the **POCO X8 Pro Max** from the OnePlus 13 profile. It reports the
+  same `g4127` kernel string, but it is a different device; its fake-cred test
+  failed, so it is disabled in the stable build (experimental only).
+- **POCO F7** remains separate and disabled in stable; use exp1 for F7 tests.
+- No other device behavior changed.
+
 ## What's new in 2.5.5
 
 **Stable: POCO X7 Pro support.**

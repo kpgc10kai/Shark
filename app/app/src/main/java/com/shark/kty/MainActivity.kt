@@ -498,14 +498,15 @@ class MainActivity : ComponentActivity() {
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault(getString(R.string.unknown))
         val mapped = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
-        exploit = if (mapped == ExploitKind.CVE66118_HYPEROS4) {
-            resolveHyperOs4Variant()
-        } else {
-            mapped
+        exploit = when (mapped) {
+            ExploitKind.CVE66118_HYPEROS4 -> resolveHyperOs4Variant()
+            ExploitKind.CVE66118 -> resolveOnePlus13Variant()
+            else -> mapped
         }
         if (!BuildConfig.ALLOW_EXPERIMENTAL_PROFILES &&
             (exploit == ExploitKind.CVE61157_ACE5 ||
                 exploit == ExploitKind.CVE66118_F7 ||
+                exploit == ExploitKind.CVE66118_X8PROMAX ||
                 exploit == ExploitKind.CVE66118_HYPEROS4)
         ) {
             exploit = ExploitKind.UNSUPPORTED
@@ -2766,6 +2767,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
+                    ExploitKind.CVE66118_X8PROMAX -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE66118_X7PRO -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE66118_F7 -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE66118_HYPEROS4 -> arrayOf("$nativeDir/libk66118.so", "run")
@@ -2940,6 +2942,7 @@ class MainActivity : ComponentActivity() {
         CVE61238("CVE-2026-98260-6.12.38"),
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE66118("CVE-2026-98260-6.6.118"),
+        CVE66118_X8PROMAX("CVE-2026-98260-6.6.118-X8ProMax"),
         CVE66118_X7PRO("CVE-2026-98260-6.6.118-X7Pro"),
         CVE66118_F7("CVE-2026-98260-6.6.118-F7"),
         CVE66118_HYPEROS4("CVE-2026-98260-6.6.118-HyperOS4"),
@@ -2957,6 +2960,15 @@ class MainActivity : ComponentActivity() {
         YUKISU("YukiSU", "org.rouyashiki.yukisu", "yukisu"),
         NOVA("SukiSU Nova", "com.sukisu.nova", "nova"),
         DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
+    }
+
+    private fun resolveOnePlus13Variant(): ExploitKind {
+        val identity = "${Build.MODEL} ${Build.DEVICE} ${Build.PRODUCT}".uppercase()
+        return if (identity.contains("X8") || identity.contains("X8PRO")) {
+            ExploitKind.CVE66118_X8PROMAX
+        } else {
+            ExploitKind.CVE66118
+        }
     }
 
     private fun resolveHyperOs4Variant(): ExploitKind {
