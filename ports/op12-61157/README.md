@@ -316,3 +316,15 @@ No improvement over E. The app runner stays on E.
 The repeated failure is the extra `fake_uid` plant after the fake-cred swap.
 The next approach is to remove that second repair plant rather than add more
 spray pressure.
+
+## Variant G (skip fake_uid repair)
+
+Skipping the fake_uid/fake_euid plants and letting the child `setuid(0)`
+clean up was tested with `IC_SKIP_UID_FIX=1`:
+
+```text
+G1-G5  all failed (no KSU)
+```
+
+The repair plants are required; this direction is closed. The app runner
+remains variant E.
