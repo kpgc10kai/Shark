@@ -128,6 +128,7 @@ Use the Logs tab → **Share / Export log** action and attach the full log.
 | OnePlus 12 (CPH2573) | ColorOS 17 | `6.1.157-android14-11-o-g3d5d51510424` — experimental 6.1 chain, verified on-device ([notes](ports/op12-61157/README.md)) |
 | OnePlus Ace5 (PKG110, `PKG110_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-g7cdd565ce1ed` — **test build only (exp2)**, not in stable |
 | OnePlus 13R (CPH2691, `CPH2691_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-gaf313efe1149` — verified on-device, 3/3 cold boots |
+| POCO X7 Pro / F7 | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — **tester build (exp1) only**, not in stable ([notes](ports/xiaomi-hyperos4-66118/README.md)) |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
