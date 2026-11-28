@@ -1,8 +1,7 @@
 /* OnePlus Ace5 (PKG110) + 13R (CPH2691) profile for ic-timer-lpe.
- * Merge this block before the final #endif in core/profiles.h.
- * Generated from both 17.0.0.105 boot images with timer-extract.
+ * Insert this block as a new #elif before the close of the profile #if chain
+ * in core/profiles.h. Generated from both 17.0.0.105 boot images.
  */
-
 #elif defined(IC_PROFILE_ACE5_61157)
 
 /* OnePlus Ace5 / PKG110, 6.1.157-android14-11-o-g7cdd565ce1ed.
@@ -45,4 +44,3 @@
 #define TP_STATIC 0xffffffc00a1f2f00ULL
 #define TP_FUNCS_OFF 0x40ULL
 #define ACE5_PROFILE 1
-

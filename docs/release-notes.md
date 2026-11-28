@@ -8,10 +8,14 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.3-exp1
+## What's new in 2.5.3-exp2
 
 **Tester build — OnePlus Ace5 / 13R, 6.1.157.** This is a pre-release, not a
 stable device recommendation.
+
+> **exp2 fix:** exp1 accidentally shipped the PD2571 runner
+> (`profile pd2571-6.1.145`). Use exp2 for Ace5/13R. Exp1 cannot load KSU on
+> either device.
 
 - Added a separate `6.1.157` runner for:
   - OnePlus Ace5 (PKG110), firmware **PKG110_17.0.0.105**,
