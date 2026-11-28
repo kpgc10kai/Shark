@@ -1,7 +1,9 @@
 /* OnePlus Ace5 / PKG110 profile for ic-timer-lpe.
  * Merge this block before the final #endif in core/profiles.h.
  * Generated from boot_PKG110_17.0.0.105.img with timer-extract.
- */#elif defined(IC_PROFILE_ACE5_61157)
+ */
+
+#elif defined(IC_PROFILE_ACE5_61157)
 
 /* OnePlus Ace5 / PKG110, 6.1.157-android14-11-o-g7cdd565ce1ed.
  * Generated from boot_PKG110_17.0.0.105.img with timer-extract. */
