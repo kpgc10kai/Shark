@@ -300,3 +300,19 @@ E8-E10  success
 True exploit result: 8/9 (89%); the app runner was rebuilt with E.
 A 10-consecutive run is still pending; settle/start handling is the next
 harness fix, followed by one more spray/thread sweep if the park remains.
+
+## Variant F (16 threads)
+
+With `SPRAY_THREADS=16` (4096 sockets, 40000 posts, 30 s):
+
+```text
+F1,F2,F4  success
+F3        fake_uid park
+F5        no core log (start miss)
+```
+
+No improvement over E. The app runner stays on E.
+
+The repeated failure is the extra `fake_uid` plant after the fake-cred swap.
+The next approach is to remove that second repair plant rather than add more
+spray pressure.
