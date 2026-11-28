@@ -21,7 +21,8 @@ stable device recommendation.
   - OnePlus Ace5 (PKG110), firmware **PKG110_17.0.0.105**,
     kernel `6.1.157-android14-11-o-g7cdd565ce1ed`
   - OnePlus 13R (CPH2691), firmware **CPH2691_17.0.0.105**,
-    kernel `6.1.157-android14-11-o-gaf313efe1149`
+    kernel `6.1.157-android14-11-o-gaf313efe1149` — **verified on-device**
+    with KernelSU v3.3.1 (`Working [Jailbreak mode]`, SELinux Enforcing)
 - **Firmware is exact.** Only testers already on ColorOS 17 with
   `PKG110_17.0.0.105` or `CPH2691_17.0.0.105` are needed. Other builds are
   out of scope for this round.
@@ -30,9 +31,9 @@ stable device recommendation.
   the OP12 6.1 chain. The Ace5 and 13R timer/copy-process constants are
   identical to each other and differ from the OP12, so they use `libkace5.so`.
 - The OP12 mapping is unchanged.
-- **Not tested on Ace5 or 13R hardware yet.** Tester logs are required before
-  this can be considered supported. Use a clean boot, install KernelSU, start
-  Shizuku, run One-click root, and attach the full log.
+- The OnePlus 13R build is verified on-device with KernelSU v3.3.1. The Ace5
+  is still awaiting a hardware report. Use a clean boot, install KernelSU,
+  start Shizuku, run One-click root, and attach the full log.
 - Do not run this build on OP12 or any other kernel. A failed fake plant can
   require a reboot.
 - Tester reports and logs: <https://github.com/kpgc10kai/Shark-en/issues/19>
@@ -66,7 +67,7 @@ stable device recommendation.
 ### 6.1.157 (Android 16)
 - OnePlus 12 (CPH2573) — experimental 6.1 chain, verified on-device
 - OnePlus Ace5 (PKG110) — **tester build**, not yet verified
-- OnePlus 13R (CPH2691) — **tester build**, not yet verified
+- OnePlus 13R (CPH2691) — **verified on-device**, experimental 6.1 chain
 
 ### 6.18.21 (Android 17)
 - OnePlus 16 (PYB110)
