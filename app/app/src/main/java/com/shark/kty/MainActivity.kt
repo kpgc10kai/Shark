@@ -504,8 +504,7 @@ class MainActivity : ComponentActivity() {
             else -> mapped
         }
         if (!BuildConfig.ALLOW_EXPERIMENTAL_PROFILES &&
-            (exploit == ExploitKind.CVE61157_ACE5 ||
-                exploit == ExploitKind.CVE66118_F7 ||
+            (exploit == ExploitKind.CVE66118_F7 ||
                 exploit == ExploitKind.CVE61269_NOTE15 ||
                 exploit == ExploitKind.CVE66118_X8PROMAX ||
                 exploit == ExploitKind.CVE66118_HYPEROS4)

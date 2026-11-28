@@ -1,19 +1,24 @@
 # OnePlus Ace5 / 13R 6.1.157 tester port
 
-Status: **13R verified on-device; Ace5 offline analysis only**
+Status: **Ace5 and 13R verified on-device**
 
-Verified target:
+Verified targets:
 
 ```text
-OnePlus 13R  CPH2691_17.0.0.105
-Kernel       6.1.157-android14-11-o-gaf313efe1149
-KernelSU     v3.3.1 (32680-5), Working [Jailbreak mode]
-SELinux      Enforcing
-Cold boot    3/3 success (7.2 s, 8.4 s, 8.2 s)
+OnePlus Ace5  PKG110_17.0.0.105
+Kernel        6.1.157-android14-11-o-g7cdd565ce1ed
+KernelSU      v3.3.1, Wireless ADB
+Cold boot     3/3 success (8.3 s, 7.1 s, 7.4 s)
+
+OnePlus 13R   CPH2691_17.0.0.105
+Kernel        6.1.157-android14-11-o-gaf313efe1149
+KernelSU      v3.3.1 (32680-5), Working [Jailbreak mode]
+SELinux       Enforcing
+Cold boot     3/3 success (7.2 s, 8.4 s, 8.2 s)
 ```
 
-The Ace5 runner uses the same constants but has not yet received a hardware
-report.
+Both devices use the same 6.1.157 profile constants and are enabled in the
+stable build.
 
 Expected firmware is exact:
 

@@ -50,13 +50,12 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
   </tr>
 </table>
 
-## OnePlus Ace5 tester / 13R verified
+## OnePlus Ace5 / 13R verified
 
-The stable `Shark-en_2.5.3` release includes the 13R. Ace5 remains an
-experimental tester target and is **not enabled in the stable build**.
+The stable `Shark-en_2.5.7` release enables both devices.
 
-- OnePlus Ace5 (PKG110), `6.1.157-android14-11-o-g7cdd565ce1ed` — test build only
-- OnePlus 13R (CPH2691), `6.1.157-android14-11-o-gaf313efe1149` — verified on-device
+- OnePlus Ace5 (PKG110), `6.1.157-android14-11-o-g7cdd565ce1ed` — verified 3/3 cold boots
+- OnePlus 13R (CPH2691), `6.1.157-android14-11-o-gaf313efe1149` — verified 3/3 cold boots
 
 Expected firmware (ColorOS 17):
 
@@ -65,31 +64,9 @@ Ace5   PKG110_17.0.0.105
 13R    CPH2691_17.0.0.105
 ```
 
-Stable download:
-
-<https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.3>
-
-Ace5 test build (unchanged from the verified exp2 code):
-
-<https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.3-exp2>
-
-Tester reports: <https://github.com/kpgc10kai/Shark-en/issues/19>
-
-Both kernels pass the offline `timer-extract` vulnerability check and share
-the same task/cred layout as the OP12. The OnePlus 13R is verified on-device
-with KernelSU v3.3.1 (`Working [Jailbreak mode]`, SELinux Enforcing), with
-**3/3 successful cold boots** (7.2–8.4 s). Ace5 is still awaiting hardware
-validation.
-
-If you have an Ace5, use the exp2 build, clean boot, install KernelSU, start
-Shizuku, run One-click root, and attach the complete app log plus:
-
-```text
-uname -a
-getprop ro.build.fingerprint
-manager name/version
-whether the device rebooted, hung, or reached u:r:ksu:s0
-```
+Both kernels pass the `timer-extract` vulnerability check and share the same
+task/cred layout. Ace5 was verified with KernelSU v3.3.1 and Wireless ADB
+(8.3 s, 7.1 s, 7.4 s); 13R with KernelSU v3.3.1 (7.2–8.4 s).
 
 Do not use the Ace5 runner on OP12 or any other kernel profile.
 
@@ -134,7 +111,7 @@ both devices.
 | OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OnePlus 13 (CPH2649) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` — verified on-device ([notes](ports/op13-66118/README.md)) |
 | OnePlus 12 (CPH2573) | ColorOS 17 | `6.1.157-android14-11-o-g3d5d51510424` — experimental 6.1 chain, verified on-device ([notes](ports/op12-61157/README.md)) |
-| OnePlus Ace5 (PKG110, `PKG110_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-g7cdd565ce1ed` — **test build only (exp2)**, not in stable |
+| OnePlus Ace5 (PKG110, `PKG110_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-g7cdd565ce1ed` — **verified 3/3, stable** |
 | OnePlus 13R (CPH2691, `CPH2691_17.0.0.105`) | ColorOS 17 | `6.1.157-android14-11-o-gaf313efe1149` — verified on-device, 3/3 cold boots |
 | POCO X7 Pro | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — **verified 3/3, stable** ([notes](ports/xiaomi-hyperos4-66118/README.md)) |
 | POCO F7 | HyperOS 4 | `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` — same kernel string, **separate device; experimental** |

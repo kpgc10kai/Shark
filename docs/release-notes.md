@@ -8,6 +8,17 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.7
+
+**Stable: OnePlus Ace5 support.**
+
+- Ace5 (`PKG110_17.0.0.105`, kernel `6.1.157-android14-11-o-g7cdd565ce1ed`)
+  verified 3/3 cold boots with KernelSU v3.3.1 and Wireless ADB:
+  8.3 s, 7.1 s, 7.4 s.
+- OnePlus 13R and POCO X7 Pro remain stable.
+- POCO F7, POCO X8 Pro Max, and Redmi Note 15 4G remain experimental/test and
+  are disabled in this stable build.
+
 ## What's new in 2.5.6-exp1
 
 **Redmi Note 15 4G (spinel) tester build.**

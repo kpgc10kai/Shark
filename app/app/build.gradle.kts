@@ -29,8 +29,8 @@ android {
         minSdk = 33
         targetSdk = 37
         // CI stamps the release tag so the in-app updater can compare versions.
-        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 1052
-        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.5.6"
+        versionCode = System.getenv("SHARK_VERSION_CODE")?.toIntOrNull() ?: 1054
+        versionName = System.getenv("SHARK_VERSION_NAME") ?: "2.5.7"
         buildConfigField(
             "boolean",
             "ALLOW_EXPERIMENTAL_PROFILES",
