@@ -1,6 +1,11 @@
 # POCO X8 Pro Max HyperOS 4 (6.6.118) experimental
 
-Status: **profile matches OnePlus 13, but fake-cred stage failed on-device**
+Status: **paused / closed as not planned**
+
+The profile matches OnePlus 13, but the fake-cred stage fails on the global
+`gc4127` build with both KernelSU Next 3.4.2 and KernelSU 3.3.1. The issue was
+closed after the tester was told there is no concrete fix or ETA. The device
+stays disabled in stable builds.
 
 A second clean-boot test with KernelSU v3.3.1 (instead of KernelSU Next 3.4.2)
 failed identically: `FAIL=cred`, `child uid=2000`, `holder=t61269-hold`.
