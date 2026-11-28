@@ -76,10 +76,10 @@ Tester reports: <https://github.com/kpgc10kai/Shark-en/issues/19>
 
 Both kernels pass the offline `timer-extract` vulnerability check and share
 the same task/cred layout as the OP12. The OnePlus 13R build
-`CPH2691_17.0.0.105` is now verified on-device with KernelSU v3.3.1
-(`Working [Jailbreak mode]`, SELinux Enforcing). The Ace5 is still awaiting a
-hardware report. This remains an experimental 6.1 chain, not a stable
-recommendation.
+`CPH2691_17.0.0.105` is verified on-device with KernelSU v3.3.1
+(`Working [Jailbreak mode]`, SELinux Enforcing), and the tester reported
+**3/3 successful runs** (7.2–8.4 s). The Ace5 is still awaiting a hardware
+report. This remains an experimental 6.1 chain, not a stable recommendation.
 
 If you have either device, please use a clean boot, install KernelSU, start
 Shizuku, run One-click root, and attach the complete app log plus:

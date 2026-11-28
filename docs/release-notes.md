@@ -22,7 +22,8 @@ stable device recommendation.
     kernel `6.1.157-android14-11-o-g7cdd565ce1ed`
   - OnePlus 13R (CPH2691), firmware **CPH2691_17.0.0.105**,
     kernel `6.1.157-android14-11-o-gaf313efe1149` — **verified on-device**
-    with KernelSU v3.3.1 (`Working [Jailbreak mode]`, SELinux Enforcing)
+    with KernelSU v3.3.1 (`Working [Jailbreak mode]`, SELinux Enforcing);
+    tester reported 3/3 successful runs (7.2–8.4 s)
 - **Firmware is exact.** Only testers already on ColorOS 17 with
   `PKG110_17.0.0.105` or `CPH2691_17.0.0.105` are needed. Other builds are
   out of scope for this round.

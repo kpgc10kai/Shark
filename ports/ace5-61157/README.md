@@ -9,6 +9,7 @@ OnePlus 13R  CPH2691_17.0.0.105
 Kernel       6.1.157-android14-11-o-gaf313efe1149
 KernelSU     v3.3.1 (32680-5), Working [Jailbreak mode]
 SELinux      Enforcing
+Cold boot    3/3 success (7.2 s, 8.4 s, 8.2 s)
 ```
 
 The Ace5 runner uses the same constants but has not yet received a hardware
