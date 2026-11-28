@@ -497,6 +497,11 @@ class MainActivity : ComponentActivity() {
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault(getString(R.string.unknown))
         exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
+        if (!BuildConfig.ALLOW_EXPERIMENTAL_PROFILES &&
+            exploit == ExploitKind.CVE61157_ACE5
+        ) {
+            exploit = ExploitKind.UNSUPPORTED
+        }
         if (manager == ManagerKind.DYNAMIC && !supportsUniversal()) {
             manager = ManagerKind.KERNELSU
         }

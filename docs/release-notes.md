@@ -8,7 +8,23 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.3-exp2
+## What's new in 2.5.3
+
+**Stable release: OnePlus 13R support.**
+
+- Added the OnePlus 13R (CPH2691) 6.1.157 profile for firmware
+  **CPH2691_17.0.0.105**, kernel
+  `6.1.157-android14-11-o-gaf313efe1149`.
+- Verified on-device with KernelSU v3.3.1: `Working [Jailbreak mode]`,
+  SELinux Enforcing, **3/3 successful cold boots** (7.2 s, 8.4 s, 8.2 s).
+- Fixed the exp1 packaging bug where the Ace5/13R build accidentally shipped
+  the PD2571 runner. Stable 2.5.3 ships the corrected `libkace5.so`.
+- **Ace5 remains experimental.** It is not enabled in the stable build; use
+  `Shark-en_2.5.3-exp2` for Ace5 testing until a hardware report exists.
+- The OnePlus 12 6.1 profile and the previous 6.6/6.12/6.18 profiles remain
+  included.
+
+## What's new in 2.5.3-exp2 (previous pre-release)
 
 **Tester build — OnePlus Ace5 / 13R, 6.1.157.** This is a pre-release, not a
 stable device recommendation.
