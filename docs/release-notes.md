@@ -26,6 +26,7 @@ stable device recommendation.
   Shizuku, run One-click root, and attach the full log.
 - Do not run this build on OP12 or any other kernel. A failed fake plant can
   require a reboot.
+- Tester reports and logs: <https://github.com/kpgc10kai/Shark-en/issues/19>
 
 ## What's new in 2.5.2 (previous stable)
 
