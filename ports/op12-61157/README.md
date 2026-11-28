@@ -328,3 +328,15 @@ G1-G5  all failed (no KSU)
 
 The repair plants are required; this direction is closed. The app runner
 remains variant E.
+
+## E2 settle-40 campaign
+
+```text
+E2 runs 1-6  KSU_LOADED
+E2 run 7     no core log (start miss)
+```
+
+Six consecutive successes with variant E and a 40 s settle. The missing
+10th is now dominated by harness start misses, not the exploit. The app
+runner remains E; the next change is a deterministic "wait for boot_completed
+and core log" launcher.
