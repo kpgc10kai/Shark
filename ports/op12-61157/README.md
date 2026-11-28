@@ -213,3 +213,17 @@ failures: 1 reboot, 3 parked
 
 The parked rate is now the dominant issue. More blind cold boots will not fix
 it; the next change must address the burst-miss path that holds a zombie.
+
+## Burst/spray tuning variant
+
+A test build with `SPRAY_POST=16000` and a 30 s burst window was compared on
+two cold boots:
+
+```text
+B1  success  9.310 s
+B2  parked
+```
+
+The change did not remove the park failure; the default (15 s / 10000) remains.
+The next step is to capture a full parked-run log and fix the burst-miss path,
+not to keep changing the geometry blindly.
