@@ -240,3 +240,12 @@ boot 18  KSU loaded  7.101 s
 Cumulative representative count: **14/18 (78%)**. The log path is now
 confirmed working; a future parked run will leave a complete trace. The
 remaining issue is still the burst-miss park path.
+
+## Logged success 19
+
+```text
+boot 19  KSU loaded  9.021 s
+```
+
+Representative cumulative count: **15/19 (79%)**. The logging path now
+captures the full handoff; no new parked trace was produced in this run.
