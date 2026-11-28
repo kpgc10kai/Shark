@@ -7,6 +7,13 @@ failed identically: `FAIL=cred`, `child uid=2000`, `holder=t61269-hold`.
 The manager is not the cause. The device is disabled in stable 2.5.6; do not
 keep retrying until the fake-cred/race path is analyzed offline.
 
+A public success exists on the related `dash` family, but not on this global
+build: [WantenMN/cve-2026-98260-adb](https://github.com/WantenMN/cve-2026-98260-adb)
+reports Redmi Turbo 5 Max / Xiaomi 2602BRT18C on
+`6.6.118-android15-8-gb9cc6ec16bc8-abogki536571621-4k` (MediaTek) with
+KernelSU live. This global X8 Pro Max reports `gc4127...` and needs its own
+validation; the other build's success is not transferable as-is.
+
 ## Target
 
 `	ext
