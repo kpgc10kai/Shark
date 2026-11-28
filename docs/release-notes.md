@@ -18,10 +18,9 @@ stable device recommendation.
     kernel `6.1.157-android14-11-o-g7cdd565ce1ed`
   - OnePlus 13R (CPH2691), firmware **CPH2691_17.0.0.105**,
     kernel `6.1.157-android14-11-o-gaf313efe1149`
-- **Firmware is exact.** Other builds of the same model are not supported.
-  The OxygenOS 16 final-era 13R kernel
-  `6.1.157-android14-11-o-g00d81d97d759` does not match this
-  `CPH2691_17.0.0.105` profile.
+- **Firmware is exact.** Only testers already on ColorOS/OxygenOS
+  17.0.0.105 are needed. Older OxygenOS 16 builds, including the 13R kernel
+  `6.1.157-android14-11-o-g00d81d97d759`, are out of scope for this round.
 - Both boot images were analyzed with `timer-extract`; both are vulnerable
   (`posix_cpu_timer_del` stale-node path), with the same task/cred layout as
   the OP12 6.1 chain. The Ace5 and 13R timer/copy-process constants are
