@@ -352,3 +352,15 @@ Best consecutive KSU streak: 8. The remaining failures are harness start
 misses after a spontaneous reboot, not fake_uid bursts. The next harness
 change must sample boot_id/uptime before starting and retry the whole boot
 if the device rebooted mid-settle.
+
+## boot_id launcher campaign
+
+```text
+BID 1-5  KSU_LOADED
+BID 6    device disappeared during settle/start; loop hung
+```
+
+The boot_id check retried BID 4 three times (spontaneous reboot / no log)
+and then succeeded. BID 6 repeated the same device-loss pattern. The
+remaining blocker is not a fake_uid park but the device rebooting during the
+settle/start window after a successful handoff.
