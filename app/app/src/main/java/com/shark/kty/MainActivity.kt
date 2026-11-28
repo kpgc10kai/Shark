@@ -2702,6 +2702,7 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE61157 -> arrayOf("$nativeDir/libk61157.so", "ksu")
+                    ExploitKind.CVE61157_ACE5 -> arrayOf("$nativeDir/libkace5.so", "ksu")
                     ExploitKind.UNSUPPORTED -> null
                 } ?: run {
                     withContext(Dispatchers.Main) {
@@ -2813,7 +2814,7 @@ class MainActivity : ComponentActivity() {
             "PYB110_FILES_DIR=${filesDir.absolutePath}" +
             "PYB110_SUSFS_KO=$susfsKo" +
             "PYB110_VFS_KO=${applicationInfo.nativeLibraryDir}/libhybridmount.so" +
-            if (exploit == ExploitKind.CVE61157) "PAYLOAD_CMD=sh /data/local/tmp/ksu_stage.sh" else ""
+            if (exploit == ExploitKind.CVE61157 || exploit == ExploitKind.CVE61157_ACE5) "PAYLOAD_CMD=sh /data/local/tmp/ksu_stage.sh" else ""
         val p = PrivService.newProcess(cmd, env, dir)
         val out = p.getInputStream()
         val err = p.getErrorStream()
@@ -2872,6 +2873,7 @@ class MainActivity : ComponentActivity() {
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE66118("CVE-2026-98260-6.6.118"),
         CVE61157("CVE-2026-98260-6.1.157"),
+        CVE61157_ACE5("CVE-2026-98260-6.1.157-Ace5/13R"),
         UNSUPPORTED("Unsupported device")
     }
 
@@ -2934,6 +2936,8 @@ class MainActivity : ComponentActivity() {
             "6.6.118-android15-8-gb1422e39c313-abogki552867473-4k" to ExploitKind.CVE66118,
             "6.6.118-android15-8-gc901ea41aa32-ab15981388-4k" to ExploitKind.CVE66118,
             "6.1.157-android14-11-o-g3d5d51510424" to ExploitKind.CVE61157,
+            "6.1.157-android14-11-o-g7cdd565ce1ed" to ExploitKind.CVE61157_ACE5,
+            "6.1.157-android14-11-o-gaf313efe1149" to ExploitKind.CVE61157_ACE5,
         )
     }
 }

@@ -98,9 +98,12 @@ jobs:
         run: |
           set -euo pipefail
           cp docs/release-notes.md notes.md
+          PRERELEASE=""
+          if [[ "$GITHUB_REF_NAME" == *-exp* ]]; then PRERELEASE="--prerelease"; fi
           gh release create "$GITHUB_REF_NAME" \
             --title "Shark-en_${SHARK_VERSION_NAME}" \
             --notes-file notes.md \
+            $PRERELEASE \
             "Shark-en_${SHARK_VERSION_NAME}.apk" \
             "Shark-en_${SHARK_VERSION_NAME}.apk.sha256.txt" \
             SHA256SUMS

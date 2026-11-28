@@ -50,6 +50,31 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
   </tr>
 </table>
 
+## Testers wanted: OnePlus Ace5 / 13R
+
+The `Shark-en_2.5.3-exp1` pre-release adds a separate 6.1.157 runner for:
+
+- OnePlus Ace5 (PKG110), `6.1.157-android14-11-o-g7cdd565ce1ed`
+- OnePlus 13R (CPH2691), `6.1.157-android14-11-o-gaf313efe1149`
+
+Download: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.3-exp1>
+
+Both kernels pass the offline `timer-extract` vulnerability check and share
+the same task/cred layout as the OP12, but **neither device has been tested on
+hardware yet**. This is a log-collection build, not a stable recommendation.
+
+If you have either device, please use a clean boot, install KernelSU, start
+Shizuku, run One-click root, and attach the complete app log plus:
+
+```text
+uname -a
+getprop ro.build.fingerprint
+manager name/version
+whether the device rebooted, hung, or reached u:r:ksu:s0
+```
+
+Do not use this build on OP12 or any other kernel profile.
+
 ## Supported devices
 
 | Device | System | Full kernel version |
@@ -65,6 +90,8 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OnePlus 13 (CPH2649) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` — verified on-device ([notes](ports/op13-66118/README.md)) |
 | OnePlus 12 (CPH2573) | ColorOS 17 | `6.1.157-android14-11-o-g3d5d51510424` — experimental 6.1 chain, verified on-device ([notes](ports/op12-61157/README.md)) |
+| OnePlus Ace5 (PKG110) | ColorOS 17 | `6.1.157-android14-11-o-g7cdd565ce1ed` — **tester build**, not yet verified |
+| OnePlus 13R (CPH2691) | ColorOS 17 | `6.1.157-android14-11-o-gaf313efe1149` — **tester build**, not yet verified |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
