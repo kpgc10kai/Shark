@@ -7,7 +7,7 @@
 # Usage: tools/archive-release.sh v2.5.1-en.2
 set -euo pipefail
 
-repo="${REPO:-kpgc10kai/Shark}"
+repo="${REPO:-kpgc10kai/Shark-en}"
 tag="${1:?usage: tools/archive-release.sh <tag>}"
 tag="${tag#v}"
 

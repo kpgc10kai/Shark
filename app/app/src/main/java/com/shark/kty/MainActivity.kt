@@ -184,7 +184,7 @@ import com.itos.coui.topappbar.TopAppBar
 import com.itos.coui.topappbar.TopAppBarButton
 import android.content.Context
 
-private const val PROJECT_URL = "https://github.com/Yunnijian/Shark"
+private const val PROJECT_URL = "https://github.com/kpgc10kai/Shark-en"
 
 private data class LicenseText(
     val name: String,
@@ -211,7 +211,7 @@ private data class LocalLicense(
 
 private val localLicenses = listOf(
     LocalLicense(
-        "Shark (this project)",
+        "Shark-en (this project)",
         "Project's own code",
         "GPL-3.0",
         "licenses/GPL-3.0.txt",
@@ -310,7 +310,7 @@ class MainActivity : ComponentActivity() {
     /* UI-only state hoisted for the COUI top bar / dialogs. */
     private var aboutPage by mutableStateOf(AboutPage.HOME)
     private var aboutLicense by mutableStateOf<LicenseItem?>(null)
-    private var showDonate by mutableStateOf(false)
+    
 
     private val permissionListener = Shizuku.OnRequestPermissionResultListener { code, result ->
         if (code == REQ_SHIZUKU) onPermissionResult(result == PackageManager.PERMISSION_GRANTED)
@@ -538,7 +538,7 @@ class MainActivity : ComponentActivity() {
                     tab == AppTab.ABOUT && aboutPage == AboutPage.LICENSES ->
                         AppTopBar(stringResource(R.string.licenses), onBack = { aboutPage = AboutPage.HOME })
                     else -> AppTopBar(
-                        title = if (tab == AppTab.HOME) "Shark" else stringResource(tab.labelRes),
+                        title = if (tab == AppTab.HOME) "Shark-en" else stringResource(tab.labelRes),
                         large = tab == AppTab.HOME
                     )
                 }
@@ -600,7 +600,7 @@ class MainActivity : ComponentActivity() {
         UpdateDialog()
         DroidspacesDialog()
         LicenseDetailDialog()
-        DonateDialog()
+
     }
 
     @Composable
@@ -1110,76 +1110,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-
-    @Composable
-    private fun DonateDialog() {
-        if (!showDonate) return
-        val accent = CouiTheme.colorScheme.accent
-        Dialog(
-            onDismissRequest = { showDonate = false },
-            title = stringResource(R.string.support_dev),
-            confirmAction = CouiDialogAction(
-                text = stringResource(R.string.close),
-                onClick = { showDonate = false },
-                style = CouiDialogActionStyle.Primary,
-                colors = CouiDialogDefaults.primaryActionColors(accent)
-            ),
-            visible = true
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = CouiDialogDefaults.contentPadding)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    DonateQr(
-                        label = stringResource(R.string.wechat_tip),
-                        assetPath = "donate/wechat.png",
-                        modifier = Modifier.weight(1f)
-                    )
-                    DonateQr(
-                        label = stringResource(R.string.alipay),
-                        assetPath = "donate/alipay.png",
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun DonateQr(label: String, assetPath: String, modifier: Modifier = Modifier) {
-        val context = LocalContext.current
-        val bitmap = remember(assetPath) {
-            runCatching {
-                context.assets.open(assetPath).use { BitmapFactory.decodeStream(it) }?.asImageBitmap()
-            }.getOrNull()
-        }
-        Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            if (bitmap != null) {
-                Image(
-                    bitmap = bitmap,
-                    contentDescription = label,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(12.dp))
-                )
-            }
-            Text(
-                text = label,
-                kind = CouiTextKind.PreferenceSummary,
-                color = CouiTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 
@@ -2057,7 +1987,7 @@ class MainActivity : ComponentActivity() {
                 val send = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_STREAM, uri)
-                    putExtra(Intent.EXTRA_SUBJECT, "Shark log ${entry.startTime}")
+                    putExtra(Intent.EXTRA_SUBJECT, "Shark-en log ${entry.startTime}")
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 runCatching {
@@ -2133,14 +2063,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             Image(
                                 painter = painterResource(R.mipmap.ic_launcher_foreground),
-                                contentDescription = "Shark",
+                                contentDescription = "Shark-en",
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(6.dp)
                             )
                         }
                         Text(
-                            text = "Shark",
+                            text = "Shark-en",
                             kind = CouiTextKind.SectionTitle,
                             color = colors.title
                         )
@@ -2182,8 +2112,8 @@ class MainActivity : ComponentActivity() {
                     SettingItem(
                         icon = Icons.Filled.Forum,
                         title = stringResource(R.string.join_community),
-                        summary = stringResource(R.string.join_qq),
-                        onClick = { uriHandler.openUri("https://qm.qq.com/q/HMg4ngAC8W") },
+                        summary = stringResource(R.string.join_telegram),
+                        onClick = { uriHandler.openUri("https://t.me/kpgc10kai") },
                         trailing = { Chevron() }
                     )
                     Divider(startIndent = itemDividerIndent(), color = colors.divider)
@@ -2191,7 +2121,7 @@ class MainActivity : ComponentActivity() {
                         icon = Icons.Filled.BugReport,
                         title = stringResource(R.string.feedback),
                         summary = stringResource(R.string.feedback_summary),
-                        onClick = { uriHandler.openUri("$PROJECT_URL/issues") },
+                        onClick = { uriHandler.openUri(PROJECT_URL) },
                         trailing = { Chevron() }
                     )
                     Divider(startIndent = itemDividerIndent(), color = colors.divider)
@@ -2203,13 +2133,6 @@ class MainActivity : ComponentActivity() {
                         trailing = { Chevron() }
                     )
                     Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                    SettingItem(
-                        icon = Icons.Filled.Favorite,
-                        title = stringResource(R.string.support_dev),
-                        summary = stringResource(R.string.support_summary),
-                        onClick = { showDonate = true },
-                        trailing = { Chevron() }
-                    )
                     Divider(startIndent = itemDividerIndent(), color = colors.divider)
                     SettingItem(
                         icon = Icons.Filled.Copyright,

@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - "v*"
+      - "Shark-en_*"
 
 permissions:
   contents: write
@@ -63,7 +63,8 @@ jobs:
           chmod +x gradlew
           # Gradle reads these while configuring, so export them in this shell
           # (GITHUB_ENV only applies to later steps).
-          export SHARK_VERSION_NAME="${GITHUB_REF_NAME#v}"
+          export SHARK_VERSION_NAME="${GITHUB_REF_NAME#Shark-en_}"
+          echo "SHARK_VERSION_NAME=$SHARK_VERSION_NAME" >> "$GITHUB_ENV"
           export SHARK_VERSION_CODE="$((1000 + GITHUB_RUN_NUMBER))"
           echo "Building ${SHARK_VERSION_NAME} (${SHARK_VERSION_CODE})"
           URLS=(
@@ -86,10 +87,10 @@ jobs:
         run: |
           set -euo pipefail
           APK=$(ls app/app/build/outputs/apk/release/*.apk | head -n 1)
-          cp "$APK" "Shark-${GITHUB_REF_NAME}.apk"
-          sha256sum "Shark-${GITHUB_REF_NAME}.apk" > "Shark-${GITHUB_REF_NAME}.apk.sha256.txt"
-          cp "Shark-${GITHUB_REF_NAME}.apk.sha256.txt" SHA256SUMS
-          ls -l "Shark-${GITHUB_REF_NAME}.apk" SHA256SUMS
+          cp "$APK" "Shark-en_${SHARK_VERSION_NAME}.apk"
+          sha256sum "Shark-en_${SHARK_VERSION_NAME}.apk" > "Shark-en_${SHARK_VERSION_NAME}.apk.sha256.txt"
+          cp "Shark-en_${SHARK_VERSION_NAME}.apk.sha256.txt" SHA256SUMS
+          ls -l "Shark-en_${SHARK_VERSION_NAME}.apk" SHA256SUMS
 
       - name: Publish the release
         env:
@@ -98,8 +99,8 @@ jobs:
           set -euo pipefail
           cp docs/release-notes.md notes.md
           gh release create "$GITHUB_REF_NAME" \
-            --title "Shark $GITHUB_REF_NAME" \
+            --title "Shark-en_${SHARK_VERSION_NAME}" \
             --notes-file notes.md \
-            "Shark-${GITHUB_REF_NAME}.apk" \
-            "Shark-${GITHUB_REF_NAME}.apk.sha256.txt" \
+            "Shark-en_${SHARK_VERSION_NAME}.apk" \
+            "Shark-en_${SHARK_VERSION_NAME}.apk.sha256.txt" \
             SHA256SUMS

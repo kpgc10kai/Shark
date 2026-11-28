@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- About / credits -->
-    <string name="about_credit_self">Shark (this project)</string>
+    <string name="about_credit_self">Shark-en (this project)</string>
     <string name="about_code_self">Project\'s own code</string>
     <string name="about_third_party">Third-party sources, attribution and notices</string>
     <string name="about_kernel_modules">Kernel modules shipped with the app</string>
@@ -48,7 +48,7 @@
 
     <!-- Droidspaces -->
     <string name="droidspaces_support">Droidspaces support</string>
-    <string name="droidspaces_summary">Downloads the latest droidspaces_lkm module to Download/Shark, then flash it from the KernelSU manager.</string>
+    <string name="droidspaces_summary">Downloads the latest droidspaces_lkm module to Download/Shark-en, then flash it from the KernelSU manager.</string>
     <string name="droidspaces_module">Droidspaces module</string>
     <string name="download_module">Download module</string>
     <string name="fetching_release">Fetching the latest release…</string>
@@ -106,13 +106,9 @@
     <string name="view_source">View source</string>
     <string name="view_source_summary">View the source on GitHub</string>
     <string name="join_community">Join the community</string>
-    <string name="join_qq">Join the QQ group</string>
+    <string name="join_telegram">Telegram @kpgc10kai</string>
     <string name="feedback">Feedback</string>
-    <string name="feedback_summary">Open an issue on GitHub</string>
-    <string name="support_dev">Support the developer</string>
-    <string name="support_summary">WeChat / Alipay donation QR codes</string>
-    <string name="wechat_tip">WeChat</string>
-    <string name="alipay">Alipay</string>
+    <string name="feedback_summary">Open the Shark-en GitHub page</string>
     <string name="licenses">Open-source licenses</string>
     <string name="licenses_summary">Third-party open-source libraries used by this app and their licenses</string>
     <string name="license_text_missing">No license text declared</string>
@@ -142,7 +138,7 @@
     <string name="pairing_failed_retrying">Pairing failed, retrying</string>
     <string name="please_wait_auto_return">Please wait, returning automatically…</string>
     <string name="connect_service_not_found">ADB connect service not found</string>
-    <string name="please_open_app_manually">Open Shark and try again</string>
+    <string name="please_open_app_manually">Open Shark-en and try again</string>
     <string name="stop_search">Stop</string>
     <string name="adb_retry">Retry</string>
     <string name="cannot_find_pairing">Cannot find the pairing service</string>
@@ -157,7 +153,7 @@
     <!-- Shell supervisor -->
     <string name="shell_channel_name">Shell service</string>
     <string name="shell_channel_desc">Keeps the privileged shell running</string>
-    <string name="shell_notification_title">Shark Shell</string>
+    <string name="shell_notification_title">Shark-en Shell</string>
     <string name="shell_notification_connecting">Connecting to the privileged shell…</string>
     <string name="shell_notification_running">Privileged shell is running</string>    <!-- In-app pairing code -->
     <string name="pairing_code_dialog_title">Enter pairing code</string>
@@ -165,12 +161,12 @@
     <string name="pairing_code_hint">6-digit code</string>
     <string name="pairing_code_pair">Pair</string>
     <string name="pairing_code_cancel">Cancel</string>    <!-- Accessibility pairing helper -->
-    <string name="accessibility_service_label">Shark pairing helper</string>
+    <string name="accessibility_service_label">Shark-en pairing helper</string>
     <string name="accessibility_service_description">Reads the six-digit pairing code from the Android wireless debugging dialog so you do not have to type it. Only the Settings app is observed.</string>
     <string name="accessibility_prompt_title">Enable automatic pairing?</string>
-    <string name="accessibility_prompt_message">Shark can read the pairing code from Settings automatically. Enable the Shark pairing helper under Accessibility to skip typing the code.</string>
+    <string name="accessibility_prompt_message">Shark-en can read the pairing code from Settings automatically. Enable the Shark-en pairing helper under Accessibility to skip typing the code.</string>
     <string name="accessibility_prompt_open">Open settings</string>
     <string name="accessibility_prompt_skip">Not now</string>
     <string name="pairing_notification_required_title">Notifications are off</string>
-    <string name="pairing_notification_required_message">Shark shows the pairing-code field in a notification. Enable notifications for Shark, then tap Wireless ADB again.</string>
+    <string name="pairing_notification_required_message">Shark-en shows the pairing-code field in a notification. Enable notifications for Shark-en, then tap Wireless ADB again.</string>
     <string name="pairing_notification_settings">Open notification settings</string></resources>

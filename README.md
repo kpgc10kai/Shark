@@ -1,9 +1,9 @@
-<h1 align="center"><img src="docs/images/app-icon.png" width="56" height="56" align="absmiddle" alt="Shark"> Shark</h1>
+<h1 align="center"><img src="docs/images/app-icon.png" width="56" height="56" align="absmiddle" alt="Shark-en"> Shark-en</h1>
 
 <p align="center"><b>One-click temporary root and manager-switching tool for multiple Android devices</b></p>
 
 <p align="center">
-  <a href="https://github.com/kpgc10kai/Shark/releases"><img src="docs/badges/release.svg" alt="Release"></a>
+  <a href="https://github.com/kpgc10kai/Shark-en/releases"><img src="docs/badges/release.svg" alt="Release"></a>
   <a href="LICENSE"><img src="docs/badges/license.svg" alt="License"></a>
   <img src="docs/badges/android.svg" alt="Android">
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
@@ -24,8 +24,12 @@
 > No warranty. Only use it on devices you own, and read
 > [Switching between the upstream and this fork](#switching-between-the-upstream-and-this-fork)
 > before installing.
+>
+> **This English fork is distributed as `Shark-en` from release 2.5.2 onward.
+> The upstream project remains [Yunnijian/Shark](https://github.com/Yunnijian/Shark);
+> Shark-en is an independent derivative, not an official upstream build.**
 
-Shark supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
+Shark-en supports OnePlus, OPPO, Realme, and other devices, with no BL unlock
 required; all you need to begin is adb shell. Through Stellar or Shizuku, the app
 drives the on-device exploit, gains temporary kernel privileges, then loads the LKM
 for the selected manager, ultimately providing a KernelSU, KernelSU Next, BakaSU,
@@ -41,8 +45,8 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/kernelsu-manager.jpg" width="180" alt="KernelSU manager"><br><sub><b>KernelSU</b></sub></td>
-    <td align="center"><img src="docs/screenshots/bakasu-manager.jpg" width="180" alt="BakaSU manager"><br><sub><b>BakaSU</b></sub></td>
-    <td align="center"><img src="docs/screenshots/sukisu-manager.jpg" width="180" alt="SukiSU manager"><br><sub><b>SukiSU Ultra</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-about.jpg" width="180" alt="About"><br><sub><b>About</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-manual.jpg" width="180" alt="Manual"><br><sub><b>Manual</b></sub></td>
   </tr>
 </table>
 
@@ -60,6 +64,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 | OnePlus Ace6 (PLQ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k`<br>`6.6.118-android15-8-gb1422e39c313-abogki552867473-4k` |
 | OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
 | OnePlus 13 (CPH2649) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` — verified on-device ([notes](ports/op13-66118/README.md)) |
+| OnePlus 12 (CPH2573) | ColorOS 17 | `6.1.157-android14-11-o-g3d5d51510424` — experimental 6.1 chain, verified on-device ([notes](ports/op12-61157/README.md)) |
 | OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
 | OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
 | OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
@@ -97,7 +102,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > Redmi Pad SE 8.7 (`flare`) community verification: end-to-end root was
 > confirmed on `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` by
 > [@nestchao](https://github.com/nestchao) in
-> [#6](https://github.com/kpgc10kai/Shark/issues/6). The low-21 KASLR
+> [#6](https://github.com/kpgc10kai/Shark-en/issues/6). The low-21 KASLR
 > alignment fix used here shipped in `2.5.1-en.3`. This is a verified kernel
 > report, not a separate device profile.
 >
@@ -105,7 +110,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 > ColorOS 16 and again on ColorOS 17 beta (`CPH2825_17.0.0.102`, November 2026
 > patch) with the same `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` kernel
 > by [@huanhoahongso3-collab](https://github.com/huanhoahongso3-collab) in
-> [#8](https://github.com/kpgc10kai/Shark/issues/8).
+> [#8](https://github.com/kpgc10kai/Shark-en/issues/8).
 >
 
 
@@ -119,7 +124,7 @@ SukiSU Ultra, SukiSU Nova, YukiSU, or FinaSU root environment.
 
 Seven options are supported: KernelSU, KernelSU Next, BakaSU, SukiSU Ultra, SukiSU Nova, YukiSU, and FinaSU.
 
-Manager APKs are not distributed with Shark. Normal mode uses the `ksud` inside the
+Manager APKs are not distributed with Shark-en. Normal mode uses the `ksud` inside the
 installed manager APK, so **install the manager you intend to use first**.
 
 ## What it can do
@@ -131,15 +136,15 @@ installed manager APK, so **install the manager you intend to use first**.
   the next boot.
 - **Wireless ADB pairing, no PC**: Pair over Android's Wireless debugging and run
   the root flow on the loopback ADB connection. With the optional accessibility
-  helper enabled, Shark reads the six-digit pairing code from Settings and
+  helper enabled, Shark-en reads the six-digit pairing code from Settings and
   submits it automatically; otherwise the code can be entered from the pairing
   notification.
 - **Wired ADB activation**: Connect USB and run `tools/wired-adb.sh` to start
-  the privileged shell through ADB. Shark detects it as the Shizuku backend, so
+  the privileged shell through ADB. Shark-en detects it as the Shizuku backend, so
   no Wireless debugging pairing is required.
 - **Auto root on boot**: When enabled, the one-click flow runs after boot and the
   result is shown in the log. The app asks for the "Display over other apps"
-  permission so it can start from the background; allow Shark to auto-start in
+  permission so it can start from the background; allow Shark-en to auto-start in
   your device's battery/settings screen, or it cannot run after a reboot. If the
   previous automatic attempt never finished (a reboot during the flow), the
   option disables itself to avoid a loop.
@@ -165,7 +170,7 @@ installed manager APK, so **install the manager you intend to use first**.
   is found, it is downloaded in-app, its SHA-256 and APK signature are verified,
   and it is then handed to the system installer.
 - **Droidspaces support**: On 6.18, the latest `droidspaces_lkm` module can be
-  fetched with one tap and saved to `Download/Shark/`, after which it can be flashed
+  fetched with one tap and saved to `Download/Shark-en/`, after which it can be flashed
   in the KernelSU manager; the app does not bundle this module.
 
 ## Two root methods
@@ -205,13 +210,13 @@ happen on a clean boot with no KSU loaded; hot replacement is not possible once
 ### Wireless ADB pairing
 
 1. Enable **Wireless debugging** in Developer options.
-2. Tap **Wireless ADB** in Shark. If the accessibility prompt appears, open
-   Settings and enable **Shark pairing helper**.
+2. Tap **Wireless ADB** in Shark-en. If the accessibility prompt appears, open
+   Settings and enable **Shark-en pairing helper**.
 3. In Settings, tap **Pair device with pairing code** and keep the dialog open.
 4. The helper reads the six-digit code and submits it automatically. If the helper
    is off or the code cannot be read, expand the **Pairing service found**
    notification and enter the code there.
-5. Wait for Shark to return and show **Wireless ADB authorized**. Pairing
+5. Wait for Shark-en to return and show **Wireless ADB authorized**. Pairing
    notifications are cleared on success.
 
 The helper only observes `com.android.settings`; it does not read other apps or
@@ -223,14 +228,14 @@ When USB debugging is available, a PC can start the privileged shell directly;
 no Wireless debugging pairing is needed.
 
 1. Enable USB debugging and authorize the PC.
-2. Keep Shark installed (the app can be in the background).
+2. Keep Shark-en installed (the app can be in the background).
 3. From this repository, run:
 
 ```bash
 tools/wired-adb.sh
 ```
 
-The script starts `ShellServer` as the shell user through `app_process`. Shark
+The script starts `ShellServer` as the shell user through `app_process`. Shark-en
 detects the Shizuku-compatible binder and shows **Shizuku authorized**; the
 normal root flow then works over the wired connection.
 
@@ -256,10 +261,10 @@ a public release. The public update path from `2.5.1-en.2` (`1035`) to
 
 ## Project structure
 
-Shark consists of the Android app, the on-device exploit runner, and optional kernel modules.
+Shark-en consists of the Android app, the on-device exploit runner, and optional kernel modules.
 
 ```text
-Shark/
+Shark-en/
 ├── app/                         Android app (Gradle project)
 │   ├── app/src/main/java/com/shark/kty/
 │   │   ├── MainActivity.kt      Four tabs, flow control, manager and Extras state
@@ -276,7 +281,7 @@ Shark/
 │   │   ├── libsusfs_guard_lkm.so
 │   │   ├── libsusfs_guard_lkm_612.so
 │   │   └── libhybridmount.so
-│   ├── app/src/main/assets/     manual.md, licenses, donation QR code
+│   ├── app/src/main/assets/     manual.md, licenses
 │   └── gradle/, keystore/
 ├── exploit/
 │   ├── rust-k61821/             6.18.21 Rust runner
@@ -340,7 +345,7 @@ Available features: `k61269`, `k61238`, `k61258`, `k66118`;
 6.18.21 is built separately by `rust-k61821`.
 
 The universal KO and dual-KMI loader are built in
-[KSU-Universal](https://github.com/Yunnijian/KSU-Universal); Shark only bundles the
+[KSU-Universal](https://github.com/Yunnijian/KSU-Universal); Shark-en only bundles the
 compiled `libksud_universal.so`.
 
 ## Switching between the upstream and this fork
@@ -357,7 +362,7 @@ To switch in either direction:
 1. Back up anything you care about.
 2. Uninstall the current build.
 3. Install the build you want from the matching releases page
-   ([this fork](https://github.com/kpgc10kai/Shark/releases) or
+   ([this fork](https://github.com/kpgc10kai/Shark-en/releases) or
    [upstream releases](https://github.com/Yunnijian/Shark-Releases)).
 
 Uninstalling clears the app's settings, the selected manager and extras, and the
@@ -371,22 +376,27 @@ installed alongside this one, but settings and history are not migrated.
 - The first Dynamic Switching load requires a clean boot; afterward, switching
   managers does not require a reboot.
 - Normal mode requires the corresponding manager APK to be installed first; ksud is
-  not bundled with Shark.
+  not bundled with Shark-en.
 - KPM is not enabled yet.
 - CVE-2026-98260 is a race-condition UAF; any run can cause a kernel panic or reboot.
 - Use only on your own devices, at your own risk.
 
 ## Sources and license
 
-- Shark's own code is GPL-3.0; see `LICENSE`. Third-party components are listed in `NOTICE`.
+- Shark-en's own code is GPL-3.0; see `LICENSE`. Third-party components are listed in `NOTICE`.
 - The universal KSU LKM is based on SukiSU Ultra, GPL-3.0.
 - SUSFS guard and Hybrid Mount are GPL-2.0.
 - The CVE-2026-98260 design references the public port by AzirX1337 (MIT).
 - The UI uses COUI-Kit (MPL-2.0), and remote execution uses the Shizuku API (Apache-2.0).
 
+## Community and feedback
+
+- Telegram: <https://t.me/kpgc10kai>
+- GitHub / feedback: <https://github.com/kpgc10kai/Shark-en>
+
 ## Release
 
-- This fork: https://github.com/kpgc10kai/Shark/releases
+- This fork: https://github.com/kpgc10kai/Shark-en/releases
 - Upstream releases (binaries only, no source):
   https://github.com/Yunnijian/Shark-Releases
 - Upstream source repository was removed in November 2026. This fork continues
@@ -399,7 +409,7 @@ installed alongside this one, but settings and history are not migrated.
   Older superseded or intermediate builds may still be archived.
 - Superseded, broken or intermediate builds keep a notice page as a
   **pre-release** with the APK removed, so their old links still lead to
-  https://github.com/kpgc10kai/Shark/releases/latest
+  https://github.com/kpgc10kai/Shark-en/releases/latest
 - `tools/archive-release.sh` refuses to archive retained tags from `2.5.1-en.6` onward.
 - Archiving is scripted: `tools/archive-release.sh v2.5.1-en.2` removes the
   assets, marks the release as a pre-release, and leaves the latest-download
@@ -434,6 +444,7 @@ installed alongside this one, but settings and history are not migrated.
 | `2.5.1-en.6` | 2.5.1 | YukiSU manager support (`org.rouyashiki.yukisu`); seven manager choices; YukiSU late-load and universal-switch integration |
 | `2.5.1-en.7` | 2.5.1 | HONOR 600 (VKJ-NX9) 6.6.118 profile, verified on-device; `experimental/shellserver` features promoted (YukiSU, SukiSU Nova, wireless ADB); README cleanup and line-ending normalization |
 | `2.5.1-en.8` | 2.5.1 | Xiaomi 18 Pro Max (`madrid`) `6.18.21-g73d8f0bd19e0` profile, verified end to end on-device; `sizeof(task_struct)` is now a per-profile `task_bytes` (5760 here, 5248 on the OnePlus builds) |
+| `2.5.2` | 2.5.2 | Renamed the fork to **Shark-en**; OnePlus 12 (CPH2573) `6.1.157` chain added; Telegram community link; GitHub feedback page; donation links removed |
 
 Each release stamps its own `2.5-en.N` version and is signed with the fork's
 release key. Every release ships the signed APK together with its SHA-256 file.

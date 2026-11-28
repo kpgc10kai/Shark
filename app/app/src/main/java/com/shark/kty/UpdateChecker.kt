@@ -34,8 +34,8 @@ sealed interface UpdateCheckResult {
 
 object UpdateChecker {
     private const val GITHUB_API =
-        "https://api.github.com/repos/kpgc10kai/Shark/releases/latest"
-    private const val USER_AGENT = "Shark-Updater"
+        "https://api.github.com/repos/kpgc10kai/Shark-en/releases/latest"
+    private const val USER_AGENT = "Shark-en-Updater"
 
     suspend fun check(context: Context): UpdateCheckResult = withContext(Dispatchers.IO) {
         val current = context.packageManager
@@ -107,7 +107,7 @@ object UpdateChecker {
                 ?.let(::extractSha256)
             ?: extractSha256(releaseBody)
         val pageUrl = json.optString("html_url").ifBlank {
-            "https://github.com/kpgc10kai/Shark/releases/tag/$tag"
+            "https://github.com/kpgc10kai/Shark-en/releases/tag/$tag"
         }
         return UpdateInfo(
             version = version,
@@ -212,7 +212,7 @@ object UpdateChecker {
      * 2.5.1. Compare the upstream base version first, then the en revision.
      */
     private fun parseVersion(version: String): ForkVersion {
-        val base = version.substringBefore("-en", version).trim()
+        val base = version.removePrefix("Shark-en_").substringBefore("-en", version).trim()
         val baseParts = Regex("\\d+").findAll(base).map { it.value.toInt() }.take(4).toList()
         val en = Regex("-en\\.(\\d+)").find(version)?.groupValues?.get(1)?.toIntOrNull() ?: 0
         return ForkVersion(baseParts, en)

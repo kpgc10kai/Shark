@@ -1,27 +1,27 @@
-# Shark User Manual
+# Shark-en User Manual
 
-Shark drives the on-device 98260 exploit as shell through Stellar or Shizuku to load the manager LKM. On first use, complete authorization first, then jailbreak with one tap.
+Shark-en drives the on-device 98260 exploit as shell through Stellar or Shizuku to load the manager LKM. On first use, complete authorization first, then jailbreak with one tap.
 
-> Shark currently supports OPPO/OnePlus devices running kernels 6.18.21, 6.12.69, 6.12.38, 6.12.58, 6.12.23, 6.6.118 and 6.6.127, matched exactly against the full `uname -r`; unmatched models are reported as unsupported.
+> Shark-en currently supports OPPO/OnePlus devices running kernels 6.18.21, 6.12.69, 6.12.58, 6.12.38, 6.12.23, 6.6.118, 6.6.127 and the OnePlus 12 6.1.157 chain, matched exactly against the full `uname -r`; unmatched models are reported as unsupported.
 
 ## Quick Start
 
 1. Install the ROOT manager of your choice first (KernelSU / FinaSU / KernelSU Next / BakaSU / SukiSU Ultra / SukiSU Nova / YukiSU); **KernelSU Next CI builds are not supported yet**.
-2. Start and activate the **Stellar (recommended)** or **Shizuku** service through **wireless debugging or adb**, and grant Shark the permission.
-3. Return to the Shark home page and tap "One-Tap Jailbreak", then wait for the success log; consider it successful when you see `DONE`, `SU_ID_RC=0` and `uid=0(root)`.
+2. Start and activate the **Stellar (recommended)** or **Shizuku** service through **wireless debugging or adb**, and grant Shark-en the permission.
+3. Return to the Shark-en home page and tap "One-Tap Jailbreak", then wait for the success log; consider it successful when you see `DONE`, `SU_ID_RC=0` and `uid=0(root)`.
 4. On success the manager is launched automatically; when the corresponding switches are enabled it also disables security pop-ups and loads **SUSFS** (6.18/6.12 branches; 6.12 uses `libsusfs_guard_lkm_612.so`) or **VFS** (6.18.21 only).
 5. If the log shows **MODULE NOT LOADED**, there is no need to reboot the device — just try the jailbreak again.
 6. Every time you enter the app it checks for updates automatically: Gitee Releases first, GitHub as fallback; when a new version is found a dialog appears, and you can download it directly and hand it to the system installer. You can also tap "Check for updates" manually on the "About" page.
 
 ## Wireless ADB Pairing (no PC)
 
-Shark can use Android's Wireless debugging as the privileged backend, so no PC, Stellar, or Shizuku is required after pairing.
+Shark-en can use Android's Wireless debugging as the privileged backend, so no PC, Stellar, or Shizuku is required after pairing.
 
 1. Make sure **Wireless debugging** is enabled in Developer options.
-2. In Shark, tap **Wireless ADB**. If prompted, enable the **Shark pairing helper** under Accessibility.
+2. In Shark-en, tap **Wireless ADB**. If prompted, enable the **Shark-en pairing helper** under Accessibility.
 3. In Settings, tap **Pair device with pairing code** and leave the pairing dialog visible.
-4. With the pairing helper enabled, Shark reads the six-digit code from the Settings dialog and submits it automatically. If the helper is disabled, expand the **Pairing service found** notification and enter the code there instead.
-5. Keep the pairing dialog in the foreground until Shark returns to the app. The pairing notifications disappear after success.
+4. With the pairing helper enabled, Shark-en reads the six-digit code from the Settings dialog and submits it automatically. If the helper is disabled, expand the **Pairing service found** notification and enter the code there instead.
+5. Keep the pairing dialog in the foreground until Shark-en returns to the app. The pairing notifications disappear after success.
 
 The pairing helper only observes `com.android.settings`. It does not read other apps or open a network port.
 
@@ -30,9 +30,9 @@ The pairing helper only observes `com.android.settings`. It does not read other 
 If USB debugging is available, a PC can start the privileged shell without Wireless debugging pairing.
 
 1. Connect USB, enable **USB debugging**, and authorize the PC.
-2. Keep Shark installed; the app may stay in the background.
-3. From the Shark repository, run `tools/wired-adb.sh`.
-4. Open Shark. The status card changes to **Shizuku authorized**, and One-click root works over the wired connection.
+2. Keep Shark-en installed; the app may stay in the background.
+3. From the Shark-en repository, run `tools/wired-adb.sh`.
+4. Open Shark-en. The status card changes to **Shizuku authorized**, and One-click root works over the wired connection.
 
 The script runs `ShellServer` as the shell user through `app_process`. It is a normal shell process and does not write partitions.
 
@@ -57,14 +57,14 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 - **Log**: live streaming log of the current run.
 - **History**: one `.log` is saved per run; tap an entry to see the full text, swipe left on an entry to reveal the "Export" button and share it with other apps.
 - **About**: version number, check for updates, source code / join the community / report an issue entries, as well as the dependency list generated by AboutLibraries (shows the version and license per library, tap to see details) and the full text of the open-source licenses bundled offline in the APK (GPL-3.0, NOTICE, Apache-2.0, MIT, GPL-2.0, MPL-2.0).
-- **Extended features -> Droidspaces support** (6.18.21 only): tapping "Download module" fetches the latest release of `Droidspaces-LKM` on GitHub, and after confirmation downloads the module zip; the file is saved to `Download/Shark/`, after which you go to the KernelSU manager under "Modules -> Install" and select that file to flash. The module is not bundled in the APK.
+- **Extended features -> Droidspaces support** (6.18.21 only): tapping "Download module" fetches the latest release of `Droidspaces-LKM` on GitHub, and after confirmation downloads the module zip; the file is saved to `Download/Shark-en/`, after which you go to the KernelSU manager under "Modules -> Install" and select that file to flash. The module is not bundled in the APK.
 - **ROOT manager -> Dynamic Switching** (6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23; not supported on 6.6.118 or 6.6.127): once selected, run once on a clean boot and `libksud_universal.so` loads the universal KSU LKM (initially KernelSU, embedding both the 6.18/6.12 KMI KOs). After loading, the "Manager hot switching" item appears in extended features, where you can switch among KernelSU / KernelSU-Next / BakaSU / SukiSU / SukiSU Nova / YukiSU / FinaSU without rebooting or re-jailbreaking; reopen the target manager app after switching.
 
 ## Troubleshooting
 
 | Log | Action |
 | --- | --- |
-| `PROBE_FAIL` / `kernel mismatch` | The current kernel is not in the supported list (matching is by exact `uname -r` only, against the supported 6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127). |
+| `PROBE_FAIL` / `kernel mismatch` | The current kernel is not in the supported list (matching is by exact `uname -r` only, against the supported 6.18.21 / 6.12.69 / 6.12.58 / 6.12.38 / 6.12.23 / 6.6.118 / 6.6.127 / 6.1.157 (OnePlus 12)). |
 | `MANAGER` / `KSUD_MISSING` | Install the corresponding manager APK before running. |
 | `STALE_PLANT` | The previous plant is still running; wait for it to turn into a holder, then retry. |
 | `PLANT_FAIL` | plant keeps the holder and exits; you can retry directly in the same boot. |
@@ -74,7 +74,7 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 | `LATE_LOAD_FAIL` | The module did not appear within the time limit; check the ksud output in the log, confirm the manager version matches, then retry directly. |
 | `EXIT=13` (`page event ids not found` / `votes=0`) | Turn off every toggle under Developer options -> **System trace**, reboot, then run again. The ftrace ring buffer was too busy to find the page-event pairs. |
 | `[calib] timers=0` / `PROBE_SLIDE ... aligned=0` | The build predates the KASLR-alignment fix for Issue #6. Update to 2.5.1-en.3 or newer; it is not an unsupported-device error. |
-| Wireless ADB pairing shows no code field | Enable notifications for Shark. The code input is a notification; if notifications or the `Pairing code` channel are disabled, Shark shows a settings prompt instead. |
+| Wireless ADB pairing shows no code field | Enable notifications for Shark-en. The code input is a notification; if notifications or the `Pairing code` channel are disabled, Shark-en shows a settings prompt instead. |
 | High memory use after a run | The probe trace can leave ftrace enlarged. The app restores `tracing_on=0` / `buffer_size_kb=1` after a successful run; if it was skipped, do it manually with root. |
 | Kernel panic/reboot | An inherent risk of the 98260 race; reboot and run again. |
 | Manager does not see root after a successful run, or a Zygisk/mount module is not active | Enable **Soft reboot after rooting** once. This restarts Android's zygote/userspace while keeping the kernel module loaded, so temporary root survives. Leave it off otherwise. |
@@ -83,7 +83,7 @@ Each kernel version has its own K source file and `libk<version>.so`; there is n
 
 **Soft reboot** runs `setprop ctl.restart zygote`. It restarts Android's
 userspace, not the kernel, so KernelSU and the temporary root stay loaded.
-There is no separate button: enable the switch, then run One-click root; Shark
+There is no separate button: enable the switch, then run One-click root; Shark-en
 restarts zygote automatically after a successful run (or after the configured
 delay).
 

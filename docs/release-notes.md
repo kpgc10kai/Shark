@@ -1,4 +1,5 @@
-English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
+Shark-en is the English derivative of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
+It is an independent fork, not an official upstream build.
 
 - English documentation and English UI strings (Chinese kept in `values-zh`)
 - Signed with the fork's own release key, so future releases update in place
@@ -7,19 +8,20 @@ English fork of [Yunnijian/Shark](https://github.com/Yunnijian/Shark).
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
-## What's new in 2.5.1-en.8
+## What's new in 2.5.2
 
-- **OnePlus 13 (CPH2649) support**: the 6.6.118 `g4127a25dcf3` chain is
-  verified end to end on the clean ColorOS 17 build, with KernelSU late-load.
-- **Xiaomi 18 Pro Max (madrid) support**: new 6.18.21 `g73d8f0bd19e0`
-  profile, verified on-device with KernelSU v3.3.1.
-- `sizeof(struct task_struct)` is now a per-profile `task_bytes` value
-  (5760 on the Xiaomi 18 builds, 5248 on the OnePlus builds) instead of a
-  global 5248 filter.
-- HONOR 600 (VKJ-NX9) and the `experimental/shellserver` features from
-  en.7 remain included.
-
-Previous stable release: [Shark v2.5.1-en.7](https://github.com/kpgc10kai/Shark/releases/tag/v2.5.1-en.7) — its APK and checksums are kept there.
+- **Renamed the project and app to Shark-en.** The repository, app label and
+  release naming now use `Shark-en`.
+- **OnePlus 12 (CPH2573) 6.1 support**: the `6.1.157-android14-11-o-g3d5d51510424`
+  chain is verified on-device with KernelSU late-load. This is a separate 6.1
+  runner; the profile and validation notes are in `ports/op12-61157/`.
+- **Community links now use Telegram**:
+  <https://t.me/kpgc10kai>
+- **Feedback** now points to the Shark-en GitHub page:
+  <https://github.com/kpgc10kai/Shark-en>
+- **Donation links and QR assets were removed.**
+- The previous en.8 device support remains included (OnePlus 13, Xiaomi 18 Pro
+  Max, HONOR 600, and the existing 6.6/6.12/6.18 profiles).
 
 ## Fork features
 
@@ -30,6 +32,9 @@ Previous stable release: [Shark v2.5.1-en.7](https://github.com/kpgc10kai/Shark/
 - All upstream kernel profiles, including the Xiaomi 18 Pro / 18 Fold builds
 
 ## Supported devices
+
+### 6.1.157 (Android 16)
+- OnePlus 12 (CPH2573) — experimental 6.1 chain, verified on-device
 
 ### 6.18.21 (Android 17)
 - OnePlus 16 (PYB110)
@@ -65,8 +70,8 @@ Previous stable release: [Shark v2.5.1-en.7](https://github.com/kpgc10kai/Shark/
 - HONOR 600 (VKJ-NX9) — MagicOS 11 / Android 17, verified on-device
 
 The complete kernel-version table is in the
-[README](https://github.com/kpgc10kai/Shark#supported-devices).
+[README](https://github.com/kpgc10kai/Shark-en#supported-devices).
 
 ## Release policy
 
-Starting with `2.5.1-en.6`, published APKs are retained as release assets. Older superseded or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark/releases/latest.
+Starting with `2.5.1-en.6`, published APKs are retained as release assets. Older superseded or intermediate builds keep a notice page as a pre-release with the APK removed, so old links point to https://github.com/kpgc10kai/Shark-en/releases/latest.

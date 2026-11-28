@@ -25,8 +25,8 @@ data class DroidspacesRelease(
 object DroidspacesModule {
     private const val API =
         "https://api.github.com/repos/Yunnijian/Droidspaces-LKM/releases/latest"
-    private const val USER_AGENT = "Shark-Droidspaces"
-    private const val DOWNLOAD_DIR = "Shark"
+    private const val USER_AGENT = "Shark-en-Droidspaces"
+    private const val DOWNLOAD_DIR = "Shark-en"
 
     suspend fun latest(): DroidspacesRelease = withContext(Dispatchers.IO) {
         val conn = (URL(API).openConnection() as HttpURLConnection).apply {
