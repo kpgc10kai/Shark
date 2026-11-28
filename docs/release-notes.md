@@ -8,6 +8,17 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.6-exp1
+
+**Redmi Note 15 4G (spinel) tester build.**
+
+- Added the 6.12.69 profile
+  `6.12.69-android16-6-g014ca48a80ee-ab15889839-4k` (HyperOS 3.0.302.0.WPGIDXM).
+- Offline analysis from the official OTA boot image reports the vulnerable
+  98260 stale-node path.
+- Not yet tested on hardware; this profile is disabled in stable builds.
+- Test once on a clean boot and attach the full Logs export.
+
 ## What's new in 2.5.6
 
 - Kept **POCO X7 Pro** stable.

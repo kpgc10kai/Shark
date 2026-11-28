@@ -506,6 +506,7 @@ class MainActivity : ComponentActivity() {
         if (!BuildConfig.ALLOW_EXPERIMENTAL_PROFILES &&
             (exploit == ExploitKind.CVE61157_ACE5 ||
                 exploit == ExploitKind.CVE66118_F7 ||
+                exploit == ExploitKind.CVE61269_NOTE15 ||
                 exploit == ExploitKind.CVE66118_X8PROMAX ||
                 exploit == ExploitKind.CVE66118_HYPEROS4)
         ) {
@@ -2764,6 +2765,7 @@ class MainActivity : ComponentActivity() {
                         "run"
                     )
                     ExploitKind.CVE61269 -> arrayOf("$nativeDir/libk61269.so", "run")
+                    ExploitKind.CVE61269_NOTE15 -> arrayOf("$nativeDir/libk61269.so", "run")
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
@@ -2939,6 +2941,7 @@ class MainActivity : ComponentActivity() {
     private enum class ExploitKind(val fullLabel: String) {
         CVE61821("CVE-2026-98260-6.18"),
         CVE61269("CVE-2026-98260-6.12.69"),
+        CVE61269_NOTE15("CVE-2026-98260-6.12.69-Note15"),
         CVE61238("CVE-2026-98260-6.12.38"),
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE66118("CVE-2026-98260-6.6.118"),
@@ -3021,6 +3024,7 @@ class MainActivity : ComponentActivity() {
             "6.12.69-android16-6-g242e1a07f878-ab15865446-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g5fd39602326e-ab16372235-4k" to ExploitKind.CVE61269,
             "6.12.69-android16-6-g586bfab1b9c5-abogki536749445-4k" to ExploitKind.CVE61269,
+            "6.12.69-android16-6-g014ca48a80ee-ab15889839-4k" to ExploitKind.CVE61269_NOTE15,
             "6.12.38-android16-5-g844001fb8721-ab14552068-4k" to ExploitKind.CVE61238,
             "6.12.58-android16-6-g7704a1ae279b-ab15213644-4k" to ExploitKind.CVE61258,
             "6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k" to ExploitKind.CVE66118,
