@@ -227,3 +227,16 @@ B2  parked
 The change did not remove the park failure; the default (15 s / 10000) remains.
 The next step is to capture a full parked-run log and fix the burst-miss path,
 not to keep changing the geometry blindly.
+
+## Logged runs 17-18
+
+Both clean boots succeeded with `IC_LOG_PATH` and redirected output:
+
+```text
+boot 17  KSU loaded  9.144 s
+boot 18  KSU loaded  7.101 s
+```
+
+Cumulative representative count: **14/18 (78%)**. The log path is now
+confirmed working; a future parked run will leave a complete trace. The
+remaining issue is still the burst-miss park path.
