@@ -84,6 +84,7 @@ import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
@@ -544,7 +545,17 @@ class MainActivity : ComponentActivity() {
                         AppTopBar(stringResource(R.string.licenses), onBack = { aboutPage = AboutPage.HOME })
                     else -> AppTopBar(
                         title = if (tab == AppTab.HOME) "Shark-en" else stringResource(tab.labelRes),
-                        large = tab == AppTab.HOME
+                        large = tab == AppTab.HOME,
+                        actions = if (tab == AppTab.LOGS) {
+                            {
+                                val label = stringResource(R.string.export_log)
+                                TopAppBarButton(onClick = { shareCurrentLog() }) {
+                                    AppIcon(Icons.Filled.Share, label, Modifier.size(24.dp))
+                                }
+                            }
+                        } else {
+                            null
+                        }
                     )
                 }
             },
@@ -609,7 +620,12 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun AppTopBar(title: String, onBack: (() -> Unit)? = null, large: Boolean = false) {
+    private fun AppTopBar(
+        title: String,
+        onBack: (() -> Unit)? = null,
+        large: Boolean = false,
+        actions: (@Composable androidx.compose.foundation.layout.RowScope.() -> Unit)? = null,
+    ) {
         TopAppBar(
             title = {
                 if (large) {
@@ -637,7 +653,8 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             },
-            navigationIcon = { if (onBack != null) CouiBackButton(onBack) }
+            navigationIcon = { if (onBack != null) CouiBackButton(onBack) },
+            actions = actions ?: {}
         )
     }
 
@@ -1993,6 +2010,42 @@ class MainActivity : ComponentActivity() {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_STREAM, uri)
                     putExtra(Intent.EXTRA_SUBJECT, "Shark-en log ${entry.startTime}")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                runCatching {
+                    startActivity(Intent.createChooser(send, getString(R.string.export_log)))
+                }.onFailure { addLog("Failed to open share sheet: $it") }
+            }
+        }
+    }
+
+    /** Share the live Logs tab contents; the tester-facing path until a dedicated report screen exists. */
+    private fun shareCurrentLog() {
+        val text = logs.joinToString("\n")
+        if (text.isBlank()) {
+            addLog("No log lines to export")
+            return
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            val dir = File(cacheDir, "export").apply { mkdirs() }
+            val out = File(dir, "shark-en-live-log-${System.currentTimeMillis()}.txt")
+            out.writeText(text)
+            val uri = runCatching {
+                FileProvider.getUriForFile(
+                    applicationContext,
+                    "$packageName.fileprovider",
+                    out
+                )
+            }.getOrNull()
+            withContext(Dispatchers.Main) {
+                if (uri == null) {
+                    addLog("Failed to prepare log for sharing")
+                    return@withContext
+                }
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    putExtra(Intent.EXTRA_SUBJECT, "Shark-en live log")
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 runCatching {

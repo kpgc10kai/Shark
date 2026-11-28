@@ -8,6 +8,17 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.4
+
+**Log export for testers.**
+
+- Added a **Share / Export log** action to the top-right of the Logs tab.
+  It exports the complete live log as `shark-en-live-log-*.txt` through the
+  system share sheet.
+- History entries already support export by swiping the entry to the left.
+- No device profile or root behavior changed from 2.5.3. The OnePlus 13R
+  remains verified (3/3 cold boots); Ace5 remains disabled in the stable build.
+
 ## What's new in 2.5.3
 
 **Stable release: OnePlus 13R support.**

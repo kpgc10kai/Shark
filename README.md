@@ -208,9 +208,11 @@ installed manager APK, so **install the manager you intend to use first**.
   rooting, perform a soft reboot after rooting, and unload the kernel security
   guard. Enable them as needed; a
   failure in one item does not affect root that is already active.
-- **Logs and history**: Runtime logs scroll in real time. Each root run saves a
-  complete log to the History page, where it can be viewed, deleted, or swiped left
-  to export and share, making it easier to troubleshoot failures or keep records.
+- **Logs and history**: Runtime logs scroll in real time. The Logs tab has a
+  top-right **Share / Export log** action for the complete live log; each root
+  run also saves a complete log to the History page, where it can be viewed,
+  deleted, or swiped left to export and share, making it easier to troubleshoot
+  failures or keep records.
 - **Online updates**: GitHub Releases is checked at startup. When a new version
   is found, it is downloaded in-app, its SHA-256 and APK signature are verified,
   and it is then handed to the system installer.
