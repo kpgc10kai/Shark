@@ -2,6 +2,11 @@
 
 Status: **profile matches OnePlus 13, but fake-cred stage failed on-device**
 
+A second clean-boot test with KernelSU v3.3.1 (instead of KernelSU Next 3.4.2)
+failed identically: `FAIL=cred`, `child uid=2000`, `holder=t61269-hold`.
+The manager is not the cause. The device is disabled in stable 2.5.6; do not
+keep retrying until the fake-cred/race path is analyzed offline.
+
 ## Target
 
 `	ext
