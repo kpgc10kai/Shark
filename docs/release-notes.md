@@ -16,9 +16,9 @@ one of the versions below **exactly**; anything else is rejected.
   `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` to `libk66118.so`.
 - The profile was derived from the POCO X7 Pro `OS4.0.1.0.XOJEUXM` boot image;
   `timer-extract` reports the vulnerable 98260 stale-node path.
-- **Verified once on the POCO X7 Pro:** KernelSU late-load rc=0,
+- **Verified on the POCO X7 Pro:** KernelSU late-load rc=0,
   `kernelsu 180224 1 - Live`, `uid=0(root) context=u:r:ksu:s0`, SELinux
-  Enforcing, exploit exit=0. Cold-boot repetition is still pending.
+  Enforcing, 3/3 runs (5.6 s, 4.9 s, 9.5 s).
 - POCO F7 reports the same kernel string but has not reported separately.
 - This experimental profile is disabled in stable builds; use this pre-release
   to test. Ace5 remains test-only as well.

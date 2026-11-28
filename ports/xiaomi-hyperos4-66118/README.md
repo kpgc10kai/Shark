@@ -1,6 +1,6 @@
 # POCO X7 Pro / F7 HyperOS 4 (6.6.118) experimental port
 
-Status: **verified once on POCO X7 Pro; cold-boot repetition pending**
+Status: **verified on POCO X7 Pro (3/3 cold boots); F7 pending**
 
 ## Verified result
 
@@ -12,6 +12,7 @@ KernelSU late-load rc=0; kernelsu 180224 1 - Live
 su: uid=0(root) context=u:r:ksu:s0
 SELinux Enforcing
 exploit exit=0 / DONE
+3/3 runs: 5.6 s, 4.9 s, 9.5 s
 ```
 
 POCO F7 has the same kernel string but has not reported separately.
