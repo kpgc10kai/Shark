@@ -271,3 +271,17 @@ variant C2  5/6  KSU success, one boot-time miss
 The app's `libk61157.so` was rebuilt with the C geometry
 (`SPRAY_SOCKS=4096`, `SPRAY_POST=40000`, 30 s burst). A 10-consecutive clean
 boot run is still pending; the goal remains active.
+
+## Harness-contaminated C run
+
+Ten C-variant boots were attempted with a 20 s post-boot start. Results:
+
+```text
+runs 1,2,4   no core log (started before boot settled)  -> not exploit failures
+runs 3,5-9  KSU_LOADED
+run 10      fake_uid burst missed -> park
+```
+
+The only genuine C failure in that batch was run 10. The parked log is
+committed as `logs/variantC-parked.log`. The harness must wait for a settled
+boot before starting the core, or it records false failures.
