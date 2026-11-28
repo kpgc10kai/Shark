@@ -249,3 +249,25 @@ boot 19  KSU loaded  9.021 s
 
 Representative cumulative count: **15/19 (79%)**. The logging path now
 captures the full handoff; no new parked trace was produced in this run.
+
+## Park trace and spray fix
+
+A parked run was captured with `fake_uid` and:
+
+```text
+[+] plant1 free_seen=1 burst hit=0 after 30000ms
+[-] plant1 burst missed; holding zombie
+[!] fake uid fix held a zombie
+```
+
+Increasing the spray to 4096 sockets and 40000 phase-2 posts (30 s burst)
+gave:
+
+```text
+variant C   9/10 KSU success (90%)
+variant C2  5/6  KSU success, one boot-time miss
+```
+
+The app's `libk61157.so` was rebuilt with the C geometry
+(`SPRAY_SOCKS=4096`, `SPRAY_POST=40000`, 30 s burst). A 10-consecutive clean
+boot run is still pending; the goal remains active.
