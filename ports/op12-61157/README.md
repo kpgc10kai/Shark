@@ -194,3 +194,22 @@ failures: 1 reboot during fake, 2 parked runs
 
 This is **not stable enough** to promote OP12 out of experimental. The next
 work is fake-plant retry/timeout handling, not more blind cold boots.
+
+## Additional cold-boot runs (13-16)
+
+| boot | result | payload time |
+|---|---|---|
+| 13 | KSU loaded | — |
+| 14 | KSU loaded | 5.548 s |
+| 15 | parked, no root | — |
+| 16 | KSU loaded | 9.031 s |
+
+Cumulative:
+
+```text
+success 12/16 (75%)
+failures: 1 reboot, 3 parked
+```
+
+The parked rate is now the dominant issue. More blind cold boots will not fix
+it; the next change must address the burst-miss path that holds a zombie.
