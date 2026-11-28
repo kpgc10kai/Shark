@@ -15,12 +15,8 @@ exploit exit=0 / DONE
 3/3 runs: 5.6 s, 4.9 s, 9.5 s
 ```
 
-POCO F7 has the same kernel string but has not reported separately.
-**They are not the same device:** X7 Pro is `rodin` (MediaTek Dimensity
-8400-Ultra) and F7 is `onyx` (Snapdragon 8s Gen 4), with different firmware
-builds. The identical `uname -r` is a shared GKI kernel build, not proof of
-hardware equivalence. The same profile can be tested on both, but F7 needs its
-own on-device confirmation.
+POCO X7 Pro is verified. POCO F7 is a separate device with the same kernel
+string; its success is not assumed, and it remains unverified.
 
 ## Target
 

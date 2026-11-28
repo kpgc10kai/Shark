@@ -497,9 +497,15 @@ class MainActivity : ComponentActivity() {
         val savedManager = getSharedPreferences("pyb110", MODE_PRIVATE).getString("manager", null)
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault(getString(R.string.unknown))
-        exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
+        val mapped = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
+        exploit = if (mapped == ExploitKind.CVE66118_HYPEROS4) {
+            resolveHyperOs4Variant()
+        } else {
+            mapped
+        }
         if (!BuildConfig.ALLOW_EXPERIMENTAL_PROFILES &&
             (exploit == ExploitKind.CVE61157_ACE5 ||
+                exploit == ExploitKind.CVE66118_F7 ||
                 exploit == ExploitKind.CVE66118_HYPEROS4)
         ) {
             exploit = ExploitKind.UNSUPPORTED
@@ -2760,6 +2766,8 @@ class MainActivity : ComponentActivity() {
                     ExploitKind.CVE61238 -> arrayOf("$nativeDir/libk61238.so", "run")
                     ExploitKind.CVE61258 -> arrayOf("$nativeDir/libk61258.so", "run")
                     ExploitKind.CVE66118 -> arrayOf("$nativeDir/libk66118.so", "run")
+                    ExploitKind.CVE66118_X7PRO -> arrayOf("$nativeDir/libk66118.so", "run")
+                    ExploitKind.CVE66118_F7 -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE66118_HYPEROS4 -> arrayOf("$nativeDir/libk66118.so", "run")
                     ExploitKind.CVE61157 -> arrayOf("$nativeDir/libk61157.so", "ksu")
                     ExploitKind.CVE61157_ACE5 -> arrayOf("$nativeDir/libkace5.so", "ksu")
@@ -2932,6 +2940,8 @@ class MainActivity : ComponentActivity() {
         CVE61238("CVE-2026-98260-6.12.38"),
         CVE61258("CVE-2026-98260-6.12.58"),
         CVE66118("CVE-2026-98260-6.6.118"),
+        CVE66118_X7PRO("CVE-2026-98260-6.6.118-X7Pro"),
+        CVE66118_F7("CVE-2026-98260-6.6.118-F7"),
         CVE66118_HYPEROS4("CVE-2026-98260-6.6.118-HyperOS4"),
         CVE61157("CVE-2026-98260-6.1.157"),
         CVE61157_ACE5("CVE-2026-98260-6.1.157-Ace5/13R"),
@@ -2947,6 +2957,15 @@ class MainActivity : ComponentActivity() {
         YUKISU("YukiSU", "org.rouyashiki.yukisu", "yukisu"),
         NOVA("SukiSU Nova", "com.sukisu.nova", "nova"),
         DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
+    }
+
+    private fun resolveHyperOs4Variant(): ExploitKind {
+        val identity = "${Build.MODEL} ${Build.DEVICE} ${Build.PRODUCT}".uppercase()
+        return when {
+            identity.contains("ONYX") || identity.contains("F7") -> ExploitKind.CVE66118_F7
+            identity.contains("RODIN") || identity.contains("X7") -> ExploitKind.CVE66118_X7PRO
+            else -> ExploitKind.CVE66118_HYPEROS4
+        }
     }
 
     /** The OPPO anti-root actions are meaningless on the Xiaomi-port kernels. */
