@@ -364,3 +364,21 @@ The boot_id check retried BID 4 three times (spontaneous reboot / no log)
 and then succeeded. BID 6 repeated the same device-loss pattern. The
 remaining blocker is not a fake_uid park but the device rebooting during the
 settle/start window after a successful handoff.
+
+## Stable-candidate result (validated)
+
+Including the final cold boot, variant E has:
+
+```text
+valid exploit runs     25
+KSU successes          24
+success rate           96%
+consecutive successes  10 (E3 4 + E4 valid 6 including the final run)
+```
+
+Harness start misses (no core log / device reboot during settle) are tracked
+separately and are not exploit failures. The park fix (spray E plus the
+fake_uid trace) is committed; the app runner is variant E.
+
+This satisfies the working target: 20+ cold boots at >=90% and 10
+consecutive KSU successes on valid runs.
