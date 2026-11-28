@@ -59,6 +59,8 @@ The `Shark-en_2.5.3-exp1` pre-release adds a separate 6.1.157 runner for:
 
 Download: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.3-exp1>
 
+Tester reports: <https://github.com/kpgc10kai/Shark-en/issues/19>
+
 Both kernels pass the offline `timer-extract` vulnerability check and share
 the same task/cred layout as the OP12, but **neither device has been tested on
 hardware yet**. This is a log-collection build, not a stable recommendation.
