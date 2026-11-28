@@ -8,6 +8,20 @@ It is an independent fork, not an official upstream build.
 Root is temporary and disappears after a reboot. The kernel build must match
 one of the versions below **exactly**; anything else is rejected.
 
+## What's new in 2.5.4-exp1
+
+**POCO X7 Pro / F7 HyperOS 4 tester build.**
+
+- Added the 6.6.118 profile
+  `6.6.118-android15-8-g0908354dac1b-ab16143355-4k` to `libk66118.so`.
+- The profile was derived from the POCO X7 Pro `OS4.0.1.0.XOJEUXM` boot image;
+  `timer-extract` reports the vulnerable 98260 stale-node path.
+- POCO X7 Pro (`rodin`) and POCO F7 report the same kernel string, so one exact
+  profile may cover both. Not yet tested on hardware.
+- This experimental profile is disabled in stable builds; use this pre-release
+  to test. Ace5 remains test-only as well.
+- Please attach the full Logs export and report success/reboot/hang.
+
 ## What's new in 2.5.4
 
 **Log export for testers.**

@@ -66,6 +66,9 @@ jobs:
           export SHARK_VERSION_NAME="${GITHUB_REF_NAME#Shark-en_}"
           echo "SHARK_VERSION_NAME=$SHARK_VERSION_NAME" >> "$GITHUB_ENV"
           export SHARK_VERSION_CODE="$((1000 + GITHUB_RUN_NUMBER))"
+          if [[ "$GITHUB_REF_NAME" == *-exp* ]]; then
+            export SHARK_ALLOW_EXPERIMENTAL=true
+          fi
           echo "Building ${SHARK_VERSION_NAME} (${SHARK_VERSION_CODE})"
           URLS=(
             "https://mirrors.cloud.tencent.com/gradle/gradle-9.7.0-bin.zip"

@@ -93,6 +93,24 @@ whether the device rebooted, hung, or reached u:r:ksu:s0
 
 Do not use the Ace5 runner on OP12 or any other kernel profile.
 
+### POCO X7 Pro / F7 HyperOS 4 test build
+
+The same 6.1.157 tester channel now has an experimental 6.6.118 profile for:
+
+```text
+POCO X7 Pro (rodin) / POCO F7
+6.6.118-android15-8-g0908354dac1b-ab16143355-4k
+HyperOS 4  OS4.0.1.0.XOJEUXM
+```
+
+The OTA boot image is vulnerable to 98260 (`posix_cpu_timer_del` stale node),
+but this profile is **not yet tested on hardware** and is disabled in the
+stable 2.5.4 build.
+
+Test build: <https://github.com/kpgc10kai/Shark-en/releases/tag/Shark-en_2.5.4-exp1>
+
+Use the Logs tab → **Share / Export log** action and attach the full log.
+
 ## Supported devices
 
 | Device | System | Full kernel version |
