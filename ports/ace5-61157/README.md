@@ -2,6 +2,15 @@
 
 Status: **offline analysis + runner built; not tested on either device**
 
+Expected firmware is exact:
+
+```text
+OnePlus Ace5    PKG110_17.0.0.105
+OnePlus 13R     CPH2691_17.0.0.105
+```
+
+Other builds of the same model are not covered by this runner.
+
 ## Source images
 
 ```text
